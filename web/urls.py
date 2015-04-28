@@ -4,4 +4,7 @@ from web.views import *
 
 urlpatterns = patterns('',
     url(r'^$',index),
+    url(r'^index_update/$',index_update),
+    url(r'^VirtualMachine/$', virtualMachine),
+    url(r'^VirtualMachineUpdate/$', virtualMachine_update)
 )

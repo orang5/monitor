@@ -1,0 +1,242 @@
+{% extends '__base__.html' %}
+{% block content-wrapper %}
+{% load staticfiles %}
+
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Charts
+            <small>preview sample</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Planform1</li>
+            <li class="active">VM1</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+        
+          <div class="row">
+            <div class="col-md-6">
+              <!-- memery chart -->
+              <div class="box box-primary">
+                <div class="box-header with-border">
+                  <i class="fa fa-bar-chart-o"></i>
+                  <h3 class="box-title">Memory usage</h3>
+                  <div class="box-tools pull-right">
+                    Real time
+                    <div class="btn-group" id="mem_realtime" data-toggle="btn-toggle">
+                      <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+                      <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div id="mem-chart" style="height: 300px;"></div>
+                </div><!-- /.box-body-->
+                                <div class="box-footer">
+                  <div class="row">
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 90%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Received</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-yellow"><i class="fa fa-caret-up"></i> 0%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Errors</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 9%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Discarded</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block">
+                      <h5 class="description-header"></h5>
+                        <span class="description-percentage text-red"><i class="fa fa-caret-up"></i> 1%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">Unknown</span>
+                      </div><!-- /.description-block -->
+                    </div>
+                  </div><!-- /.row -->
+                </div><!-- /.box-footer -->
+              </div><!-- /.box -->
+
+              <!-- Network chart -->
+              <div class="box box-primary">
+                <div class="box-header with-border">
+                  <i class="fa fa-bar-chart-o"></i>
+                  <h3 class="box-title">Network traffic</h3>
+                  <div class="box-tools pull-right">
+                    Real time
+                    <div class="btn-group" id="net_realtime" data-toggle="btn-toggle">
+                      <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+                      <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div id="net-chart" style="height: 300px;"></div>
+                </div><!-- /.box-body-->
+                                <div class="box-footer">
+                  <div class="row">
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 90%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Received</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-yellow"><i class="fa fa-caret-up"></i> 0%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Errors</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 9%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Discarded</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block">
+                      <h5 class="description-header"></h5>
+                        <span class="description-percentage text-red"><i class="fa fa-caret-up"></i> 1%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">Unknown</span>
+                      </div><!-- /.description-block -->
+                    </div>
+                  </div><!-- /.row -->
+                </div><!-- /.box-footer -->
+              </div><!-- /.box -->
+
+            </div><!-- /.col -->
+
+            <div class="col-md-6">
+              <!-- cpu chart -->
+              <div class="box box-primary">
+                <div class="box-header with-border">
+                  <i class="fa fa-bar-chart-o"></i>
+                  <h3 class="box-title">Cpu availability</h3>
+                  <div class="box-tools pull-right">
+                    Real time
+                    <div class="btn-group" id="cpu_realtime" data-toggle="btn-toggle">
+                      <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+                      <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div id="cpu-chart" style="height: 300px;"></div>
+                </div><!-- /.box-body-->
+                
+                 <div class="box-footer">
+                  <div class="row">
+                    <div class="col-sm-4 col-xs-6">
+                      <div class="description-block border-right">
+                      <span class="description-text">Availability: </span>
+                      <span class="description-percentage text-yellow">7%</span>
+                      </div><!-- /.description-block -->
+                      
+                      <div class="description-block border-right">
+                      <span class="description-text"> Speed: </span>
+                      <span class="description-percentage text-yellow">3.02GHZ</span>
+                      </div><!-- /.description-block -->
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-4 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-yellow"><i class="fa fa-caret-up"></i> 0%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Errors</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-4 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 9%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Discarded</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                  </div><!-- /.row -->
+                </div><!-- /.box-footer -->
+              </div><!-- /.box -->
+
+              <!-- Disk chart -->
+              <div class="box box-primary">
+                <div class="box-header with-border">
+                  <i class="fa fa-bar-chart-o"></i>
+                  <h3 class="box-title">Disk </h3>
+                  <div class="box-tools pull-right">
+                    Real time
+                    <div class="btn-group" id="disk_realtime" data-toggle="btn-toggle">
+                      <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+                      <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div id="disk-chart" style="height: 300px;"></div>
+                </div><!-- /.box-body-->
+                                <div class="box-footer">
+                  <div class="row">
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 90%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Received</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-yellow"><i class="fa fa-caret-up"></i> 0%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Errors</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block border-right">
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 9%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">TOTAL Discarded</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                      <div class="description-block">
+                      <h5 class="description-header"></h5>
+                        <span class="description-percentage text-red"><i class="fa fa-caret-up"></i> 1%</span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">Unknown</span>
+                      </div><!-- /.description-block -->
+                    </div>
+                  </div><!-- /.row -->
+                </div><!-- /.box-footer -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+
+      </div><!-- /.content-wrapper -->
+    {% endblock %}
+      
+    {% block script %}
+      <script src="{% static "plugins/flot/jquery.flot.min.js" %}"></script>
+      <script src="{% static "plugins/flot/jquery.flot.resize.min.js" %}"></script>
+      <script src="{% static "plugins/flot/jquery.flot.pie.min.js" %}"></script>
+      <script src="{% static "plugins/flot/jquery.flot.categories.min.js" %}"></script>
+      <script src="{% static "js/pages/virtual_machine.js" %}"></script>
+    {% endblock %} 
