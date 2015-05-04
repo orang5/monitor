@@ -1,17 +1,15 @@
-import time,pythoncom, wmi
+import time,pythoncom, wmi, logging
 import win32com.client as client
 from watcher import Watcher
-con = None
+
 class _wmi_ctx(object):
     def __enter__(self):
-        global con
         try:
-            con = wmi.WMI()
-            self.should_unInit = False
-            con = None
-        except:
             pythoncom.CoInitialize()
             self.should_unInit = True
+        except:
+            logging.info('Running in single thread!')
+            pass
         return self
     
     def __exit__(self, exctype, excvalue, traceback):
@@ -32,10 +30,13 @@ class WinWatcher(Watcher):
         super(WinWatcher, self).__init__()
     
     @with_wmi
-    def sys_version(self):       
-        for sys in con.Win32_OperatingSystem(): 
-            print "Version:%s" % sys.Caption,"Vernum:%s" % sys.BuildNumber 
-            print 'OS Architecture: %s' % sys.OSArchitecture
+    def sys_version(self):
+        con = wmi.WMI(moniker = "//./root/cimv2")
+        for sys in con.Win32_OperatingSystem():
+            for k in sys.properties:
+                print getattr(sys, k)
+            #print "Version:%s" % sys.Caption,"Vernum:%s" % sys.BuildNumber 
+            #print 'OS Architecture: %s' % sys.OSArchitecture
      
     @with_wmi 
     def cpu_use(self):
@@ -81,17 +82,21 @@ class WinWatcher(Watcher):
         con = wmi.WMI(moniker = "//./root/cimv2")
         disk_info = []
         disk_dict = {}
+        disk_id_disk = {}
         info_dict = {}
         #  DriveType=3 : "Local Disk",
-        for disk in con.Win32_LogicalDisk (DriveType=3):
+        for i,disk in enumerate(con.Win32_LogicalDisk (DriveType=3)):
+            index = 'Partition' + str(i)
             info_dict = {}
             info_dict['disk_FreeSpace'] =  {'volume':round(float(disk.FreeSpace) / (1024*1024*1024), 2) , 'unit':'GB'}
             info_dict['disk_capacity'] =  {'volume':round(float(disk.Size) / (1024*1024*1024), 2) , 'unit':'GB'}
             info_dict['disk_Used'] = {'volume':round((float(disk.Size)-float(disk.FreeSpace)) / (1024*1024*1024), 2) , 'unit':'GB'}
             info_dict['fstype'] = disk.FileSystem
             info_dict['mnt'] = ''
+            info_dict['Caption'] = disk.DeviceID
             #print disk.DeviceID
-            disk_dict[disk.DeviceID] = info_dict
+            disk_id_disk[disk.DeviceID] = index
+            disk_dict[index] = info_dict
 
         com = client.Dispatch("WbemScripting.SWbemRefresher")
         obj = client.GetObject("winmgmts:\\root\cimv2")
@@ -100,8 +105,8 @@ class WinWatcher(Watcher):
         com.Refresh()
         for item in diskitems:
             try:
-                disk_dict[item.Name]['io_stat_read'] = {'volume':(float(item.DiskReadBytesPerSec) / 1024), 'unit':'KB/s'}
-                disk_dict[item.Name]['io_stat_write'] = {'volume':(float(item.DiskWriteBytesPerSec) / 1024), 'unit':'KB/s'}
+                disk_dict[disk_id_disk[item.Name]]['io_stat_read'] = {'volume':(float(item.DiskReadBytesPerSec) / 1024), 'unit':'KB/s'}
+                disk_dict[disk_id_disk[item.Name]]['io_stat_write'] = {'volume':(float(item.DiskWriteBytesPerSec) / 1024), 'unit':'KB/s'}
             except:
                 pass
             disk_info.append(disk_dict)
@@ -127,33 +132,36 @@ class WinWatcher(Watcher):
         items = com.AddEnum(obj, "Win32_PerfRawData_Tcpip_NetworkInterface").objectSet
         net_info = []
         net_dict = {}
-        for interface in con.Win32_NetworkAdapterConfiguration (IPEnabled=1):
+        net_id_disk = {}
+        for i,interface in enumerate(con.Win32_NetworkAdapterConfiguration (IPEnabled=1)):
+            index = 'Network_Adapter' + str(i)
             info_dict = {}
             info_dict['net_MACAddress'] = interface.MACAddress
             info_dict['net_IPSubnet'] = interface.IPSubnet
             info_dict['net_DefaultIPGateway'] = interface.DefaultIPGateway
             info_dict['net_ip_address'] = []
-            for ip_address in interface.IPAddress:
-                info_dict['net_ip_address'].append(ip_address)
-            net_dict[interface.Description] = info_dict
+            info_dict['Caption'] = interface.Description
+            if not interface.IPAddress is None:
+                for ip_address in interface.IPAddress:
+                    info_dict['net_ip_address'].append(ip_address)
+            net_id_disk[interface.Description] = index
+            net_dict[index] = info_dict
              
         
         com.Refresh()
         for item in items:
-            if net_dict.has_key(item.Name):
+            if net_id_disk.has_key(item.Name):
                 net_bytes_in = long(item.BytesReceivedPerSec)
-                net_bytes_out = long(item.BytesSentPerSec)
-                    
+                net_bytes_out = long(item.BytesSentPerSec)                        
                 time.sleep(1)
-                com.Refresh()
-
-                net_dict[item.Name]['net_bytes_in'] = {'volume':(long(item.BytesReceivedPerSec) - net_bytes_in)*8/1024 , 'unit':'Kbps'}
-                net_dict[item.Name]['net_bytes_out'] = {'volume':(long(item.BytesSentPerSec) - net_bytes_out)*8/1024 , 'unit':'Kbps'}
-                net_dict[item.Name]['net_bytes_in_cur'] = {'volume':long(item.BytesReceivedPerSec) , 'unit':'B'}
-                net_dict[item.Name]['net_bytes_in_cur'] = {'volume':long(item.BytesReceivedPerSec) , 'unit':'B'}
-                net_dict[item.Name]['net_pkts_in_cur'] = long(item.PacketsReceivedPerSec)
-                net_dict[item.Name]['net_pkts_out_cur'] = long(item.PacketsSentPerSec)
-                net_info.append(net_dict)
+                com.Refresh()                
+                net_dict[net_id_disk[item.Name]]['net_bytes_in'] = {'volume':(long(item.BytesReceivedPerSec) - net_bytes_in)*8/1024 , 'unit':'Kbps'}
+                net_dict[net_id_disk[item.Name]]['net_bytes_out'] = {'volume':(long(item.BytesSentPerSec) - net_bytes_out)*8/1024 , 'unit':'Kbps'}
+                net_dict[net_id_disk[item.Name]]['net_bytes_in_cur'] = {'volume':long(item.BytesReceivedPerSec) , 'unit':'B'}
+                net_dict[net_id_disk[item.Name]]['net_bytes_in_cur'] = {'volume':long(item.BytesReceivedPerSec) , 'unit':'B'}
+                net_dict[net_id_disk[item.Name]]['net_pkts_in_cur'] = long(item.PacketsReceivedPerSec)
+                net_dict[net_id_disk[item.Name]]['net_pkts_out_cur'] = long(item.PacketsSentPerSec)
+            net_info.append(net_dict)
         return net_info
     
     @with_wmi    
@@ -167,28 +175,42 @@ class WinWatcher(Watcher):
             print item.IDProcess, item.Name, item.PriorityBase, item.VirtualBytes, item.PoolNonpagedBytes, item.PoolPagedBytes, item.PercentProcessorTime, item.WorkingSet, timestamp    
      
     @with_wmi    
-    def static(self):
-        '''
-        sys_version
-        cpu_data['MaxClockSpeed'] = cpu.MaxClockSpeed
-        cpu_data['NumberOfCores'] = cpu.NumberOfCores
-        cpi_data['NumberOfLogicalProcessors'] = cpu.NumberOfLogicalProcessors
-        '''
-        pass
+    def device(self):
+        con = wmi.WMI(moniker = "//./root/cimv2")
+        device_dict = {}
+        device_dict['CPU'] = []
+        device_dict['DISK'] = []
+        device_dict['Network_Adapter'] = []
+        device_dict['MEMORY'] = []
+        for cpu in con.Win32_Processor():
+            device_dict['CPU'].append({'caption':cpu.DeviceID,'index':cpu.DeviceID})
+   
+        for i,disk in enumerate(con.Win32_LogicalDisk (DriveType=3)):
+            device_dict['DISK'].append({'caption':disk.DeviceID,'index':'Partition' + str(i)})   
+            
+        for i,interface in enumerate(con.Win32_NetworkAdapterConfiguration (IPEnabled=1)):
+            device_dict['Network_Adapter'].append({'caption':interface.Description,'index':'Network_Adapter' + str(i)})   
+            
+        cp = con.Win32_PhysicalMemory()
+        device_dict['MEMORY'].append({'caption':cp[0].Tag,'index':cp[0].Tag})
+        return device_dict        
         
             
-if __name__ == '__main__': 
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     win = WinWatcher()
-    print '--------cpu------------------------------------------'
-    print win.cpu_use()
     print '--------memory---------------------------------------'
     print win.mem_use()
+    print '--------cpu------------------------------------------'
+    print win.cpu_use()    
     print '--------fs_info-----------------------------------------'
     print win.get_fs_info()
     print '--------dsik_info-----------------------------------------'
     print win.get_disk_info()    
     print '--------network--------------------------------------'
     print win.network()
+    print '--------DEVICE--------------------------------------'
+    print win.device()    
 
     '''
     while True:

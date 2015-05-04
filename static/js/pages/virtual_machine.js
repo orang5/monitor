@@ -77,7 +77,7 @@ var mem_plot = $.plot("#mem-chart", [], {
   },
   yaxis: {
     min: 0,
-    max: 100,
+    max: 4096,
     show: true
   },
   xaxis: {
@@ -95,7 +95,7 @@ var net_plot = $.plot("#net-chart", [], {
   },
   yaxis: {
     min: 0,
-    max: 100,
+    max: 500,
     show: true
   },
   xaxis: {
@@ -113,7 +113,7 @@ var disk_plot = $.plot("#disk-chart", [], {
   },
   yaxis: {
     min: 0,
-    max: 100,
+    max: 4096,
     show: true
   },
   xaxis: {
@@ -122,14 +122,16 @@ var disk_plot = $.plot("#disk-chart", [], {
   }
 });
   
-function vessel(interval, caption, plot, point){
+function vessel(interval, caption, plot, point,device_id){
 
    this.interval = interval;
     
    this.realtime = 'on';
+   this.deviceID = device_id;
    this.caption = caption;
    this.total = 60;
    this.plot = plot;
+   this.time = new Date();
    this.queue0 = [];
    this.queue1 = [];
    this.point = point;
@@ -141,28 +143,47 @@ function vessel(interval, caption, plot, point){
       this.queue1[i] = -1;
    }
 
+   this.refresh = function(id){
+      this.time = new Date();
+      this.queue0 = [];
+      this.queue1 = [];
+      this.deviceID = id;
+      for(var i=0; i<60; i++) {
+        this.queue0[i] = -1;
+        this.queue1[i] = -1;
+      }
+   }  
+   
    
    var self = this;
-
+    
    this.fetch = function(res){
-
+   alert(res)
+      if (res) {
+      self.time = new Date(self.time.getTime() + 1000)
       if (self.caption == 'cpu')
-        var l = self.queue0.push(res.LoadPercentage);
+      {    
+        self.queue0.push.apply(self.queue0, res.LoadPercentage);
+      }
  
       if (self.caption == 'mem')
-        var l = self.queue0.push(res.Capacity);
-
+      {
+        self.queue0.push.apply(self.queue0, res.Free);
+      }
+      
       if (self.caption == 'net')
-      {        
-        self.queue0.push(res.UpLoad);
-        var l = self.queue1.push(res.DownLoad);
+      { 
+        
+        self.queue0.push.apply(self.queue0, res.UpLoad);
+        self.queue1.push.apply(self.queue1, res.DownLoad);
       }
       if (self.caption == 'disk')
       {
-        self.queue0.push(res.Read);
-        var l = self.queue1.push(res.Write);
+        self.queue0.push.apply(self.queue0, res.Read);
+        self.queue1.push.apply(self.queue1, res.Write);
       }
-
+      var l = self.queue0.length
+      
       if(l > self.total) {
         self.queue0.shift();
         if(self.double_line)
@@ -171,7 +192,6 @@ function vessel(interval, caption, plot, point){
 
       if(self.double_line)
       {
-
         self.point[0].data = [];
         self.point[1].data = [];
         for(var i=0; i<self.total; i++)
@@ -179,7 +199,6 @@ function vessel(interval, caption, plot, point){
           self.point[0].data.push([i,self.queue0[i]]);
           self.point[1].data.push([i,self.queue1[i]]);
         }
-       
       }
       else
       {
@@ -187,12 +206,12 @@ function vessel(interval, caption, plot, point){
         for(var i=0; i<self.total; i++)
           d.push([i,self.queue0[i]]);
           self.point = [d];
-      }
+      }  
     self.plot.setData(self.point);
     self.plot.draw();
     self.plot.setupGrid();
    }
-       
+  }
 }
 
 
@@ -201,19 +220,45 @@ function vessel(interval, caption, plot, point){
  
 $(function(){
    function update(v){
-    _ajax('GET', '/VirtualMachineUpdate/', {type:v.caption}, v.fetch);
-    if (v.realtime === "on") setTimeout(update, v.interval,v);
+    _ajax('GET', '/VirtualMachineUpdate/', {DeviceType:v.caption,Time:v.time.getTime()/1000,DeviceId:v.deviceID}, v.fetch);
+    if (v && v.realtime === "on") setTimeout(update, v.interval,v);
   } 
-
-  var mem = new vessel(500, 'mem', mem_plot, null); 
-  var cpu = new vessel(500, 'cpu', cpu_plot, null);
-  var net = new vessel(1000, 'net', net_plot, NetDatasets); 
-  var disk = new vessel(1000, 'disk', disk_plot, DiskDatasets);
+  
+  var mem = new vessel(1000, 'mem', mem_plot, null,$("#device_mem li").data("toggle")); 
+  var cpu = new vessel(1000, 'cpu', cpu_plot, null,$("#device_cpu li").data("toggle"));
+  var net = new vessel(1000, 'net', net_plot, NetDatasets,$("#device_net li").data("toggle")); 
+  var disk = new vessel(1000, 'disk', disk_plot, DiskDatasets,$("#device_disk li").data("toggle"));
   
   if (cpu.realtime === "on") update(cpu);
   if (mem.realtime === "on") update(mem);
   if (net.realtime === "on") update(net);
   if (disk.realtime === "on") update(disk);
+  
+ $("#device_cpu li").click(function () {
+      if(cpu.deviceID != $(this).data("toggle"))
+      {
+        cpu.refresh($(this).data("toggle"))
+      }
+   });  
+  $("#device_mem li").click(function () {
+     if(mem.deviceID != $(this).data("toggle"))
+     {
+        mem.refresh($(this).data("toggle"))
+     }
+  }); 
+  $("#device_disk li").click(function () {
+    if(disk.deviceID != $(this).data("toggle"))
+    {
+      
+      disk.refresh($(this).data("toggle"))
+    }
+  }); 
+  $("#device_net li").click(function () {
+      if(net.deviceID != $(this).data("toggle"))
+      {
+        net.refresh($(this).data("toggle"))
+      }
+   }); 
   
  //REALTIME TOGGLE
  $("#cpu_realtime .btn").click(function () {
@@ -223,7 +268,7 @@ $(function(){
         update(cpu);
      }
    }
-   else {
+   else { 
      cpu.realtime = "off";
    }  
  });

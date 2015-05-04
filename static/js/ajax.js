@@ -9,5 +9,5 @@ function _ajax(method, url, data, callback) {
         
         return callback && callback(null, r);
         
-    }).fail(function(r){alert("faile")})
+    }).fail(function(r){alert('fail')})
 }

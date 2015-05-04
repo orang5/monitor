@@ -38,7 +38,7 @@ class _connection(object):
     def channel(self):
         global engine
         if self.connection is None:
-            logging.info('open connection if queue')
+            logging.info('open connection of queue')
             self.connection = engine.connect()
             
         return self.connection.channel()
@@ -64,47 +64,6 @@ class _MqCtx(threading.local):
         self.connection = None
         
 _mq_ctx = _MqCtx()
-   
-'''    
-class Queue(object):
-    def __init__(self, qn, rk):
-        global _mq_ctx
-        if not _mq_ctx.isinit():
-            _mq_ctx.init()        
-        channel = _mq_ctx.connection.channel()
-        channel.queue_declare(queue=qn,durable=True)
-        channel.exchange_declare(exchange='direct_logs', type='direct')
-        channel.queue_bind(exchange='direct_logs',
-                           queue=qn,
-                           routing_key=rk)
-        self.channel = channel
-        self.qn = qn
-        self.rk =rk
-        
-    def send(self,msg):
-        self.channel.basic_publish(exchange='direct_logs',
-                              routing_key=self.rk,
-                              body=msg)
-        
-        logging.info(' [p] %r:%r' % (self.rk,msg))
-        print ' [p] %r:%r' % (self.rk,msg)
-        
-    def receive(self):
-        logging.info('Waiting for logs.')
-        
-        def callback(ch, method, properties, body):
-            'saver'
-            logging.info(" [x] %r:%r" % (method.routing_key, body,))
-            print " [x] %r:%r" % (method.routing_key, body,)
-            ch.basic_ack(delivery_tag = method.delivery_tag)
-        
-        self.channel.basic_consume(callback, queue=self.qn,)    
-        self.channel.start_consuming()
-        
-    def __del__(self):
-        if _mq_ctx:
-            _mq_ctx.cleanup()
-'''
 
 class Queue(object):
     def __init__(self, qn, rk):
@@ -131,7 +90,7 @@ def send(msg,queue):
                           body=msg)
     
     logging.info(' [p] %r:%r' % (queue.rk,msg))
-    print ' [p] %r:%r' % (queue.rk,msg)
+    #print ' [p] %r:%r' % (queue.rk,msg)
     
     
 def receive(queue,callback):
@@ -145,6 +104,7 @@ def receive(queue,callback):
 if __name__=='__main__':
     from WindowsWatcher import WinWatcher
     import json
+    logging.basicConfig(level=logging.INFO)
     create_engine()
     agent = WinWatcher()
     

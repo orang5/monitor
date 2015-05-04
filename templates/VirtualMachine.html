@@ -33,12 +33,20 @@
                       <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
                       <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
                     </div>
+                    <div class="btn-group" id="device_mem">
+                      <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+                      <ul class="dropdown-menu pull-right" role="menu">
+                        {% for item in deviece.MEMORY %}
+                        <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
                   </div>
                 </div>
                 <div class="box-body">
                   <div id="mem-chart" style="height: 300px;"></div>
                 </div><!-- /.box-body-->
-                                <div class="box-footer">
+                <div class="box-footer">
                   <div class="row">
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
@@ -83,6 +91,14 @@
                     <div class="btn-group" id="net_realtime" data-toggle="btn-toggle">
                       <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
                       <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                    </div>
+                    <div class="btn-group" id="device_net">
+                      <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+                      <ul class="dropdown-menu pull-right" role="menu">
+                        {% for item in deviece.NETWORK %}
+                        <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                        {% endfor %}
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -138,7 +154,16 @@
                       <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
                       <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
                     </div>
+                    <div class="btn-group" id="device_cpu">
+                      <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+                      <ul class="dropdown-menu pull-right" role="menu">
+                        {% for item in deviece.CPU %}
+                        <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
                   </div>
+                  
                 </div>
                 <div class="box-body">
                   <div id="cpu-chart" style="height: 300px;"></div>
@@ -186,6 +211,14 @@
                     <div class="btn-group" id="disk_realtime" data-toggle="btn-toggle">
                       <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
                       <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                    </div>
+                    <div class="btn-group" id="device_disk">
+                      <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+                      <ul class="dropdown-menu pull-right" role="menu">
+                        {% for item in deviece.DISK %}
+                        <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                        {% endfor %}
+                      </ul>
                     </div>
                   </div>
                 </div>

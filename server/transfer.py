@@ -38,7 +38,7 @@ class _connection(object):
     def channel(self):
         global engine
         if self.connection is None:
-            logging.info('open connection if queue')
+            logging.info('open connection of queue')
             self.connection = engine.connect()
             
         return self.connection.channel()
