@@ -21,8 +21,8 @@ class DeviceModel(Document):
 
 
 if __name__ == '__main__':
-    MoniterModel.objects.delete()
-    DeviceModel.objects.delete()
+    #MoniterModel.objects.delete()
+    #DeviceModel.objects.delete()
     #datasets = MoniterModel.objects(UUID = 'a41f724e5fb8')
     #for e in datasets:
         #print e.TIME, e.KEY, e.UUID, e.DEVICEID
@@ -39,10 +39,11 @@ if __name__ == '__main__':
 
     #device_id = 'Physical Memory 0'
     ##sec = float(reqest.GET.get('Time',time.time()))
-    #t = datetime.strptime('2015-05-01 21:48:02', '%Y-%m-%d %H:%M:%S')
-    #t1 = t.timetuple()
-    #t2 = time.mktime(t1)
-    #t3 = datetime.fromtimestamp(t2)
+    t = datetime.strptime('2015-05-04 11:04:35', '%Y-%m-%d %H:%M:%S')
+    t1 = t.timetuple()
+    t2 = time.mktime(t1)
+    t3 = datetime.fromtimestamp(t2)
+    print t2
     
     #datasets = MoniterModel.objects(UUID = vm_id,DEVICEID = device_id,TIME=t3)
     #info = []

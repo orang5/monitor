@@ -31,9 +31,9 @@ def virtualMachine_update(request):
     device_id = request.GET.get('DeviceId')
     
     device_type = request.GET.get('DeviceType')
-    #t = datetime.strptime('2015-05-02 21:12:12', '%Y-%m-%d %H:%M:%S')
-
-    date_obj = datetime.fromtimestamp(float(request.GET.get('Time',time.time())))
+    #t = datetime.strptime('2015-05-04 11:04:35', '%Y-%m-%d %H:%M:%S')
+    timestamp = request.GET.get('Time')
+    date_obj = datetime.fromtimestamp(int(timestamp)/1000)
     datasets = MoniterModel.objects(UUID = vm_id,DEVICEID = device_id,TIME=date_obj)
     info = []
     if device_type == 'cpu':
@@ -55,7 +55,8 @@ def virtualMachine_update(request):
             info_dict = json.loads(data.VALUE)
             if data.KEY == 'mem_Free':
                 Free.append(info_dict['volume'])
-        info = dict(Free=Free)     
+        if Free:
+            info = dict(isempty=False,Free=Free)     
           
     if device_type == 'net':
         UpLoad = []
@@ -67,7 +68,7 @@ def virtualMachine_update(request):
             if data.KEY == 'net_bytes_out':
                 DownLoad.append(info_dict['volume'])
         if UpLoad:
-            info = dict(UpLoad=UpLoad, DownLoad=DownLoad)
+            info = dict(isempty=False,UpLoad=UpLoad, DownLoad=DownLoad)
             
     if device_type == 'disk':
         #info = dict(Read=[random.randint(0,100)], Write=[random.randint(0,100)])
@@ -80,7 +81,7 @@ def virtualMachine_update(request):
             if data.KEY == 'io_stat_write':
                 Write.append(info_dict['volume'])
         if Read:
-            info = dict(Read=Read, Write=Write)
+            info = dict(isempty=False,Read=Read, Write=Write)
         
     return HttpResponse(json.dumps(info))
 

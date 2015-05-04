@@ -113,7 +113,7 @@ var disk_plot = $.plot("#disk-chart", [], {
   },
   yaxis: {
     min: 0,
-    max: 4096,
+    max: 1000,
     show: true
   },
   xaxis: {
@@ -131,7 +131,7 @@ function vessel(interval, caption, plot, point,device_id){
    this.caption = caption;
    this.total = 60;
    this.plot = plot;
-   this.time = new Date();
+   this.time = new Date(new Date().getTime() - 3*1000);
    this.queue0 = [];
    this.queue1 = [];
    this.point = point;
@@ -144,7 +144,7 @@ function vessel(interval, caption, plot, point,device_id){
    }
 
    this.refresh = function(id){
-      this.time = new Date();
+      this.time = new Date(new Date().getTime() - 3*1000);
       this.queue0 = [];
       this.queue1 = [];
       this.deviceID = id;
@@ -158,7 +158,6 @@ function vessel(interval, caption, plot, point,device_id){
    var self = this;
     
    this.fetch = function(res){
-   alert(res)
       if (res) {
       self.time = new Date(self.time.getTime() + 1000)
       if (self.caption == 'cpu')
@@ -220,7 +219,7 @@ function vessel(interval, caption, plot, point,device_id){
  
 $(function(){
    function update(v){
-    _ajax('GET', '/VirtualMachineUpdate/', {DeviceType:v.caption,Time:v.time.getTime()/1000,DeviceId:v.deviceID}, v.fetch);
+    _ajax('GET', '/VirtualMachineUpdate/', {DeviceType:v.caption,Time:v.time.getTime(),DeviceId:v.deviceID}, v.fetch);
     if (v && v.realtime === "on") setTimeout(update, v.interval,v);
   } 
   
