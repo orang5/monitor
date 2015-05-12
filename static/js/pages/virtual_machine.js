@@ -161,25 +161,41 @@ function vessel(interval, caption, plot, point,device_id){
       if (res) {
       self.time = new Date(self.time.getTime() + 1000)
       if (self.caption == 'cpu')
-      {    
-        self.queue0.push.apply(self.queue0, res.LoadPercentage);
+      {       
+        self.queue0.push.apply(self.queue0, [res.cpu_LoadPercentage.volume]);
+        $("#cpu_speed").html(res.cpu_CurrentClockSpeed.volume+res.cpu_CurrentClockSpeed.unit)
+        $("#cpu_Availability").html(res.cpu_LoadPercentage.volume+res.cpu_LoadPercentage.unit)
+        $("#cpu_NumberOfCores").html(res.cpu_NumberOfCores)
+        $("#cpu_NumberOfLogicalProcessors").html(res.cpu_NumberOfLogicalProcessors)
+        $("#cpu_MaxClockSpeed").html(res.cpu_MaxClockSpeed.volume+res.cpu_MaxClockSpeed.unit)
       }
  
       if (self.caption == 'mem')
       {
-        self.queue0.push.apply(self.queue0, res.Free);
+        self.queue0.push.apply(self.queue0, [res.mem_Free.volume]);
+        $("#mem_Capacity").html(res.mem_Capacity.volume+res.mem_Capacity.unit)
+        $("#mem_SwapTotal").html(res.mem_SwapTotal.volume+res.mem_SwapTotal.unit)
+        $("#mem_SwapFree").html(res.mem_SwapFree.volume+res.mem_SwapFree.unit)
+        $("#mem_Speed").html(res.mem_Speed.volume+res.mem_Speed.unit)
       }
       
       if (self.caption == 'net')
       { 
         
-        self.queue0.push.apply(self.queue0, res.UpLoad);
-        self.queue1.push.apply(self.queue1, res.DownLoad);
+        self.queue0.push.apply(self.queue0, [res.net_bytes_out.volume]);
+        self.queue1.push.apply(self.queue1, [res.net_bytes_in.volume]);
+        $("#net_MACAddress").html(res.net_MACAddress)
+        $("#net_DefaultIPGateway").html(res.net_DefaultIPGateway)
+        $("#net_ip_v4").html(res.net_ip_address[0])
+        $("#net_ip_v6").html(res.net_ip_address[1])
       }
       if (self.caption == 'disk')
       {
-        self.queue0.push.apply(self.queue0, res.Read);
-        self.queue1.push.apply(self.queue1, res.Write);
+        self.queue0.push.apply(self.queue0, [res.io_stat_read.volume]);
+        self.queue1.push.apply(self.queue1, [res.io_stat_write.volume]);
+        $("#disk_FreeSpace").html(res.disk_FreeSpace.volume+res.disk_FreeSpace.unit)
+        $("#disk_capacity").html(res.disk_capacity.volume+res.disk_capacity.unit)
+        $("#fstype").html(res.fstype)
       }
       var l = self.queue0.length
       
@@ -218,8 +234,9 @@ function vessel(interval, caption, plot, point,device_id){
  
  
 $(function(){
+   var uuid = window.location.search;
    function update(v){
-    _ajax('GET', '/VirtualMachineUpdate/', {DeviceType:v.caption,Time:v.time.getTime(),DeviceId:v.deviceID}, v.fetch);
+    _ajax('GET', '/VirtualMachineUpdate/'+uuid, {Time:v.time.getTime(),DeviceId:v.deviceID}, v.fetch);
     if (v && v.realtime === "on") setTimeout(update, v.interval,v);
   } 
   
