@@ -18,6 +18,8 @@ class DeviceModel(Document):
     Network_Adapter = StringField(max_length=255, min_length=1)
     DISK = StringField(max_length=255, min_length=1)
     
+class platform(Document):
+    VMLIST = StringField()
 
 
 if __name__ == '__main__':
@@ -34,28 +36,25 @@ if __name__ == '__main__':
     #for e in DeviceModel.objects().all():
         #print e.UUID, e.CPU, e.MEMORY, e.Network_Adapter, e.DISK
     
-    #vm_id = 'a41f724e5fb8'
+    vm_id = 'a41f724e5fb8'
     #device_type = 'mem'
 
-    #device_id = 'Physical Memory 0'
+    device_id = 'Physical Memory 0'
     ##sec = float(reqest.GET.get('Time',time.time()))
     t = datetime.strptime('2015-05-04 11:04:35', '%Y-%m-%d %H:%M:%S')
     t1 = t.timetuple()
     t2 = time.mktime(t1)
     t3 = datetime.fromtimestamp(t2)
-    print t2
+    #print t2
     
-    #datasets = MoniterModel.objects(UUID = vm_id,DEVICEID = device_id,TIME=t3)
-    #info = []
-    #Free = []
-    #for data in datasets:
-        #print data.DEVICEID
-        #info_dict = json.loads(data.VALUE)
-        #if data.KEY == 'mem_Free':
-            #Free.append(info_dict['volume'])
-    #if Free:
-        #info = dict(Free=Free) 
-        
-        
-    #print info   
+    datasets = MoniterModel.objects(UUID = vm_id,DEVICEID = device_id,TIME=t3)
+    info = {}
+    for data in datasets:
+        info_dict = json.loads(data.VALUE)
+        if isinstance(info_dict, dict):
+            info[data.KEY] = [info_dict['volume']]
+        else:
+            info[data.KEY] = data.VALUE  
+            
+    print info
     

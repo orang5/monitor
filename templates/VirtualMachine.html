@@ -50,31 +50,31 @@
                   <div class="row">
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
-                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 90%</span>
+                        <span id='mem_Capacity' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Received</span>
+                        <span class="description-text">Capacity</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
-                        <span class="description-percentage text-yellow"><i class="fa fa-caret-up"></i> 0%</span>
+                        <span id='mem_SwapTotal' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Errors</span>
+                        <span class="description-text">SwapTotal</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
-                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 9%</span>
+                        <span id = 'mem_SwapFree' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Discarded</span>
+                        <span class="description-text">SwapFree</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block">
                       <h5 class="description-header"></h5>
-                        <span class="description-percentage text-red"><i class="fa fa-caret-up"></i> 1%</span>
+                        <span id='mem_Speed' class="description-percentage text-red"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">Unknown</span>
+                        <span class="description-text">Speed</span>
                       </div><!-- /.description-block -->
                     </div>
                   </div><!-- /.row -->
@@ -109,31 +109,31 @@
                   <div class="row">
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
-                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 90%</span>
+                        <span id='net_MACAddress' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Received</span>
+                        <span class="description-text">MACAddress</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
-                        <span class="description-percentage text-yellow"><i class="fa fa-caret-up"></i> 0%</span>
+                        <span id='net_DefaultIPGateway' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Errors</span>
+                        <span class="description-text">DefaultIPGateway</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
-                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 9%</span>
+                        <span id='net_ip_v4' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Discarded</span>
+                        <span class="description-text">IPv4</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block">
                       <h5 class="description-header"></h5>
-                        <span class="description-percentage text-red"><i class="fa fa-caret-up"></i> 1%</span>
+                        <span id='net_ip_v6' class="description-percentage text-red"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">Unknown</span>
+                        <span class="description-text">IPv6</span>
                       </div><!-- /.description-block -->
                     </div>
                   </div><!-- /.row -->
@@ -144,7 +144,7 @@
 
             <div class="col-md-6">
               <!-- cpu chart -->
-              <div class="box box-primary">
+              <div id='cpu_chart' class="box box-primary">
                 <div class="box-header with-border">
                   <i class="fa fa-bar-chart-o"></i>
                   <h3 class="box-title">Cpu availability</h3>
@@ -171,32 +171,34 @@
                 
                  <div class="box-footer">
                   <div class="row">
-                    <div class="col-sm-4 col-xs-6">
-                      <div class="description-block border-right">
-                      <span class="description-text">Availability: </span>
-                      <span class="description-percentage text-yellow">7%</span>
-                      </div><!-- /.description-block -->
-                      
-                      <div class="description-block border-right">
-                      <span class="description-text"> Speed: </span>
-                      <span class="description-percentage text-yellow">3.02GHZ</span>
-                      </div><!-- /.description-block -->
-
-                    </div><!-- /.col -->
-                    <div class="col-sm-4 col-xs-6">
-                      <div class="description-block border-right">
-                        <span class="description-percentage text-yellow"><i class="fa fa-caret-up"></i> 0%</span>
+                    <div class="col-sm-3 col-xs-6">
+                       <div class="description-block border-right">
+                        <span id = 'cpu_Availability' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Errors</span>
+                        <span class="description-text">Availability</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
-                    <div class="col-sm-4 col-xs-6">
-                      <div class="description-block border-right">
-                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 9%</span>
+                    <div class="col-sm-3 col-xs-6">
+                       <div class="description-block border-right">
+                        <span id='cpu_NumberOfLogicalProcessors' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Discarded</span>
+                        <span class="description-text">Cores</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                       <div class="description-block border-right">
+                        <span id='cpu_speed' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">Speed</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->
+                    <div class="col-sm-3 col-xs-6">
+                       <div class="description-block border-right">
+                        <span id='cpu_MaxClockSpeed' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
+                        <h5 class="description-header"></h5>
+                        <span class="description-text">Max Speed</span>
+                      </div><!-- /.description-block -->
+                    </div><!-- /.col -->                                    
                   </div><!-- /.row -->
                 </div><!-- /.box-footer -->
               </div><!-- /.box -->
@@ -227,35 +229,28 @@
                 </div><!-- /.box-body-->
                                 <div class="box-footer">
                   <div class="row">
-                    <div class="col-sm-3 col-xs-6">
+                    <div class="col-sm-4 col-xs-6">
                       <div class="description-block border-right">
-                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 90%</span>
+                        <span id='disk_FreeSpace' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Received</span>
+                        <span class="description-text">FreeSpace</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
-                    <div class="col-sm-3 col-xs-6">
+                    <div class="col-sm-4 col-xs-6">
                       <div class="description-block border-right">
-                        <span class="description-percentage text-yellow"><i class="fa fa-caret-up"></i> 0%</span>
+                        <span id='disk_capacity' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Errors</span>
+                        <span class="description-text">Capacity</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
-                    <div class="col-sm-3 col-xs-6">
+                    <div class="col-sm-4 col-xs-6">
                       <div class="description-block border-right">
-                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 9%</span>
+                        <span id='fstype' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Discarded</span>
+                        <span class="description-text">fstype</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
-                    <div class="col-sm-3 col-xs-6">
-                      <div class="description-block">
-                      <h5 class="description-header"></h5>
-                        <span class="description-percentage text-red"><i class="fa fa-caret-up"></i> 1%</span>
-                        <h5 class="description-header"></h5>
-                        <span class="description-text">Unknown</span>
-                      </div><!-- /.description-block -->
-                    </div>
+                    
                   </div><!-- /.row -->
                 </div><!-- /.box-footer -->
               </div><!-- /.box -->

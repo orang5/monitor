@@ -113,30 +113,18 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-              <li class="treeview">
-                <a href="#">
-                  <i class="fa fa-laptop"></i>
-                  <span>platform1</span>
-                  <i class="fa fa-angle-left pull-right"></i>
-                </a>
-               <ul class="treeview-menu">
-                <li><a href="/VirtualMachine/"><i class="fa fa-circle-o"></i> VM1</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> VM2</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> VM3</a></li>
-              </ul>
-               </li>
-              <li class="treeview">
-                <a href="#">
-                  <i class="fa fa-laptop"></i>
-                  <span>platform2</span>
-                  <i class="fa fa-angle-left pull-right"></i>
-                </a>
-               <ul class="treeview-menu">
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> VM1</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> VM2</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> VM3</a></li>
-              </ul>
-               </li>
+                <li class="treeview">
+                  <a href="#">
+                    <i class="fa fa-laptop"></i>
+                    <span>platform1</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                   {% for id in vmList %}
+                   <li><a href="/VirtualMachine/?uuid={{ id }}"><i class="fa fa-circle-o"></i> VM1</a></li>
+                   {% endfor %}
+                  </ul>
+                 </li>
                </ul>
             </li>
            
