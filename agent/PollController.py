@@ -1,12 +1,15 @@
 from WindowsWatcher import WinWatcher
 from LinuxWatcher import LinuxWatcher
 from transfer import create_engine, Queue, send
-import platform, threading, time, win_watcher, json
+# import platform, threading, time, win_watcher, json
+import platform, threading, time, json
 from datetime import datetime
 import uuid, logging
 
 node = uuid.getnode()
 machine_uuid = uuid.UUID(int = node).hex[-12:]
+# print machine_uuid
+# raise
 
 agent = None
 
@@ -15,8 +18,8 @@ if platform.system()=='Windows':
 elif platform.system()=='Linux':
     agent = LinuxWatcher()
 else:
-    raise    
-    
+    raise
+
 def moniter_model(func):
     func.__document__ = 'MoniterModel'
     return func
@@ -24,35 +27,35 @@ def moniter_model(func):
 def device_model(func):
     func.__document__ = 'DeviceModel'
     return func
-    
-@moniter_model    
+
+@moniter_model
 def cpu_use():
     return agent.cpu_use()
 
-@moniter_model 
+@moniter_model
 def mem_use():
     return agent.mem_use()
 
-@moniter_model 
+@moniter_model
 def get_fs_info():
     return agent.get_fs_info()
 
-@moniter_model 
+@moniter_model
 def network():
     return agent.network()
 
 @device_model
 def device():
     return agent.device()
-    
+
 class Sender(threading.Thread):
-    def __init__(self,func, interval):     
-        super(Sender, self).__init__()           
+    def __init__(self,func, interval):
+        super(Sender, self).__init__()
         self.interval = interval
         self.func = func
         #self.queue = Queue('test', 'test')
-    
-        
+
+
     def run(self):
         global machine_uuid
         queue_test = Queue('test', 'test')
@@ -63,19 +66,19 @@ class Sender(threading.Thread):
             send(json.dumps(msg),queue_test)
             #print timestamp
             time.sleep(self.interval)
-            
-            
+
+
 def start_all(funcs, intervals):
     for f,t in zip(funcs,intervals):
         t = Sender(f, t)
         t.start()
-    
 
 
-        
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    create_engine()
+    create_engine('192.168.133.1')
     funcs = [cpu_use, mem_use,network,get_fs_info,device]
-    intervals = [0,1,0,1,3600]    
+    intervals = [0,1,0,1,3600]
     start_all(funcs,intervals)
