@@ -64,7 +64,7 @@
                       Email: Adminstrator@gmail.com
                     </p>
                   </li>
-                  
+
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-right">
@@ -81,8 +81,8 @@
           </div>
 
         </nav>
-        
-        
+
+
       </header>
       <!-- Left side column. contains the logo and sidebar -->
       <aside class="main-sidebar">
@@ -102,10 +102,10 @@
           <ul class="sidebar-menu">
             <li class>
               <a href="/">
-                <i class="fa fa-dashboard"></i> <span>DashBoard</span> 
+                <i class="fa fa-dashboard"></i> <span>DashBoard</span>
               </a>
             </li>
-            
+
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-pie-chart"></i>
@@ -120,14 +120,16 @@
                     <i class="fa fa-angle-left pull-right"></i>
                   </a>
                   <ul class="treeview-menu">
-                   {% for id in vmList %}
+                    <li><a href="/VirtualMachine/?uuid=30f9eda56de6"><i class="fa fa-circle-o"></i> viktor-laptop</a></li>
+                    <li><a href="/VirtualMachine/?uuid=3c77e6dabe06"><i class="fa fa-circle-o"></i> Windows 7 x64</a></li>
+                   <!-- {% for id in vmList %}
                    <li><a href="/VirtualMachine/?uuid={{ id }}"><i class="fa fa-circle-o"></i> VM1</a></li>
-                   {% endfor %}
+                   {% endfor %} -->
                   </ul>
                  </li>
                </ul>
             </li>
-           
+
 
             <li class="treeview">
               <a href="#">
@@ -140,7 +142,7 @@
                 <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
               </ul>
             </li>
-            
+
             <li class="header">LABELS</li>
             <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
             <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
@@ -184,6 +186,6 @@
     <script src="{% static "js/demo.js" %}"  type="text/javascript"></script>
     <script src="{% static "js/ajax.js" %}">  </script>
     {% block script %}
-    {% endblock %}    
+    {% endblock %}
   </body>
 </html>

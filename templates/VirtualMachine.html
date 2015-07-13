@@ -7,8 +7,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Charts
-            <small>preview sample</small>
+            基本性能图表
+            <small>演示样例</small>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -26,9 +26,9 @@
               <div class="box box-primary">
                 <div class="box-header with-border">
                   <i class="fa fa-bar-chart-o"></i>
-                  <h3 class="box-title">Memory usage</h3>
+                  <h3 class="box-title">内存使用</h3>
                   <div class="box-tools pull-right">
-                    Real time
+                    实时
                     <div class="btn-group" id="mem_realtime" data-toggle="btn-toggle">
                       <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
                       <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
@@ -52,21 +52,21 @@
                       <div class="description-block border-right">
                         <span id='mem_Capacity' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">Capacity</span>
+                        <span class="description-text">内存总量</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
                         <span id='mem_SwapTotal' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">SwapTotal</span>
+                        <span class="description-text">已缓存</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
                         <span id = 'mem_SwapFree' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">SwapFree</span>
+                        <span class="description-text">可用</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
@@ -74,7 +74,7 @@
                       <h5 class="description-header"></h5>
                         <span id='mem_Speed' class="description-percentage text-red"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">Speed</span>
+                        <span class="description-text">内存频率</span>
                       </div><!-- /.description-block -->
                     </div>
                   </div><!-- /.row -->
@@ -85,9 +85,9 @@
               <div class="box box-primary">
                 <div class="box-header with-border">
                   <i class="fa fa-bar-chart-o"></i>
-                  <h3 class="box-title">Network traffic</h3>
+                  <h3 class="box-title">网络流量</h3>
                   <div class="box-tools pull-right">
-                    Real time
+                    实时
                     <div class="btn-group" id="net_realtime" data-toggle="btn-toggle">
                       <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
                       <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
@@ -111,21 +111,21 @@
                       <div class="description-block border-right">
                         <span id='net_MACAddress' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">MACAddress</span>
+                        <span class="description-text">MAC地址</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
                         <span id='net_DefaultIPGateway' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">DefaultIPGateway</span>
+                        <span class="description-text">网关</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                       <div class="description-block border-right">
                         <span id='net_ip_v4' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">IPv4</span>
+                        <span class="description-text">IP地址</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
@@ -133,7 +133,7 @@
                       <h5 class="description-header"></h5>
                         <span id='net_ip_v6' class="description-percentage text-red"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">IPv6</span>
+                        <span class="description-text">IPv6地址</span>
                       </div><!-- /.description-block -->
                     </div>
                   </div><!-- /.row -->
@@ -147,9 +147,9 @@
               <div id='cpu_chart' class="box box-primary">
                 <div class="box-header with-border">
                   <i class="fa fa-bar-chart-o"></i>
-                  <h3 class="box-title">Cpu availability</h3>
+                  <h3 class="box-title">CPU利用率</h3>
                   <div class="box-tools pull-right">
-                    Real time
+                    实时
                     <div class="btn-group" id="cpu_realtime" data-toggle="btn-toggle">
                       <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
                       <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
@@ -175,28 +175,28 @@
                        <div class="description-block border-right">
                         <span id = 'cpu_Availability' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">Availability</span>
+                        <span class="description-text">利用率</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                        <div class="description-block border-right">
                         <span id='cpu_NumberOfLogicalProcessors' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">Cores</span>
+                        <span class="description-text">核心</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                        <div class="description-block border-right">
                         <span id='cpu_speed' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">Speed</span>
+                        <span class="description-text">速度</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-3 col-xs-6">
                        <div class="description-block border-right">
                         <span id='cpu_MaxClockSpeed' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">Max Speed</span>
+                        <span class="description-text">最大速度</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->                                    
                   </div><!-- /.row -->
@@ -207,9 +207,9 @@
               <div class="box box-primary">
                 <div class="box-header with-border">
                   <i class="fa fa-bar-chart-o"></i>
-                  <h3 class="box-title">Disk </h3>
+                  <h3 class="box-title">磁盘</h3>
                   <div class="box-tools pull-right">
-                    Real time
+                    实时
                     <div class="btn-group" id="disk_realtime" data-toggle="btn-toggle">
                       <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
                       <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
@@ -233,21 +233,21 @@
                       <div class="description-block border-right">
                         <span id='disk_FreeSpace' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">FreeSpace</span>
+                        <span class="description-text">可用空间</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-4 col-xs-6">
                       <div class="description-block border-right">
                         <span id='disk_capacity' class="description-percentage text-yellow"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">Capacity</span>
+                        <span class="description-text">磁盘容量</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     <div class="col-sm-4 col-xs-6">
                       <div class="description-block border-right">
                         <span id='fstype' class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
                         <h5 class="description-header"></h5>
-                        <span class="description-text">fstype</span>
+                        <span class="description-text">文件系统</span>
                       </div><!-- /.description-block -->
                     </div><!-- /.col -->
                     

@@ -1,0 +1,16 @@
+{
+  "name" : "testmq",
+  "description" : "test mq plugin",
+  "type" : "platform",
+  "cmd_list" : {
+    "start" : "python testmq.py"
+  },
+  "metrics" : [
+    {
+      "name" : "test.username",
+      "value_type" : "config",
+      "interval" : 30,
+      "cmd" : "echo %USERNAME%"
+    }
+  ]
+}
