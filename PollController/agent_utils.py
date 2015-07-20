@@ -76,3 +76,5 @@ def _test():
     print to_dict(a)
     print to_json(a)
     print from_json(to_json(a))
+
+if __name__ == "__main__" : _test()
