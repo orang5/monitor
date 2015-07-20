@@ -1,29 +1,28 @@
-{% extends '__base__.html' %}
+﻿{% extends '__base__.html' %}
 {% block content-wrapper %}
 {% load staticfiles %}
-      <!-- Content Wrapper. Contains page content -->
+ <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Dashboard
+            仪表板
             <small>Version 1.0</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Dashboard</li>
+            <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+            <li class="active">仪表板</li>
           </ol>
         </section>
 
         <!-- Main content -->
         <section class="content">          
-        
 
           <div class="row">
             <div class="col-md-12">
               <div class="box">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Save Chart</h3>
+                  <h3 class="box-title">系统概况</h3>
                   <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     <div class="btn-group">
@@ -43,7 +42,7 @@
                   <div class="row">
                     <div class="col-md-8">
                       <p class="text-center">
-                        <strong>NetWork: 1 Jan, 2014 - 30 Jul, 2014</strong>
+                        <strong>系统负载</strong>
                       </p>
                       <div class="chart">
                         <!-- Sales Chart Canvas -->
@@ -51,33 +50,33 @@
                       </div><!-- /.chart-responsive -->
                     
                     </div><!-- /.col --> 
-                                        <div class="col-md-4">
+                     <div class="col-md-4">
                       <p class="text-center">
-                        <strong>Statistics</strong>
+                        <strong>统计信息</strong>
                       </p>
                       <div class="progress-group">
-                        <span class="progress-text">Upload</span>
+                        <span class="progress-text">存储</span>
                         <span class="progress-number"><b>60</b>/100</span>
                         <div class="progress sm">
                           <div class="progress-bar progress-bar-aqua" style="width: 60%"></div>
                         </div>
                       </div><!-- /.progress-group -->
                       <div class="progress-group">
-                        <span class="progress-text">Download</span>
+                        <span class="progress-text">输入输出</span>
                         <span class="progress-number"><b>80</b>/100</span>
                         <div class="progress sm">
                           <div class="progress-bar progress-bar-red" style="width: 80%"></div>
                         </div>
                       </div><!-- /.progress-group -->
                       <div class="progress-group">
-                        <span class="progress-text">P2P</span>
+                        <span class="progress-text">计算资源</span>
                         <span class="progress-number"><b>50</b>/100</span>
                         <div class="progress sm">
                           <div class="progress-bar progress-bar-green" style="width: 50%"></div>
                         </div>
                       </div><!-- /.progress-group -->
                       <div class="progress-group">
-                        <span class="progress-text">Http</span>
+                        <span class="progress-text">网络</span>
                         <span class="progress-number"><b>70</b>/100</span>
                         <div class="progress sm">
                           <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
@@ -86,39 +85,11 @@
                     </div><!-- /.col --> 
                   </div><!-- /.row -->
                 </div><!-- ./box-body -->
+                
                 <div class="box-footer">
-                  <div class="row">
-                    <div class="col-sm-3 col-xs-6">
-                      <div class="description-block border-right">
-                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 90%</span>
-                        <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Received</span>
-                      </div><!-- /.description-block -->
-                    </div><!-- /.col -->
-                    <div class="col-sm-3 col-xs-6">
-                      <div class="description-block border-right">
-                        <span class="description-percentage text-yellow"><i class="fa fa-caret-up"></i> 0%</span>
-                        <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Errors</span>
-                      </div><!-- /.description-block -->
-                    </div><!-- /.col -->
-                    <div class="col-sm-3 col-xs-6">
-                      <div class="description-block border-right">
-                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 9%</span>
-                        <h5 class="description-header"></h5>
-                        <span class="description-text">TOTAL Discarded</span>
-                      </div><!-- /.description-block -->
-                    </div><!-- /.col -->
-                    <div class="col-sm-3 col-xs-6">
-                      <div class="description-block">
-                      <h5 class="description-header"></h5>
-                        <span class="description-percentage text-red"><i class="fa fa-caret-up"></i> 1%</span>
-                        <h5 class="description-header"></h5>
-                        <span class="description-text">Unknown</span>
-                      </div><!-- /.description-block -->
-                    </div>
-                  </div><!-- /.row -->
+    
                 </div><!-- /.box-footer -->
+                
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -134,7 +105,7 @@
               <!-- TABLE: LATEST ORDERS -->
               <div class="box box-info">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Availability Summmary</h3>
+                  <h3 class="box-title">虚拟机状态</h3>
                   <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
@@ -145,55 +116,55 @@
                     <table class="table no-margin">
                       <thead>
                         <tr>
-                          <th>ID</th>
-                          <th>Item</th>
-                          <th>Status</th>
-                          <th>Popularity</th>
+                          <th>编号</th>
+                          <th>操作系统</th>
+                          <th>状态</th>
+                          <th>近期状态</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
                           <td><a href="pages/examples/invoice.html">OR9842</a></td>
                           <td>Windows xp</td>
-                          <td><span class="label label-success">RUNNING</span></td>
+                          <td><span class="label label-success">运行</span></td>
                           <td><div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div></td>
                         </tr>
                         
                         <tr>
                           <td><a href="pages/examples/invoice.html">OR1848</a></td>
                           <td>Windows 8</td>
-                          <td><span class="label label-warning">SHUTOFF</span></td>
+                          <td><span class="label label-warning">关闭</span></td>
                           <td><div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div></td>
                         </tr>
                         
                         <tr>
                           <td><a href="pages/examples/invoice.html">OR1849</a></td>
                           <td>Windows 8</td>
-                          <td><span class="label label-success">RUNNING</span></td>
+                          <td><span class="label label-success">运行</span></td>
                           <td><div class="sparkbar" data-color="#00a65a" data-height="20">90,80,-90,70,61,-83,68</div></td>
                         </tr>
                         <tr>
                           <td><a href="pages/examples/invoice.html">OR7429</a></td>
                           <td>Windows 8</td>
-                          <td><span class="label label-warning">PAUSED</span></td>
+                          <td><span class="label label-warning">暂停</span></td>
                           <td><div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div></td>
                         </tr>
                         <tr>
                           <td><a href="pages/examples/invoice.html">OR7429</a></td>
                           <td>Ubuntu 14.10 </td>
-                          <td><span class="label label-danger">BLOCKED</span></td>
+                          <td><span class="label label-danger">休眠</span></td>
                           <td><div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div></td>
                         </tr>
                         <tr>
                           <td><a href="pages/examples/invoice.html">OR7429</a></td>
                           <td>CentOS 7.1 </td>
-                          <td><span class="label label-info">PAUSED</span></td>
+                          <td><span class="label label-info">暂停</span></td>
                           <td><div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div></td>
                         </tr>
                         <tr>
                           <td><a href="pages/examples/invoice.html">OR1848</a></td>
                           <td>Debian 7.0.0</td>
-                          <td><span class="label label-warning">SHUTOFF</span></td>
+                          <td><span class="label label-warning">关闭</span></td>
                           <td><div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div></td>
                         </tr>
                       </tbody>
@@ -201,89 +172,16 @@
                   </div><!-- /.table-responsive -->
                 </div><!-- /.box-body -->
                 <div class="box-footer clearfix">
-                  <a href="javascript::;" class="btn btn-sm btn-info btn-flat pull-left">Place New </a>
-                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">View All </a>
+ 
+                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">查看全部</a>
                 </div><!-- /.box-footer -->
               </div><!-- /.box -->
-              
-                          <!-- TABLE: Recently Alerts -->
-              <div class="box box-info">
-                <div class="box-header with-border">
-                  <h3 class="box-title">Recently Alerts</h3>
-                  <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                  </div>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                  <div class="table-responsive">
-                    <table class="table no-margin">
-                      <thead>
-                        <tr>
-                          <th>Time</th>
-                          <th>Alert Name</th>
-                          <th>Resource Name</th>
-                          <th>Fixed</th>
-                          <th>Ack</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
-                          
-                          <td>Warning</td>
-                          <td>Windows xp</td>
-                          <td>Dealing</td>
-                          <td>...</td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
-                          
-                          <td>info</td>
-                          <td>Windows 8</td>
-                          <td>OK</td>
-                          <td>...</td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
-                          
-                          <td>urgent</td>
-                          <td>Ubuntu 14.10 </td>
-                          <td>False</td>
-                          <td>...</td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
-                          
-                          <td>info</td>
-                          <td>CentOS 7.1 </td>
-                          <td>OK</td>
-                          <td>...</td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
-                          
-                          <td>urgent</td>
-                          <td>Debian 7.0.0</td>
-                          <td>False</td>
-                          <td>...</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div><!-- /.table-responsive -->
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
-                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">View All </a>
-                </div><!-- /.box-footer -->
-              </div><!-- /.box -->
-              
             </div><!-- /.col -->
-
             <div class="col-md-4">
               <div class="box box-primary">
               
                 <div class="box-header with-border">
-                  <h3 class="box-title">Favorite Resources</h3>
+                  <h3 class="box-title">常用资源</h3>
                   <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
@@ -293,93 +191,189 @@
                   <ul class="products-list product-list-in-box">
                     <li class="item">
                       <div class="product-img">
-                        <img src="{% static "img/default-50x50.gif" %}" alt="Product Image"/>
+                        <img src="dist/img/default-50x50.gif" alt="Product Image"/>
                       </div>
                       <div class="product-info">
-                        <a href="javascript::;" class="product-title">Windows 8.1 <span class="label label-warning pull-right">SHUTOFF</span></a>
+                        <a href="javascript::;" class="product-title">Windows 8.1 <span class="label label-warning pull-right">关闭</span></a>
                         <span class="product-description">
-                          description
+                          详细
                         </span>
                       </div>
                     </li><!-- /.item -->
                     <li class="item">
                       <div class="product-img">
-                        <img src="{% static "img/default-50x50.gif" %}"  alt="Product Image"/>
+                        <img src="dist/img/default-50x50.gif" alt="Product Image"/>
                       </div>
                       <div class="product-info">
-                        <a href="javascript::;" class="product-title">Debian 7.0.0 <span class="label label-info pull-right">PAUSED</span></a>
+                        <a href="javascript::;" class="product-title">Debian 7.0.0 <span class="label label-info pull-right">暂停</span></a>
                         <span class="product-description">
-                          description
+                          详细
                         </span>
                       </div>
                     </li><!-- /.item -->
                     <li class="item">
                       <div class="product-img">
-                        <img src="{% static "img/default-50x50.gif" %}"  alt="Product Image"/>
+                        <img src="dist/img/default-50x50.gif" alt="Product Image"/>
                       </div>
                       <div class="product-info">
-                        <a href="javascript::;" class="product-title">CentOS 7.1 <span class="label label-danger pull-right">BLOCKED</span></a>
+                        <a href="javascript::;" class="product-title">CentOS 7.1 <span class="label label-danger pull-right">休眠</span></a>
                         <span class="product-description">
-                          description
+                          详细
                         </span>
                       </div>
                     </li><!-- /.item -->
                     <li class="item">
                       <div class="product-img">
-                        <img src="{% static "img/default-50x50.gif" %}"  alt="Product Image"/>
+                        <img src="dist/img/default-50x50.gif" alt="Product Image"/>
                       </div>
                       <div class="product-info">
-                        <a href="javascript::;" class="product-title">Ubuntu 14.10 <span class="label label-success pull-right">RUNNING</span></a>
+                        <a href="javascript::;" class="product-title">Ubuntu 14.10 <span class="label label-success pull-right">运行</span></a>
                         <span class="product-description">
-                          description
+                          详细
                         </span>
                       </div>
                     </li><!-- /.item -->
+                    
                   </ul>
                 </div><!-- /.box-body -->
                 <div class="box-footer text-center">
-                  <a href="javascript::;" class="uppercase">View All</a>
+                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">查看全部</a>
                 </div><!-- /.box-footer -->
               </div><!-- /.box -->
-
-
-              <div class="box box-default">
+             </div><!-- /.col -->
+            </div><!-- /.row -->
+            
+            <div class="row">
+            <div class="col-md-8">
+                          <!-- TABLE: Recently Alerts -->
+              <div class="box box-info">
                 <div class="box-header with-border">
-                  <h3 class="box-title">VM Usage</h3>
+                  <h3 class="box-title">警报</h3>
                   <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                   </div>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                  <div class="row">
-                    <div class="col-md-8">
-                      <div class="chart-responsive">
-                        <canvas id="pieChart" height="150"></canvas>
-                      </div><!-- ./chart-responsive -->
-                    </div><!-- /.col -->
-                    <div class="col-md-4">
-                      <ul class="chart-legend clearfix">
-                        <li><i class="fa fa-circle-o text-red"></i> VM1</li>
-                        <li><i class="fa fa-circle-o text-green"></i> VM2</li>
-                        <li><i class="fa fa-circle-o text-yellow"></i> VM3</li>
-                        <li><i class="fa fa-circle-o text-aqua"></i> VM4</li>
-                        <li><i class="fa fa-circle-o text-light-blue"></i> VM5</li>
-                        <li><i class="fa fa-circle-o text-gray"></i> VM6</li>
-                      </ul>
-                    </div><!-- /.col -->
-                  </div><!-- /.row -->
+                  <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>时间</th>
+                          <th>警报类型</th>
+                          <th>资源名</th>
+                          <th>状态</th>
+                          <th>查看</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          
+                          <td>Warning</td>
+                          <td>Windows xp</td>
+                          <td>处理中</td>
+                          <td>...</td>
+                        </tr>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          
+                          <td>info</td>
+                          <td>Windows 8</td>
+                          <td>已读</td>
+                          <td>...</td>
+                        </tr>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          
+                          <td>urgent</td>
+                          <td>Ubuntu 14.10 </td>
+                          <td>失败</td>
+                          <td>...</td>
+                        </tr>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          
+                          <td>info</td>
+                          <td>CentOS 7.1 </td>
+                          <td>未读</td>
+                          <td>...</td>
+                        </tr>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          
+                          <td>urgent</td>
+                          <td>Debian 7.0.0</td>
+                          <td>失败</td>
+                          <td>...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div><!-- /.table-responsive -->
                 </div><!-- /.box-body -->
-                <div class="box-footer no-padding">
-                  <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#">platform1 <span class="pull-right text-red"><i class="fa fa-angle-down"></i> 12%</span></a></li>
-                    <li><a href="#">platform2 <span class="pull-right text-green"><i class="fa fa-angle-up"></i> 4%</span></a></li>
-                    <li><a href="#">platform3 <span class="pull-right text-yellow"><i class="fa fa-angle-left"></i> 0%</span></a></li>
-                  </ul>
-                </div><!-- /.footer -->
+                <div class="box-footer clearfix">
+                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">查看全部 </a>
+                </div><!-- /.box-footer -->
               </div><!-- /.box -->
-
               
+            </div><!-- /.col -->
+            
+            
+
+            <div class="col-md-4">
+              <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">日志</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                  <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>时间</th>
+                          <th>资源ID</th>
+                          <th>操作</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          <td><a href="pages/examples/invoice.html">OR9842</a></td>
+                          <td><span class="label label-danger">删除</span></td>
+                        </tr>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          
+                          <td><a href="pages/examples/invoice.html">OR9842</a></td>
+                          <td><span class="label label-info">添加</span></td>
+                        </tr>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          <td><a href="pages/examples/invoice.html">OR9842</a></td>
+                          <td><span class="label label-success">暂停</span></td>
+                        </tr>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          <td><a href="pages/examples/invoice.html">OR9842</a></td>
+                          <td><span class="label label-danger">销毁</span></td>
+                        </tr>
+                        <tr>
+                          <td><a href="pages/examples/invoice.html">2015-03-22 23:00:00</a></td>
+                          <td><a href="pages/examples/invoice.html">OR9842</a></td>
+                          <td><span class="label label-warning">重启</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div><!-- /.table-responsive -->
+                </div><!-- /.box-body -->
+                <div class="box-footer clearfix">
+                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">查看全部 </a>
+                </div><!-- /.box-footer -->
+              </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
         </section><!-- /.content -->
