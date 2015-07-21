@@ -6,8 +6,6 @@ import json, os, time, subprocess, shlex
 plugins = []
 metrics = {}
 ts = {"init" : time.time()}
-localq = None
-remoteq = None
 
 def load_plugin(fname):
     f = file(fname)
@@ -53,11 +51,11 @@ def send_metrics(met):
         print "send_metrics: (", met.tags["plugin"], "):", met.message_json()
     else: print "send_metrics:", met.message_json()
     # send
-  #  mq.remote_publish(m.message_json())
+    mq.remote_publish(met.message_json())
 
 def init_queue():
-    localq = mq.setup_local_queue(send_metrics)
-    remoteq = mq.setup_remote_queue()
+    mq.setup_remote_queue()
+    mq.setup_local_queue(send_metrics)
     commandbroker.metric_callback = send_metrics
 
 def update():

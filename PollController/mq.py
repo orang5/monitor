@@ -139,6 +139,13 @@ remote_conf = dict(exchange="monitor.remote", queue="monitor.remote", routing_ke
 
 def subdict(dict, keys):
     return {k:dict[k] for k in keys}
+   
+# default callback wrapper, currying default args
+def queue_callback(func):
+    def _cb(channel, method, p, body):
+        func(Metric.from_message_json(body))
+        channel.basic_ack(delivery_tag = method.delivery_tag)
+    return _cb
 
 # use this library routine to init local q for monitor project
 def setup_local_queue(callback=None):
@@ -154,8 +161,7 @@ def setup_local_queue(callback=None):
     q.exchange_declare(**subdict(local_conf, ["exchange", "durable"]))
     q.queue_declare(**subdict(local_conf, ["queue", "durable"]))
     q.queue_bind(**subdict(local_conf, ["exchange", "queue", "routing_key"]))
-    if local_callback: q.add_consumer(local_conf["queue"], lambda ch, m, p, body: local_callback(Metric.from_message_json(body)))
-
+    if local_callback: q.add_consumer(local_conf["queue"], queue_callback(local_callback))
     return q
 
 # use this library routine to init remote q for monitor project
@@ -173,7 +179,7 @@ def setup_remote_queue(callback=None):
     q.exchange_declare(**subdict(remote_conf, ["exchange", "durable"]))
     q.queue_declare(**subdict(remote_conf, ["queue", "durable"]))
     q.queue_bind(**subdict(remote_conf, ["exchange", "queue", "routing_key"]))
-    if remote_callback: q.add_consumer(remote_conf["queue"], lambda ch, m, p, body: remote_callback(Metric.from_message_json(body)))
+    if remote_callback: q.add_consumer(remote_conf["queue"], queue_callback(remote_callback))
     return q
     
 def local_publish(msg): localq.publish(local_conf["exchange"], local_conf["routing_key"], msg)

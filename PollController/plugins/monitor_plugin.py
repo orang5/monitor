@@ -24,6 +24,8 @@ def plugin_info_tags():
     return dict(plugin=info.name, pid=os.getpid())
     
 def publish(met):
+    met.ts["latest"] = time.time()
+    met.update_tags(**plugin_info_tags())
     mq.local_publish(met.message_json())
     
 mq.setup_local_queue()

@@ -4,9 +4,6 @@ import json, time
 
 connect('MoniterDB')
 
-# viktor' s poll_controller models
-from models_pc import *
-
 class MoniterModel(Document):
     UUID = StringField(max_length=255, min_length=1)
     DEVICEID = StringField(max_length=255, min_length=1)

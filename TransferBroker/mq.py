@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import threading
 import pika
+from agent_types import Metric
 
 # use SelectConnection to maintain loop & consumers
 # it's all async (very nasty)
@@ -131,47 +132,60 @@ class MQ(object):
         
 localq = None
 remoteq = None
+local_callback = None
+remote_callback = None
 local_conf = dict(exchange="monitor.exc", queue="monitor.local", routing_key="local", durable=True)
 remote_conf = dict(exchange="monitor.remote", queue="monitor.remote", routing_key="remote", durable=True)
 
 def subdict(dict, keys):
     return {k:dict[k] for k in keys}
+   
+# default callback wrapper, currying default args
+def queue_callback(func):
+    def _cb(channel, method, p, body):
+        func(Metric.from_message_json(body))
+        channel.basic_ack(delivery_tag = method.delivery_tag)
+    return _cb
 
 # use this library routine to init local q for monitor project
 def setup_local_queue(callback=None):
     global localq
+    global local_callback
     q = MQ(r"amqp://monitor:root@localhost:5672/")
+    localq = q
+    if callback: local_callback = callback
+    
     q.connect()
     print "wait for local MQWorker..."
     while not q.worker.ready: pass
     q.exchange_declare(**subdict(local_conf, ["exchange", "durable"]))
     q.queue_declare(**subdict(local_conf, ["queue", "durable"]))
     q.queue_bind(**subdict(local_conf, ["exchange", "queue", "routing_key"]))
-    if callback: q.add_consumer(local_conf["queue"], callback)
-    
-    localq = q
+    if local_callback: q.add_consumer(local_conf["queue"], queue_callback(local_callback))
     return q
 
 # use this library routine to init remote q for monitor project
 # rkey is host identification.
-def setup_remote_queue(rkey, callback=None):
+def setup_remote_queue(callback=None):
     global remoteq
-    q = MQ(r"amqp://monitor:root@localhost:5672/")
+    global remote_callback
+    q = MQ(r"amqp://monitor:root@192.168.133.1:5672/")
+    remoteq = q
+    if callback: remote_callback = callback
+
     q.connect()
     print "wait for remote MQWorker..."
     while not q.worker.ready: pass
     q.exchange_declare(**subdict(remote_conf, ["exchange", "durable"]))
     q.queue_declare(**subdict(remote_conf, ["queue", "durable"]))
     q.queue_bind(**subdict(remote_conf, ["exchange", "queue", "routing_key"]))
-    if callback: q.add_consumer(remote_conf["queue"], callback)
-    
-    remoteq = q
+    if remote_callback: q.add_consumer(remote_conf["queue"], queue_callback(remote_callback))
     return q
     
 def local_publish(msg): localq.publish(local_conf["exchange"], local_conf["routing_key"], msg)
 def remote_publish(msg): remoteq.publish(remote_conf["exchange"], remote_conf["routing_key"], msg)
 
-def _callback(channel, method, props, body):
+def _callback(body):
     print "Receive: ", body
 
 def _test():
@@ -192,4 +206,5 @@ def _test():
     local_publish("444444444444444")
 
     localq.close()
-    
+
+if __name__ == "__main__" : _test()
