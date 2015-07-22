@@ -76,6 +76,6 @@ function sales_chart(d) {
 }
 
 $(function(){
-  _ajax('GET', 'index_update/', null ,sales_chart)
+  _ajax('GET', '/index_update/', null ,sales_chart)
 });
 

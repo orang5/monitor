@@ -5,7 +5,7 @@
   "metrics" : [
     {
       "name" : "test.username",
-      "type" : "config",
+      "value_type" : "config",
       "interval" : 30,
       "cmd" : "echo %USERNAME%"
     }

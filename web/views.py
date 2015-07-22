@@ -53,6 +53,19 @@ def virtualMachine_update(request):
         info[data.KEY] = json.loads(data.VALUE)         
     return HttpResponse(json.dumps(info))
 
+def login(request):
+    if request.method == 'POST':
+        username = str(request.POST.get('username'))
+        password = str(request.POST.get('password'))
+        if (username.strip() == "islab@whu.edu") & (password.strip() == "whu"):
+            return HttpResponseRedirect('index')
+        else:
+            return render_to_response('login.html',{'ushow':request.GET.get('username')})
+            #return render_to_response('login.html')
+    return render_to_response('login.html',{'ushow':'username'})
+
+def usersManager(request):
+    return render_to_response('users.html')
 if __name__ == '__main__':
     from models import Employee
     for e in Employee.objects.all():
