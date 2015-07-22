@@ -15,6 +15,8 @@ def load_plugin(fname):
     d["__class__"] = d.get("__class__", "PluginDesc")
     for m in d["metrics"]:
         m["__class__"] = m.get("__class__", "MetricDesc")
+        m["cmd"] = m.get("cmd", "")
+        m["interval"] = m.get("interval", 0)
 #    print d
     # ugly......
 #    p = agent_utils.from_json(agent_utils.to_json(d))
