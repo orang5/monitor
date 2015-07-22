@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from agent_types import *
-import agent_utils, commandbroker, mq
+import agent_utils, agent_info, commandbroker, mq
 import json, os, time, subprocess, shlex
 
 plugins = []
 metrics = {}
 ts = {"init" : time.time()}
-localq = None
-remoteq = None
 
 def load_plugin(fname):
     f = file(fname)
@@ -46,6 +44,20 @@ def load_all(path):
         if fname.endswith(".json"):
             load_plugin("%s/%s" % (path,fname))
 
+def send_metrics(met):
+    # add tags
+    met.update_tags(uuid=agent_info.host_id(), host=agent_info.hostname)
+    if met.tags.has_key("plugin"):
+        print "send_metrics: (", met.tags["plugin"], "):", met.message_json()
+    else: print "send_metrics:", met.message_json()
+    # send
+    mq.remote_publish(met.message_json())
+
+def init_queue():
+    mq.setup_remote_queue()
+    mq.setup_local_queue(send_metrics)
+    commandbroker.metric_callback = send_metrics
+
 def update():
     now = time.time()
     for interval in metrics.keys():
@@ -56,20 +68,18 @@ def update():
                 # current: queue all
                 for m in metrics[interval]:
                     commandbroker.queue(m)
-
-def _test_callback(a, b, c, body):
-    print "recv ", body
-
-def init_queue():
-    localq = mq.setup_local_queue(_test_callback)
-    remoteq = mq.setup_remote_queue("test")
-
+                    
 def start():
     while True:
         update()
         time.sleep(0.5)
 
+def _test_callback(body):
+    print "recv ", body
+
 def _test():
     init_queue()
     load_all("plugins")
     start()
+
+if __name__ == "__main__" : _test()
