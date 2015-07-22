@@ -1,6 +1,7 @@
 ﻿{% extends '__base__.html' %}
-{% block content-wrapper %}
 {% load staticfiles %}
+{% block content-wrapper %}
+
  <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -191,7 +192,7 @@
                   <ul class="products-list product-list-in-box">
                     <li class="item">
                       <div class="product-img">
-                        <img src="dist/img/default-50x50.gif" alt="Product Image"/>
+                        <img src="{% static "img/default-50x50.gif" %}" alt="Product Image"/>
                       </div>
                       <div class="product-info">
                         <a href="javascript::;" class="product-title">Windows 8.1 <span class="label label-warning pull-right">关闭</span></a>
@@ -202,7 +203,7 @@
                     </li><!-- /.item -->
                     <li class="item">
                       <div class="product-img">
-                        <img src="dist/img/default-50x50.gif" alt="Product Image"/>
+                        <img src="{% static "img/default-50x50.gif" %}" alt="Product Image"/>
                       </div>
                       <div class="product-info">
                         <a href="javascript::;" class="product-title">Debian 7.0.0 <span class="label label-info pull-right">暂停</span></a>
@@ -213,7 +214,7 @@
                     </li><!-- /.item -->
                     <li class="item">
                       <div class="product-img">
-                        <img src="dist/img/default-50x50.gif" alt="Product Image"/>
+                        <img src="{% static "img/default-50x50.gif" %}" alt="Product Image"/>
                       </div>
                       <div class="product-info">
                         <a href="javascript::;" class="product-title">CentOS 7.1 <span class="label label-danger pull-right">休眠</span></a>
@@ -224,7 +225,7 @@
                     </li><!-- /.item -->
                     <li class="item">
                       <div class="product-img">
-                        <img src="dist/img/default-50x50.gif" alt="Product Image"/>
+                        <img src="{% static "img/default-50x50.gif" %}" alt="Product Image"/>
                       </div>
                       <div class="product-info">
                         <a href="javascript::;" class="product-title">Ubuntu 14.10 <span class="label label-success pull-right">运行</span></a>

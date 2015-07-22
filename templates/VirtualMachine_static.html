@@ -1,9 +1,7 @@
 {% extends '__base__.html' %}
 {% load staticfiles %}
 {% block content-wrapper %}
-
-
-<!-- Content Wrapper. Contains page content -->
+      <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
@@ -283,11 +281,3 @@
 
      </div><!-- /.content-wrapper -->
     {% endblock %}
-      
-    {% block script %}
-      <script src="{% static "plugins/flot/jquery.flot.min.js" %}"></script>
-      <script src="{% static "plugins/flot/jquery.flot.resize.min.js" %}"></script>
-      <script src="{% static "plugins/flot/jquery.flot.pie.min.js" %}"></script>
-      <script src="{% static "plugins/flot/jquery.flot.categories.min.js" %}"></script>
-      <script src="{% static "js/pages/virtual_machine.js" %}"></script>
-    {% endblock %} 

@@ -2,27 +2,26 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    {% load staticfiles %}
     <title>AdminLTE 2 | Dashboard</title>
-    {% load staticfiles%}
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-    
     <!-- Bootstrap 3.3.2 -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet" type="text/css" />
     <!-- Font Awesome Icons -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <!-- Ionicons -->
     <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
     <!-- Morris chart -->
-    <link href="plugins/morris/morris.css" rel="stylesheet" type="text/css" />
+    <link href="{% static "plugins/morris/morris.css" %}" rel="stylesheet" type="text/css" />
     <!-- jvectormap -->
-    <link href="plugins/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+    <link href="{% static "plugins/jvectormap/jquery-jvectormap-1.2.2.css" %}" rel="stylesheet" type="text/css" />
     <!-- Daterange picker -->
-    <link href="plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <link href="{% static "plugins/daterangepicker/daterangepicker-bs3.css" %}" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
-    <link href="dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="{% static "css/AdminLTE.min.css" %}" rel="stylesheet" type="text/css" />
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
-    <link href="dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+    <link href="{% static "css/skins/_all-skins.min.css" %}" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -102,79 +101,56 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class>
-              <a href="index2.html">
+              <a href="/">
                 <i class="fa fa-dashboard"></i> <span>仪表板</span> 
               </a>
             </li>
-            
-            <li class="treeview">
+            <li class="treeview active">
               <a href="#">
-                <i class="fa fa-pie-chart"></i>
-                <span>虚拟化平台</span>
+                <i class="fa fa-th"></i> <span>虚拟化平台</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-              <li class="treeview">
-                <a href="#">
-                  <i class="fa fa-laptop"></i>
-                  <span>主机1</span>
-                  <i class="fa fa-angle-left pull-right"></i>
-                </a>
-               <ul class="treeview-menu">
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> 虚拟机1</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> 虚拟机2</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> 虚拟机3</a></li>
+                <li><a href="/Vplatform/"><i class="fa fa-book"></i>平台信息</a></li>
+                <li class="treeview active">
+                  <a href="#"><i class="fa fa-laptop"></i> 主机1 <i class="fa fa-angle-left pull-right"></i></a>
+                  <ul class="treeview-menu">
+                    <li><a href="/VirtualMachine_static/"><i class="fa fa-circle-o"></i> 虚拟机1</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> 虚拟机2</a></li>
+                  </ul>
+                </li>
+                <li class="treeview active">
+                  <a href="#"><i class="fa fa-laptop"></i> 主机2 <i class="fa fa-angle-left pull-right"></i></a>
+                  <ul class="treeview-menu">
+                    <li><a href="#"><i class="fa fa-circle-o"></i> 虚拟机1</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> 虚拟机2</a></li>
+                  </ul>
+                </li>
               </ul>
-               </li>
-              <li class="treeview">
-                <a href="#">
-                  <i class="fa fa-laptop"></i>
-                  <span>主机2</span>
-                  <i class="fa fa-angle-left pull-right"></i>
-                </a>
-               <ul class="treeview-menu">
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> 虚拟机1</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> 虚拟机2</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> 虚拟机3</a></li>
-              </ul>
-               </li>
-               </ul>
             </li>
            
-            <li class="treeview">
+            <li class="treeview active">
               <a href="#">
-                <i class="fa fa-table"></i> <span>物理服务器</span>
+                <i class="fa fa-desktop"></i> <span>物理服务器</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i> 服务器1</a></li>
+                <li><a href="/VirtualMachine_static/"><i class="fa fa-circle-o"></i> 服务器1</a></li>
                 <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i> 服务器2</a></li>
                 <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> 服务器3</a></li>
               </ul>
             </li>
 
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-table"></i> <span>网络</span>
-                <i class="fa fa-angle-left pull-right"></i>
+            <li class>
+              <a href="/Network/">
+                <i class="fa fa-table"></i> <span>网络</span> 
               </a>
-              <ul class="treeview-menu">
-                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i> Simple tables</a></li>
-                <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i> Data tables</a></li>
-                <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
-              </ul>
             </li>
             
-            <li class="treeview">
+            <li class>
               <a href="#">
-                <i class="fa fa-table"></i> <span>分析</span>
-                <i class="fa fa-angle-left pull-right"></i>
+                <i class="fa fa-pie-chart"></i> <span>分析</span> 
               </a>
-              <ul class="treeview-menu">
-                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i> Simple tables</a></li>
-                <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i> Data tables</a></li>
-                <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
-              </ul>
             </li>
             
             <li class="header"></li>

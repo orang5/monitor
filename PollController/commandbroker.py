@@ -16,7 +16,9 @@ class CommandWorker(threading.Thread):
     def run(self):
         print "start ", self.name
         while not self.flag:
+            print self.name,'before'
             m = self.q.get()
+            print self.name,'after'
             m.ts['execute'] = time.time()
             print self.name, m.cmdline()
             m.value = os.popen(m.cmdline()).read().rstrip("\n\r")
