@@ -3,7 +3,7 @@
   "description" : "WMI plugin",
   "type" : "platform",
   "cmd_list" : {
-    "start" : "python WindowsWatcher.py"
+    "start" : "python WindowsWatcher_1.py"
   },
   "metrics" : [
     { "name" : "cpu_LoadPercentage", "type" : "metric", "interval" : 3},
@@ -41,6 +41,11 @@
     { "name" : "net_bytes_in_cur", "type" : "metric", "interval" : 3},
     { "name" : "net_bytes_out_cur", "type" : "metric", "interval" : 3},
     { "name" : "net_pkts_in_cur", "type" : "metric", "interval" : 3},
-    { "name" : "net_pkts_out_cur", "type" : "metric", "interval" : 3}
+    { "name" : "net_pkts_out_cur", "type" : "metric", "interval" : 3},
+    
+    { "name" : "dev_cpu", "type" : "inventory", "interval" : 300},     
+    { "name" : "dev_mem", "type" : "inventory", "interval" : 300},   
+    { "name" : "dev_disk", "type" : "inventory", "interval" : 300},    
+    { "name" : "dev_nic", "type" : "inventory", "interval" : 300}
   ]
 }

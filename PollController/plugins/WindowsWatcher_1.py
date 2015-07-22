@@ -62,27 +62,6 @@ class WinWatcher(object):
             timestamp = time.strftime('%a, %d %b %Y %H:%M:%S', time.localtime())
             print item.IDProcess, item.Name, item.PriorityBase, item.VirtualBytes, item.PoolNonpagedBytes, item.PoolPagedBytes, item.PercentProcessorTime, item.WorkingSet, timestamp    
      
-    # @with_wmi    
-    def device(self):
-        con = wmi.WMI(moniker = "//./root/cimv2")
-        device_dict = {}
-        device_dict['CPU'] = []
-        device_dict['DISK'] = []
-        device_dict['Network_Adapter'] = []
-        device_dict['MEMORY'] = []
-        for cpu in con.Win32_Processor():
-            device_dict['CPU'].append({'caption':cpu.DeviceID,'index':cpu.DeviceID})
-   
-        for i,disk in enumerate(con.Win32_LogicalDisk (DriveType=3)):
-            device_dict['DISK'].append({'caption':disk.DeviceID,'index':'Partition' + str(i)})   
-            
-        for i,interface in enumerate(con.Win32_NetworkAdapterConfiguration (IPEnabled=1)):
-            device_dict['Network_Adapter'].append({'caption':interface.Description,'index':'Network_Adapter' + str(i)})   
-            
-        cp = con.Win32_PhysicalMemory()
-        device_dict['MEMORY'].append({'caption':cp[0].Tag,'index':cp[0].Tag})
-        return device_dict
-        
 def metric_worker(met):
     names = met.name.split("_", 1)
     if names[0] == "cpu":
@@ -207,8 +186,26 @@ def metric_worker(met):
                 met.tags["item_name"] = item.Name
                 publish(met)
                 
-            win.com.DeleteAll()       
-
+            win.com.DeleteAll()
+                   
+    elif names[0] == "dev":
+        result = []
+        if names[1] == "cpu":
+            for cpu in win.wmi.Win32_Processor():
+                result.append({'caption':cpu.Name,'index':cpu.DeviceID})
+        elif names[1] == "disk":
+            for i,disk in enumerate(win.wmi.Win32_LogicalDisk (DriveType=3)):
+                result.append({'caption':disk.DeviceID,'index':i})
+        elif names[1] == "nic":                
+            for i,interface in enumerate(win.wmi.Win32_NetworkAdapterConfiguration (IPEnabled=1)):
+                result.append({'caption':interface.Description,'index':i})   
+        elif names[1] == "mem":  
+            cp = win.wmi.Win32_PhysicalMemory()
+            result.append({'caption':cp[0].Tag,'index':0})
+        
+        met.value = result
+        publish(met)
+        
 @with_wmi
 def do_work():
     global win

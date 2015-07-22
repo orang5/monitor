@@ -39,7 +39,7 @@ def plugin_info(filename):
 def plugin_info_tags():
     return dict(plugin=info.name, pid=os.getpid())
     
-def publish(met, debug=True):
+def publish(met, debug=False):
     met.ts["latest"] = time.time()
     met.update_tags(**plugin_info_tags())
     if not debug:
