@@ -2,13 +2,13 @@
 from monitor_plugin import *
 plugin_info("testmq.json")
 
-cmd = r"echo %USERNAME%"
-interval = 30
 flag = True
 
+def dowork(met):
+    met.value = agent_utils.run_cmd(met.cmd)
+    print met
+    return met
+
 while flag:
-    value = agent_utils.run_cmd(cmd)
-    m = agent_types.Metric(name="test.username", type="config", interval=interval, cmd=cmd)
-    m.value = value
-    publish(m)
-    time.sleep(interval)
+    update_metrics(worker=dowork, publish=False)
+    time.sleep(1)

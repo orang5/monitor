@@ -14,8 +14,15 @@ def load_plugin(fname):
     # add class info
     if not d.has_key("__class__"): d["__class__"] = "PluginDesc"
     for m in d["metrics"]:
+<<<<<<< HEAD
         if not m.has_key("__class__"): m["__class__"] = "MetricDesc"
     # print d
+=======
+        m["__class__"] = m.get("__class__", "MetricDesc")
+        m["cmd"] = m.get("cmd", "")
+        m["interval"] = m.get("interval", 0)
+#    print d
+>>>>>>> de176b8af2f6ab143bf201275dbe32b513e12f15
     # ugly......
     p = agent_utils.from_json(agent_utils.to_json(d))
     # append plugin and metrics to list
