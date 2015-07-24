@@ -5,42 +5,27 @@ from datetime import datetime
 connect("MoniterDB")
 
 # 0. METRIC models
-class BaseMetricModel(DynamicDocument):
+class MetricModel(DynamicDocument):
     name = StringField(max_length=300)
     timestamp = DateTimeField()
-    # tags: will be dynamically added
-    
-class MetricModel(DynamicDocument):
     value = FloatField()
+    # tags: will be dynamically added
     
 class ConfigModel(DynamicDocument):
-    value = StringField()
-
-# get specific metric model object from Metric object
-def from_metric(met):
-    pass
+    name = StringField(max_length=300)
+    timestamp = DateTimeField()
+    value = DynamicField()
 
 # 1. STATIC INFO models
-
-class BaseInfoModel(DynamicDocument):
-    uuid = UUIDField(binary=False, primary_key=True)
-    name = StringField(max_length=300)
-    parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    # tags: will be dynamically added
-    # todo: add viewmodel?
-
 # user and group info
 class UserInfoModel(DynamicDocument):
     uuid = UUIDField(binary=False, primary_key=True)
     name = StringField(max_length=300)
     parent = UUIDField(binary=False) # parent entity
     owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    
+    subitems = ListField(UUIDField(binary=False)) #     
     type = StringField(max_length=200) # user or group
-    inventory = ListField(UUIDField(binary=False)) # different from children(sub objects)
+    inventory = ListField(UUIDField(binary=False)) # different from subitems(sub objects)
 
 # InventoryModel stores entity index and info
 class InventoryInfoModel(DynamicDocument):
@@ -48,8 +33,7 @@ class InventoryInfoModel(DynamicDocument):
     name = StringField(max_length=300)
     parent = UUIDField(binary=False) # parent entity
     owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    
+    subitems = ListField(UUIDField(binary=False)) #     
     type = StringField(max_length=300)
 
 # Hostinfo model
@@ -58,8 +42,7 @@ class HostInfoModel(DynamicDocument):
     name = StringField(max_length=300)
     parent = UUIDField(binary=False) # parent entity
     owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    
+    subitems = ListField(UUIDField(binary=False)) #     
     address = StringField(max_length=32)
 
 class VMInfoModel(DynamicDocument):
@@ -67,25 +50,28 @@ class VMInfoModel(DynamicDocument):
     name = StringField(max_length=300)
     parent = UUIDField(binary=False) # parent entity
     owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    
+    subitems = ListField(UUIDField(binary=False)) #     
     address = StringField(max_length=32)
     vmid = UUIDField(binary=False)
+    
+class ClusterInfoModel(DynamicDocument):
+    uuid = UUIDField(binary=False, primary_key=True)
+    name = StringField(max_length=300)
+    parent = UUIDField(binary=False) # parent entity
+    owner = UUIDField(binary=False) # owner(user/group)
+    subitems = ListField(UUIDField(binary=False)) #     
     
 class ServiceInfoModel(DynamicDocument):
     uuid = UUIDField(binary=False, primary_key=True)
     name = StringField(max_length=300)
     parent = UUIDField(binary=False) # parent entity
     owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
+    subitems = ListField(UUIDField(binary=False)) # 
     
 class MetricInfoModel(DynamicDocument):
     uuid = UUIDField(binary=False, primary_key=True)
     name = StringField(max_length=300)
     parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    
     type = StringField(max_length=300)
     description = StringField()
     interval = IntField()
@@ -103,7 +89,7 @@ class PluginInfoModel(DynamicDocument):
     name = StringField(max_length=300)
     parent = UUIDField(binary=False) # parent entity
     owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
+    subitems = ListField(UUIDField(binary=False)) # 
     
     description = StringField()
     type = StringField(max_length=300)
@@ -160,3 +146,19 @@ class DeviceModel(Document):
 
 class platform(Document):
     VMLIST = StringField()
+    
+    
+# get specific metric model object from Metric object
+def from_metric(met):
+    ret = None
+    if met.type == "config":
+        ret = ConfigModel()
+    elif met.type == "metric":
+        ret = MetricModel()
+    ret.name = met.name
+    ret.timestamp = met.timestamp
+    ret.value = met.value
+    for k, v in met.items():
+        setattr(ret, k, v)
+    
+    return ret
