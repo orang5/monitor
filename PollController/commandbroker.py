@@ -4,6 +4,7 @@ import Queue
 from agent_types import *
 
 workqueue = Queue.Queue()
+metric_callback = None
 
 class CommandWorker(threading.Thread):
     def __init__(self):
@@ -23,7 +24,9 @@ class CommandWorker(threading.Thread):
             # commands.getstatusoutput(m.cmdline())
             m.ts['latest'] = time.time()
             # todo: send
-            print m.message()
+            if metric_callback:
+                metric_callback(m)
+            else: print m.message_json()
             self.q.task_done()
 
 cmds = []
@@ -52,3 +55,4 @@ def _test():
 #    time.sleep(1)
 
 #    print met
+if __name__ == "__main__" : _test()
