@@ -1,0 +1,126 @@
+{% extends '__base__.html' %}
+{% load staticfiles %}
+{% block content-wrapper %}
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            网络
+            <small>version1.0</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+            <li class="active">网络</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+           <div class="row">
+          <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">物理服务器</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                  <table id="example2" class="table table-bordered table-hover">                    
+                    <tbody>
+                    <tr>
+                      <td>物理网络适配器：</td>
+                    </tr>
+                    <tr>
+                      <td>IP地址：</td>
+                    </tr>  
+                    <tr>
+                      <td>SNMP信息：</td>
+                    </tr>
+                    <tr>
+                      <td>路由信息：</td>
+                    </tr>
+                    <tr>
+                      <td>端口和服务：</td>
+                    </tr>                                                                                                         
+                    </tbody>
+                  </table>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+                <div class="box box-primary">
+                          <div class="box-header with-border">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">物理网络拓扑图</h3>
+                            <div class="box-tools pull-right">
+                              <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                              <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                          </div>
+                          <div class="box-body">
+                            <div id="donut-chart" style="height: 400px;" class="product-img"><img src="{% static "img/Physics.png" %}"/></div>
+                          </div><!-- /.box-body-->
+                </div><!-- /.box -->             
+            </div><!-- /.col -->    
+           
+                <div class="col-md-6">
+                            <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">虚拟机/虚拟化平台</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                  <table id="example2" class="table table-bordered table-hover">                    
+                    <tbody>
+                    <tr>
+                      <td>虚拟网络适配器：</td>
+                    </tr>
+                    <tr>
+                      <td>虚拟交换机：</td>
+                    </tr>  
+                    <tr>
+                      <td>SNMP信息：</td>
+                    </tr>
+                    <tr>
+                      <td>端口和服务：</td>
+                    </tr>
+                    <tr>
+                      <td>带宽和连接配额：</td>
+                    </tr>                                                                                                                             
+                    </tbody>
+                  </table>
+                </div><!-- /.box-body -->
+              </div><!-- /.box --> 
+                        <!-- Donut chart -->
+                        
+                        <div class="box box-primary">
+                          <div class="box-header with-border">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">虚拟交换机网络拓扑图</h3>
+                            <div class="box-tools pull-right">
+                              <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                              <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                          </div>
+                          <div class="box-body">
+                            <div id="donut-chart" style="height: 400px;" class="product-img"><img src="{% static "img/virtual.png" %}"/></div>
+                          </div><!-- /.box-body-->
+                </div><!-- /.box -->                
+               
+              </div><!-- /.col -->
+                  
+ <!--
+            <div class="col-xs-2">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">资源索引</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+-->
+        </div><!-- /.row -->  
+        </section><!-- /.content -->
+        
+        
+
+     </div><!-- /.content-wrapper -->
+{% endblock %}

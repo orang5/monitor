@@ -1,9 +1,7 @@
 {% extends '__base__.html' %}
 {% load staticfiles %}
 {% block content-wrapper %}
-
-
-<!-- Content Wrapper. Contains page content -->
+      <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
@@ -28,76 +26,118 @@
               </div>
               <div class="box-body">
                 <div class="row">
-                      <!-- interactive chart -->
                      <div class="col-md-3">
-                      <div class="box box-primary">
-                        <div class="box-header with-border">
-                          <i class="fa fa-bar-chart-o"></i>
-                          <h3 class="box-title">Cpu利用率</h3>
-                          <div class="box-tools pull-right">
-                            Real time
-                            <div class="btn-group" id="realtime" data-toggle="btn-toggle">
-                              <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
-                              <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="box-body">
-                          <div id="interactive" style="height: 200px;" class="full-width-chart"></div>
-                        </div><!-- /.box-body-->
-                      </div><!-- /.box -->
-                    </div><!-- /.col -->
-                    
-                    <div class="col-md-3">
-                      <!-- Line chart -->
-                      <div class="box box-primary">
-                        <div class="box-header with-border">
-                          <i class="fa fa-bar-chart-o"></i>
-                          <h3 class="box-title">内存利用率</h3>
-                          <div class="box-tools pull-right">
-                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                          </div>
-                        </div>
-                        <div class="box-body">
-                          <div id="line-chart" style="height: 200px;" class="full-width-chart"></div>
-                        </div><!-- /.box-body-->
-                      </div><!-- /.box -->
-                     </div><!-- /.col -->
-                     
-                      <!-- Area chart -->
-                      <div class="col-md-3">
-                      <div class="box box-primary">
-                        <div class="box-header with-border">
-                          <i class="fa fa-bar-chart-o"></i>
-                          <h3 class="box-title">网络流量</h3>
-                          <div class="box-tools pull-right">
-                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                          </div>
-                        </div>
-                        <div class="box-body">
-                          <div id="area-chart" style="height: 200px;" class="full-width-chart"></div>
-                        </div><!-- /.box-body-->
-                      </div><!-- /.box -->
-                    </div><!-- /.col -->
-                    
-                     <div class="col-md-3">
-                        <!-- Donut chart -->
+                        <!-- memery chart -->
                         <div class="box box-primary">
                           <div class="box-header with-border">
                             <i class="fa fa-bar-chart-o"></i>
-                            <h3 class="box-title">磁盘利用率</h3>
+                            <h3 class="box-title">Cpu利用率</h3>
                             <div class="box-tools pull-right">
-                              <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                              <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                              Real time
+                              <div class="btn-group" id="cpu_realtime" data-toggle="btn-toggle">
+                                <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                              </div>
+                              <div class="btn-group" id="device_cpu">
+                                <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+                                <ul class="dropdown-menu pull-right" role="menu">
+                                  {% for item in deviece.MEMORY %}
+                                  <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                                  {% endfor %}
+                                </ul>
+                              </div>
                             </div>
                           </div>
                           <div class="box-body">
-                            <div id="donut-chart" style="height: 200px;" class="full-width-chart"></div>
+                            <div id="cpu-chart" style="height: 200px;" class="full-width-chart"></div>
                           </div><!-- /.box-body-->
                         </div><!-- /.box -->
-                    </div><!-- /.col -->
+                      </div><!-- /.col -->
+                    
+                     <div class="col-md-3">
+                        <!-- memery chart -->
+                        <div class="box box-primary">
+                          <div class="box-header with-border">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">内存用量</h3>
+                            <div class="box-tools pull-right">
+                              Real time
+                              <div class="btn-group" id="mem_realtime" data-toggle="btn-toggle">
+                                <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                              </div>
+                              <div class="btn-group" id="device_mem">
+                                <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+                                <ul class="dropdown-menu pull-right" role="menu">
+                                  {% for item in deviece.MEMORY %}
+                                  <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                                  {% endfor %}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="box-body">
+                            <div id="mem-chart" style="height: 200px;" class="full-width-chart"></div>
+                          </div><!-- /.box-body-->
+                        </div><!-- /.box -->
+                      </div><!-- /.col -->
+                     
+                     <div class="col-md-3">
+                        <!-- memery chart -->
+                        <div class="box box-primary">
+                          <div class="box-header with-border">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">网络流量</h3>
+                            <div class="box-tools pull-right">
+                              Real time
+                              <div class="btn-group" id="net_realtime" data-toggle="btn-toggle">
+                                <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                              </div>
+                              <div class="btn-group" id="device_net">
+                                <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+                                <ul class="dropdown-menu pull-right" role="menu">
+                                  {% for item in deviece.MEMORY %}
+                                  <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                                  {% endfor %}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="box-body">
+                            <div id="net-chart" style="height: 200px;" class="full-width-chart"></div>
+                          </div><!-- /.box-body-->
+                        </div><!-- /.box -->
+                      </div><!-- /.col -->
+                    
+                     <div class="col-md-3">
+                        <!-- memery chart -->
+                        <div class="box box-primary">
+                          <div class="box-header with-border">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">磁盘IO</h3>
+                            <div class="box-tools pull-right">
+                              Real time
+                              <div class="btn-group" id="disk_realtime" data-toggle="btn-toggle">
+                                <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+                              </div>
+                              <div class="btn-group" id="device_disk">
+                                <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+                                <ul class="dropdown-menu pull-right" role="menu">
+                                  {% for item in deviece.MEMORY %}
+                                  <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                                  {% endfor %}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="box-body">
+                            <div id="disk-chart" style="height: 200px;" class="full-width-chart"></div>
+                          </div><!-- /.box-body-->
+                        </div><!-- /.box -->
+                      </div><!-- /.col -->
+                      
                </div><!-- /.row -->
                
               </div><!-- /.box-body-->
@@ -283,8 +323,7 @@
 
      </div><!-- /.content-wrapper -->
     {% endblock %}
-      
-    {% block script %}
+   {% block script %}
       <script src="{% static "plugins/flot/jquery.flot.min.js" %}"></script>
       <script src="{% static "plugins/flot/jquery.flot.resize.min.js" %}"></script>
       <script src="{% static "plugins/flot/jquery.flot.pie.min.js" %}"></script>

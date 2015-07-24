@@ -18,6 +18,15 @@ def index_update(request):
     data = dict(data1=d1, data2=d2)
     return HttpResponse(json.dumps(data))
 
+def vplatform(request):
+    return render_to_response('Vplatform.html')
+
+def network(request):
+    return render_to_response('Network.html')
+
+def virtualMachine_static(request):
+    return render_to_response('VirtualMachine_static.html')
+    
 def virtualMachine(request):
     vm_id = request.GET.get('uuid')
     query = DeviceModel.objects(UUID=vm_id)
@@ -44,6 +53,19 @@ def virtualMachine_update(request):
         info[data.KEY] = json.loads(data.VALUE)         
     return HttpResponse(json.dumps(info))
 
+def login(request):
+    if request.method == 'POST':
+        username = str(request.POST.get('username'))
+        password = str(request.POST.get('password'))
+        if (username.strip() == "islab@whu.edu") & (password.strip() == "whu"):
+            return HttpResponseRedirect('index')
+        else:
+            return render_to_response('login.html',{'ushow':request.GET.get('username')})
+            #return render_to_response('login.html')
+    return render_to_response('login.html',{'ushow':'username'})
+
+def usersManager(request):
+    return render_to_response('users.html')
 if __name__ == '__main__':
     from models import Employee
     for e in Employee.objects.all():
