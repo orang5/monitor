@@ -41,7 +41,7 @@ def plugin_info_tags():
     
 def publish(met, debug=False):
     met.ts["latest"] = time.time()
-    met.update_tags(**plugin_info_tags())
+   # met.update_tags(**plugin_info_tags())
     if not debug:
         mq.local_publish(met.message_json())
     else: print "[" + info.name +"] publish -> ", met.message_json() 

@@ -5,27 +5,13 @@ import time, datetime
 from models import *
 
 def callback(met):
-    # backport
-    re_uuid = met.tags["uuid"]
-    re_ts = met.timestamp
-    infos = met.value
-    if met.type == "MoniterModel":
-        for info in infos:
-            for key, value in info.iteritems():
-                deviceID = key
-                for k,v in value.iteritems():
-                    model = MoniterModel(UUID = re_uuid, KEY = k, VALUE = json.dumps(v), TIME = datetime.fromtimestamp(re_ts), DEVICEID = deviceID)
-                  #  print "save -> ", met
-                    model.save()
-    elif met.type == "DeviceModel":
-        query = DeviceModel.objects(UUID=re_uuid)
-        if not query:
-            model = DeviceModel(UUID=re_uuid, CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
-          #  print "save -> ", met
-            model.save()
+    mdl = from_metric(met)
+    if mdl:
+        print "[ " + str(mdl.__class__).split(".")[-1].replace("'>", "") + " ] " + met.name + " value=" + str(met.value) + " " +  " ".join(["%s=%s" % (k, v) for k, v in met.tags.iteritems()])
+        if isinstance(mdl, list):
+            for m in mdl: m.save()
         else:
-            DeviceModel.objects(UUID=re_uuid).update(CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
-
+            mdl.save()    
     else:
         print "received: ", met.message_json()
 
