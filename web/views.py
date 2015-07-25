@@ -25,7 +25,11 @@ def network(request):
     return render_to_response('Network.html')
 
 def virtualMachine_static(request):
-    return render_to_response('VirtualMachine_static.html')
+    vm_id = request.GET.get('uuid')
+    query = DeviceModel.objects(UUID=vm_id)
+    for q in query:
+        device_dict = {'CPU':json.loads(q.CPU),'DISK':json.loads(q.DISK),'MEMORY':json.loads(q.MEMORY),'NETWORK':json.loads(q.Network_Adapter)}    
+    return render_to_response('VirtualMachine_static.html',{'deviece':device_dict})
     
 def virtualMachine(request):
     vm_id = request.GET.get('uuid')
@@ -40,7 +44,7 @@ def virtualMachine_update(request):
     device_id = request.GET.get('DeviceId')
     
     device_type = request.GET.get('DeviceType')
-    t = datetime.strptime('2015-05-04 11:04:35', '%Y-%m-%d %H:%M:%S')
+    #t = datetime.strptime('2015-05-04 11:04:35', '%Y-%m-%d %H:%M:%S')
     timestamp = request.GET.get('Time')
     date_obj = datetime.fromtimestamp(int(timestamp)/1000)
     datasets = MoniterModel.objects(UUID = vm_id,DEVICEID = device_id,TIME=date_obj)

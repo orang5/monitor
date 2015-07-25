@@ -2,6 +2,8 @@
 import threading
 import pika
 from agent_types import Metric
+import logging
+logging.getLogger('pika').setLevel(logging.DEBUG)
 
 # use SelectConnection to maintain loop & consumers
 # it's all async (very nasty)
@@ -151,7 +153,7 @@ def queue_callback(func):
 def setup_local_queue(callback=None):
     global localq
     global local_callback
-    q = MQ(r"amqp://monitor:root@localhost:5672/")
+    q = MQ(r"amqp://monitor:root@localhost:5672/%2f")
     localq = q
     if callback: local_callback = callback
     
@@ -169,7 +171,7 @@ def setup_local_queue(callback=None):
 def setup_remote_queue(callback=None):
     global remoteq
     global remote_callback
-    q = MQ(r"amqp://monitor:root@192.168.133.1:5672/")
+    q = MQ(r"amqp://monitor:root@172.16.174.5:5672/%2f")
     remoteq = q
     if callback: remote_callback = callback
 

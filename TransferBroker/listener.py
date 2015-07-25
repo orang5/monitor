@@ -9,6 +9,7 @@ def callback(met):
     re_uuid = met.tags["uuid"]
     re_ts = met.timestamp
     infos = met.value
+    print "received_all: ", met.message_json()
     if met.type == "MoniterModel":
         for info in infos:
             for key, value in info.iteritems():
@@ -27,7 +28,7 @@ def callback(met):
             DeviceModel.objects(UUID=re_uuid).update(CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
 
     else:
-        print "received: ", met.message_json()
+        print "received_else: ", met.message_json()
 
 queue = mq.setup_remote_queue(callback)
 queue.worker.join()
