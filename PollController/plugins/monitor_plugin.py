@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 # this is the common import file for all monitor plugins
+# fixme: actually needs agent_* import files, which is not standalone
 import sys, os, inspect, subprocess, shlex
 up_one_level = os.path.dirname(os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe()))))
 sys.path.append(up_one_level)
 
 import time, json
 import mq, agent_types, agent_utils
-
-# init local mq queue with PollController
-mq.setup_local_queue()
 
 info = None
 metrics = {}
@@ -35,7 +33,11 @@ def plugin_info(filename):
         metrics[m.interval] = metrics.get(m.interval, [])
         ts[m.interval] = time.time() - m.interval-1
         metrics[m.interval].append(agent_types.Metric._make(m))
-    
+        
+    if info.type == "platform":
+        # init local mq queue with PollController
+        mq.setup_local_queue()    
+
 def plugin_info_tags():
     return dict(plugin=info.name, pid=os.getpid())
     
@@ -44,7 +46,10 @@ def publish(met, debug=False):
    # met.update_tags(**plugin_info_tags())
     if not debug:
         mq.local_publish(met.message_json())
-    else: print "[" + info.name +"] publish -> ", met.message_json() 
+    else: print "[" + info.name +"] publish -> ", met.message_json()
+
+def json_result(obj):
+    return agent_utils.to_json(obj)
     
 # round-robin routine helper
 # worker: update value for given Metric object. 

@@ -20,7 +20,9 @@ class CommandWorker(threading.Thread):
             m = self.q.get()
             m.ts['execute'] = time.time()
             print self.name, m.cmdline()
+            
             m.value = os.popen(m.cmdline()).read().rstrip("\n\r")
+            
             # commands.getstatusoutput(m.cmdline())
             m.ts['latest'] = time.time()
             # todo: send

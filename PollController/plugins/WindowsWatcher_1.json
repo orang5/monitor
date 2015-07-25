@@ -10,7 +10,6 @@
     { "name" : "cpu_CurrentClockSpeed", "type" : "metric", "interval" : 3},
     { "name" : "cpu_NumberOfCores", "type" : "config", "interval" : 60},
     { "name" : "cpu_MaxClockSpeed", "type" : "config", "interval" : 60},
-    { "name" : "cpu_MaxClockSpeed", "type" : "config", "interval" : 60},
     { "name" : "cpu_NumberOfLogicalProcessors", "type" : "config", "interval" : 60},
     { "name" : "cpu_Description", "type" : "config", "interval" : 60},
     { "name" : "cpu_Name", "type" : "config", "interval" : 60},

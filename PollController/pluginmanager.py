@@ -35,10 +35,8 @@ def load_plugin(fname):
             print ">", m.name
     elif p.type == "platform":
         print "start platform plugin: ", p.cmd_list["start"]
-        os.chdir("plugins") # hard coded here
         p.handle = subprocess.Popen(shlex.split(p.cmd_list["start"]))
         print "> pid =", p.pid
-        os.chdir("..")
     return p
 
 def load_all(path):
@@ -82,6 +80,7 @@ def _test_callback(body):
 def _test():
     init_queue()
     load_all("plugins")
+    os.chdir("plugins") # hard coded here
     start()
 
 if __name__ == "__main__" : _test()
