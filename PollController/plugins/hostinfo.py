@@ -34,7 +34,7 @@ cpu_list = []
 mem_list = []
 
 for cpu in win_cpu:
-    cpu_list.append(dict(Name=cpu.Name, MaxClockSpeed=cpu.MaxClockSpeed,
+    cpu_list.append(dict(caption=cpu.Name, MaxClockSpeed=cpu.MaxClockSpeed,
                          NumberOfCores=cpu.NumberOfCores, NumberOfLogicalProcessors=cpu.NumberOfLogicalProcessors))
 for mem in win_mem:
     mem_list.append(dict(Name=mem.DeviceLocator, Capacity=mem.Capacity))

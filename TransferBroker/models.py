@@ -3,6 +3,7 @@ from datetime import datetime
 import json, time
 import agent_utils
 from agent_types import *
+import models_displayname as display
 
 connect("MoniterDB")
 
@@ -10,7 +11,7 @@ connect("MoniterDB")
 class MetricModel(DynamicDocument):
     name = StringField(max_length=300)
     timestamp = DateTimeField()
-    value = FloatField()
+    value = DynamicField()
     # tags: will be dynamically added
     
 class ConfigModel(DynamicDocument):
@@ -31,12 +32,13 @@ class UserInfoModel(DynamicDocument):
 
 # InventoryModel stores entity index and info
 class InventoryInfoModel(DynamicDocument):
-    uuid = StringField(max_length=300) # , primary_key=True)
     name = StringField(max_length=300)
-    parent = StringField(max_length=300) # parent entity
+    host = StringField(max_length=300) # changed Jul 28: host uid(mac)
     owner = StringField(max_length=300) # owner(user/group)
     subitems = ListField(StringField(max_length=300)) #     
-    type = StringField(max_length=300)
+    display_name = StringField(max_length=300)
+    timestamp = DateTimeField()
+    
 '''
 # Hostinfo model
 class HostInfoModel(DynamicDocument):
@@ -150,6 +152,7 @@ class DeviceModel(Document):
 class platform(Document):
     VMLIST = StringField()    
     
+# factory method
 # get specific metric model object from Metric object
 def from_metric(met):
     ret = None
@@ -159,9 +162,9 @@ def from_metric(met):
         ret = MetricModel()
     elif met.type == "inventory":
         ret = InventoryInfoModel()
-        ret.parent = met.tags["uuid"]
-        ret.type = met.name
-        
+        ret.host = met.tags["uuid"]
+        ret.display_name = display.names[met.name]
+                
     # backport
     elif met.type == "MoniterModel":
         re_uuid = met.tags["uuid"]

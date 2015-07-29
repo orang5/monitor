@@ -65,6 +65,7 @@ def update_metrics(worker, **kwargs):
             for met in metrics[intv]:
                 met.ts["execute"] = time.time()
                 met.last_value = met.value
+                met.tags = {}
             
             if not kwargs["group"]:
                 for met in metrics[intv]:
