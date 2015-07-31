@@ -162,7 +162,6 @@ function vessel(interval, caption, plot, point,device_id){
       self.time = new Date(self.time.getTime() + 1000)
       if (self.caption == 'cpu')
       { 
-        alert(res.cpu_LoadPercentage.volume)
         self.queue0.push.apply(self.queue0, [res.cpu_LoadPercentage.volume]);
         $("#cpu_speed").html(res.cpu_CurrentClockSpeed.volume+res.cpu_CurrentClockSpeed.unit)
         $("#cpu_Availability").html(res.cpu_LoadPercentage.volume+res.cpu_LoadPercentage.unit)
@@ -173,7 +172,6 @@ function vessel(interval, caption, plot, point,device_id){
  
       if (self.caption == 'mem')
       {
-        alert('mem')
         self.queue0.push.apply(self.queue0, [res.mem_Free.volume]);
         $("#mem_Capacity").html(res.mem_Capacity.volume+res.mem_Capacity.unit)
         $("#mem_SwapTotal").html(res.mem_SwapTotal.volume+res.mem_SwapTotal.unit)
@@ -183,7 +181,6 @@ function vessel(interval, caption, plot, point,device_id){
       
       if (self.caption == 'net')
       { 
-        alert('net')
         self.queue0.push.apply(self.queue0, [res.net_bytes_out.volume]);
         self.queue1.push.apply(self.queue1, [res.net_bytes_in.volume]);
         $("#net_MACAddress").html(res.net_MACAddress)
@@ -193,7 +190,6 @@ function vessel(interval, caption, plot, point,device_id){
       }
       if (self.caption == 'disk')
       {
-        alert('disk')
         self.queue0.push.apply(self.queue0, [res.io_stat_read.volume]);
         self.queue1.push.apply(self.queue1, [res.io_stat_write.volume]);
         $("#disk_FreeSpace").html(res.disk_FreeSpace.volume+res.disk_FreeSpace.unit)

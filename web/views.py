@@ -70,6 +70,10 @@ def login(request):
 
 def usersManager(request):
     return render_to_response('users.html')
+    
+def management(request):
+    return render_to_response('Management.html')
+    
 if __name__ == '__main__':
     from models import Employee
     for e in Employee.objects.all():

@@ -9,7 +9,6 @@ def callback(met):
     re_uuid = met.tags["uuid"]
     re_ts = met.timestamp
     infos = met.value
-    print "received_all: ", met.message_json()
     if met.type == "MoniterModel":
         for info in infos:
             for key, value in info.iteritems():

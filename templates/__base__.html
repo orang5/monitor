@@ -100,10 +100,16 @@
           <!-- /.search form -->
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
-            <li class>
-              <a href="/index/">
-                <i class="fa fa-dashboard"></i> <span>仪表板</span> 
+          
+             <li class="treeview active">
+              <a href="#">
+                <i class="fa fa-desktop"></i> <span>仪表板</span>
+                <i class="fa fa-angle-left pull-right"></i>
               </a>
+              <ul class="treeview-menu">
+                <li><a href="/index/"><i class="fa fa-book"></i> 资源概览</a></li>
+                <li><a href="/Vplatform/"><i class="fa fa-book"></i>平台信息</a></li>
+              </ul>
             </li>
             <li class="treeview active">
               <a href="#">
@@ -111,7 +117,6 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="/Vplatform/"><i class="fa fa-book"></i>平台信息</a></li>
                 <li class="treeview active">
                   <a href="#"><i class="fa fa-laptop"></i> 主机1 <i class="fa fa-angle-left pull-right"></i></a>
                   <ul class="treeview-menu">
@@ -135,7 +140,7 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="/VirtualMachine_static/"><i class="fa fa-circle-o"></i> 服务器1</a></li>
+                <li><a href="/VirtualMachine_static/?uuid=a41f724e5fb8"><i class="fa fa-circle-o"></i> 服务器1</a></li>
                 <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i> 服务器2</a></li>
                 <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> 服务器3</a></li>
               </ul>
@@ -153,6 +158,11 @@
               </a>
             </li>
             
+            <li class>
+              <a href="/Management/">
+                <i class="fa fa-wrench"></i> <span>集群管理</span> 
+              </a>
+            </li>            
             <li class="header"></li>
             <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>联系我们</span></a></li>
             <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>关于</span></a></li>
