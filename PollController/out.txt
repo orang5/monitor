@@ -1,0 +1,312 @@
+start  Thread-1
+start  Thread-2
+open BlockingConnection (control flow) ->  amqp://monitor:root@192.168.133.1:5672/
+MQWorker: open SelectConnection (data flow) ->  amqp://monitor:root@192.168.133.1:5672/
+start ioloop...wait for remote MQWorker...
+
+in create_channel
+MQWorker: connection is ready.
+exchange:  monitor.remote
+queue:  monitor.remote
+bind: ( monitor.remote , remote ) -> queue: monitor.remote
+open BlockingConnection (control flow) ->  amqp://monitor:root@localhost:5672/
+MQWorker: open SelectConnection (data flow) ->  amqp://monitor:root@localhost:5672/
+start ioloop...wait for local MQWorker...
+
+in create_channel
+MQWorker: connection is ready.
+exchange:  monitor.exc
+queue:  monitor.local
+bind: ( monitor.exc , local ) -> queue: monitor.local
+start consuming from queue: monitor.local
+load_plugin  hostinfo
+> host.info
+load_plugin  test
+> test.username
+load_plugin  testmq
+start platform plugin:  python testmq.py
+> pid = 8948
+load_plugin  WindowsWatcher
+start platform plugin:  python WindowsWatcher_1.py
+> pid = 4308
+Thread-1 python hostinfo.py
+Thread-2 echo %USERNAME%
+send_metrics: {"name": "test.username", "tags": {"host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980301, "type": "config", "value": "viktor"}
+send_metrics: {"name": "dev_cpu", "tags": {"host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980302, "type": "inventory", "value": [{"caption": "Intel(R) Core(TM) i5-4200U CPU @ 1.60GHz", "index": "CPU0"}]}
+send_metrics: {"name": "dev_mem", "tags": {"host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980302, "type": "inventory", "value": [{"caption": "Physical Memory 0", "index": 0}]}
+send_metrics: {"name": "dev_disk", "tags": {"host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980303, "type": "inventory", "value": [{"caption": "C:", "index": 0}, {"caption": "E:", "index": 1}, {"caption": "F:", "index": 2}, {"caption": "G:", "index": 3}]}
+send_metrics: {"name": "dev_nic", "tags": {"host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980303, "type": "inventory", "value": [{"caption": "BCM43142 Wireless Network Adapter", "index": 0}, {"caption": "VMware Virtual Ethernet Adapter for VMnet8", "index": 1}]}
+send_metrics: {"name": "host.info", "tags": {"host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980303, "type": "inventory", "value": "{'number_of_logical_processors': 4, 'number_of_cores': 2, 'mem': [{'Capacity': u'4294967296', 'Name': u'SODIMM1'}, {'Capacity': u'4294967296', 'Name': u'SODIMM2'}], 'ip': ['192.168.133.1', '172.16.112.155'], 'hostname': 'viktor-laptop', 'mac': '30f9eda56de6', 'serial': u'00261-50000-00000-AA989', 'os': u'Microsoft Windows 8.1 \\u4e13\\u4e1a\\u7248 64 \\u4f4d', 'cpu': [{'NumberOfLogicalProcessors': 4, 'MaxClockSpeed': 1601, 'NumberOfCores': 2, 'Name': u'Intel(R) Core(TM) i5-4200U CPU @ 1.60GHz'}], 'mem_capacity': 8589934592L}"}
+send_metrics: {"name": "mem_SwapUsage", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980303, "type": "metric", "value": 975.0}
+send_metrics: {"name": "mem_SwapFree", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980303, "type": "metric", "value": 369.0}
+send_metrics: {"name": "cpu_LoadPercentage", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980304, "type": "metric", "value": 7}
+send_metrics: {"name": "cpu_CurrentClockSpeed", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980304, "type": "metric", "value": 1600}
+send_metrics: {"name": "mem_Free", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980304, "type": "metric", "value": 3008.21875}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980304, "type": "metric", "value": 55.36}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980304, "type": "metric", "value": 80.44}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980304, "type": "metric", "value": 52.04}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980304, "type": "metric", "value": 56.89}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980304, "type": "metric", "value": 86.88}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 19.56}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 87.96}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 3.65}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "_Total", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "C:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "E:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "F:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "G:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "H:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "HarddiskVolume1", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "M:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "_Total", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 349.9052734375}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "C:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 286.2861328125}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "E:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "F:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 63.619140625}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "G:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "H:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "HarddiskVolume1", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "M:", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 59}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 1992477299}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 1520}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 655}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 164560317}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 53864}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 59}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 1486544}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 10}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 653}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 1243184}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 389}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "metric", "value": 0}
+send_metrics: {"name": "cpu_NumberOfCores", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "config", "value": 2}
+send_metrics: {"name": "cpu_MaxClockSpeed", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "config", "value": 1601}
+send_metrics: {"name": "cpu_NumberOfLogicalProcessors", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "config", "value": 4}
+send_metrics: {"name": "cpu_Description", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "config", "value": "Intel64 Family 6 Model 69 Stepping 1"}
+send_metrics: {"name": "cpu_Name", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980305, "type": "config", "value": "Intel(R) Core(TM) i5-4200U CPU @ 1.60GHz"}
+send_metrics: {"name": "mem_Capacity", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": 4096.0}
+send_metrics: {"name": "mem_SwapTotal", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "metric", "value": 1344.0}
+send_metrics: {"name": "mem_Speed", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": null}
+send_metrics: {"name": "mem_DeviceLocator", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": "SODIMM1"}
+send_metrics: {"name": "disk_capacity", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": 142.24}
+send_metrics: {"name": "disk_capacity", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": 100.0}
+send_metrics: {"name": "disk_capacity", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": 140.0}
+send_metrics: {"name": "disk_capacity", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": 60.55}
+send_metrics: {"name": "disk_fstype", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": "NTFS"}
+send_metrics: {"name": "disk_fstype", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": "NTFS"}
+send_metrics: {"name": "disk_fstype", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": "NTFS"}
+send_metrics: {"name": "disk_fstype", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980306, "type": "config", "value": "NTFS"}
+send_metrics: {"name": "disk_size", "tags": {"Caption": "SD Card", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": 14.83}
+send_metrics: {"name": "disk_size", "tags": {"Caption": "SanDisk SanDisk Ultra USB Device", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": 14.76}
+send_metrics: {"name": "disk_size", "tags": {"Caption": "Crucial_CT480M500SSD1", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": 447.13}
+send_metrics: {"name": "net_MACAddress", "tags": {"Caption": "BCM43142 Wireless Network Adapter", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": "3C:77:E6:DA:BE:05"}
+send_metrics: {"name": "net_MACAddress", "tags": {"Caption": "VMware Virtual Ethernet Adapter for VMnet8", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": "00:50:56:C0:00:08"}
+send_metrics: {"name": "net_IPSubnet", "tags": {"Caption": "BCM43142 Wireless Network Adapter", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": ["255.255.252.0", "64"]}
+send_metrics: {"name": "net_IPSubnet", "tags": {"Caption": "VMware Virtual Ethernet Adapter for VMnet8", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": ["255.255.255.0", "64"]}
+send_metrics: {"name": "net_DefaultIPGateway", "tags": {"Caption": "BCM43142 Wireless Network Adapter", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": ["172.16.115.254"]}
+send_metrics: {"name": "net_DefaultIPGateway", "tags": {"Caption": "VMware Virtual Ethernet Adapter for VMnet8", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": null}
+send_metrics: {"name": "net_ip_address", "tags": {"Caption": "BCM43142 Wireless Network Adapter", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": ["172.16.112.155", "fe80::c592:2f39:b5a2:84a0"]}
+send_metrics: {"name": "net_ip_address", "tags": {"Caption": "VMware Virtual Ethernet Adapter for VMnet8", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980307, "type": "config", "value": ["192.168.133.1", "fe80::dd86:e933:717d:1d1f"]}
+send_metrics: {"name": "cpu_LoadPercentage", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 7}
+send_metrics: {"name": "cpu_CurrentClockSpeed", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 1100}
+send_metrics: {"name": "mem_Free", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 3017.7734375}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 55.36}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 80.44}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 52.03}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 56.89}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 86.88}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 19.56}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 87.97}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980309, "type": "metric", "value": 3.65}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "_Total", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "C:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "E:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "F:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "G:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "H:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "HarddiskVolume1", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "M:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "_Total", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 47.6923828125}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "C:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "E:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "F:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 47.6923828125}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "G:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "H:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "HarddiskVolume1", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "M:", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 6.70425270914791}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 3.861146983139726}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 59}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 1992481461}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 1520}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 655}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 164562714}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 53864}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 59}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 1486556}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 10}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 653}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 1243200}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 389}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980310, "type": "metric", "value": 0}
+send_metrics: {"name": "mem_SwapUsage", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 975.0}
+send_metrics: {"name": "mem_SwapFree", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 369.0}
+send_metrics: {"name": "cpu_LoadPercentage", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 7}
+send_metrics: {"name": "cpu_CurrentClockSpeed", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 1100}
+send_metrics: {"name": "mem_Free", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 3021.82421875}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 55.36}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 80.44}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 52.03}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 56.89}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 86.88}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 19.56}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 87.97}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 3.65}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "_Total", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 265.546875}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "C:", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "E:", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "F:", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 265.546875}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "G:", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "H:", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "HarddiskVolume1", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_read", "tags": {"host": "viktor-laptop", "item_name": "M:", "uuid": "30f9eda56de6"}, "timestamp": 1437980312, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "_Total", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 8170.3896484375}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "C:", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 8170.3896484375}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "E:", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "F:", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "G:", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "H:", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "HarddiskVolume1", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "disk_io_stat_write", "tags": {"host": "viktor-laptop", "item_name": "M:", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 9.056296204040272}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 3.4668158739442276}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_out", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0.0}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 59}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 1992484439}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 1520}
+send_metrics: {"name": "net_bytes_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 655}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 164563854}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 53864}
+send_metrics: {"name": "net_bytes_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 59}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 1486562}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 10}
+send_metrics: {"name": "net_pkts_in_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Realtek PCIe GBE Family Controller", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "VMware Virtual Ethernet Adapter for VMnet8", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 653}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "BCM43142 Wireless Network Adapter", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 1243209}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{6BD95597-9BB0-4470-8109-764E6A4A94FD}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "Teredo Tunneling Pseudo-Interface", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 389}
+send_metrics: {"name": "net_pkts_out_cur", "tags": {"host": "viktor-laptop", "item_name": "isatap.{30970117-E805-4F05-8914-4B2C0B1A0FC5}", "uuid": "30f9eda56de6"}, "timestamp": 1437980313, "type": "metric", "value": 0}
+send_metrics: {"name": "cpu_LoadPercentage", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980316, "type": "metric", "value": 8}
+send_metrics: {"name": "cpu_CurrentClockSpeed", "tags": {"DeviceID": "CPU0", "host": "viktor-laptop", "uuid": "30f9eda56de6"}, "timestamp": 1437980316, "type": "metric", "value": 1600}
+send_metrics: {"name": "mem_Free", "tags": {"host": "viktor-laptop", "tag": "Physical Memory 0", "uuid": "30f9eda56de6"}, "timestamp": 1437980316, "type": "metric", "value": 3024.8359375}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980316, "type": "metric", "value": 55.36}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980316, "type": "metric", "value": 80.44}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980316, "type": "metric", "value": 52.03}
+send_metrics: {"name": "disk_FreeSpace", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980316, "type": "metric", "value": 56.89}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "C:", "host": "viktor-laptop", "index": 0, "uuid": "30f9eda56de6"}, "timestamp": 1437980317, "type": "metric", "value": 86.88}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "E:", "host": "viktor-laptop", "index": 1, "uuid": "30f9eda56de6"}, "timestamp": 1437980317, "type": "metric", "value": 19.56}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "F:", "host": "viktor-laptop", "index": 2, "uuid": "30f9eda56de6"}, "timestamp": 1437980317, "type": "metric", "value": 87.97}
+send_metrics: {"name": "disk_Used", "tags": {"DeviceID": "G:", "host": "viktor-laptop", "index": 3, "uuid": "30f9eda56de6"}, "timestamp": 1437980317, "type": "metric", "value": 3.65}
+open BlockingConnection (control flow) ->  amqp://monitor:root@localhost:5672/
+MQWorker: open SelectConnection (data flow) ->  amqp://monitor:root@localhost:5672/
+start ioloop...wait for local MQWorker...
+
+in create_channel
+MQWorker: connection is ready.
+exchange:  monitor.exc
+queue:  monitor.local
+bind: ( monitor.exc , local ) -> queue: monitor.local
+{'args': {}, 'name': u'test.username', 'tags': {}, 'timestamp': 1437980301, 'cmd': u'echo %USERNAME%', 'enabled': True, 'ts': {'execute': 1437980301.643, 'latest': 1437980301.584}, 'value': 'viktor', 'interval': 30, 'type': u'config', 'last_value': None, '__class__': 'Metric'}
+[testmq] update_metrics ->  0.00800013542175 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+[testmq] update_metrics ->  0.0 secs
+open BlockingConnection (control flow) ->  amqp://monitor:root@localhost:5672/
+MQWorker: open SelectConnection (data flow) ->  amqp://monitor:root@localhost:5672/
+wait for local MQWorker...
+start ioloop...
+in create_channel
+MQWorker: connection is ready.
+exchange:  monitor.exc
+queue:  monitor.local
+bind: ( monitor.exc , local ) -> queue: monitor.local
+[WinWatcher] init WMI...
+[WinWatcher] start main loop...
+[WindowsWatcher] update_metrics ->  5.77199983597 secs
+[WindowsWatcher] update_metrics ->  2.35799980164 secs
+[WindowsWatcher] update_metrics ->  1.58500003815 secs
+[WindowsWatcher] update_metrics ->  0.0 secs

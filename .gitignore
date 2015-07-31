@@ -7,3 +7,4 @@ deploy_key_rsa
 monitor.wpr
 monitor.wpu
 db.sqlite3
+*.csv

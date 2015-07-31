@@ -1,91 +1,82 @@
 from mongoengine import *
-from agent_types import *
 from datetime import datetime
+import json, time
+import agent_utils
+from agent_types import *
+import models_displayname as display
 
 connect("MoniterDB")
 
 # 0. METRIC models
-class BaseMetricModel(DynamicDocument):
+class MetricModel(DynamicDocument):
     name = StringField(max_length=300)
     timestamp = DateTimeField()
+    value = DynamicField()
     # tags: will be dynamically added
-    
-class MetricModel(DynamicDocument):
-    value = FloatField()
     
 class ConfigModel(DynamicDocument):
-    value = StringField()
-
-# get specific metric model object from Metric object
-def from_metric(met):
-    pass
+    name = StringField(max_length=300)
+    timestamp = DateTimeField()
+    value = DynamicField()
 
 # 1. STATIC INFO models
-
-class BaseInfoModel(DynamicDocument):
-    uuid = UUIDField(binary=False, primary_key=True)
-    name = StringField(max_length=300)
-    parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    # tags: will be dynamically added
-    # todo: add viewmodel?
-
 # user and group info
 class UserInfoModel(DynamicDocument):
-    uuid = UUIDField(binary=False, primary_key=True)
+    uuid = StringField(max_length=300, primary_key=True)
     name = StringField(max_length=300)
-    parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    
+    parent = StringField(max_length=300) # parent entity
+    owner = StringField(max_length=300) # owner(user/group)
+    subitems = ListField(StringField(max_length=300)) #     
     type = StringField(max_length=200) # user or group
-    inventory = ListField(UUIDField(binary=False)) # different from children(sub objects)
+    inventory = ListField(StringField(max_length=300)) # different from subitems(sub objects)
 
 # InventoryModel stores entity index and info
 class InventoryInfoModel(DynamicDocument):
-    uuid = UUIDField(binary=False, primary_key=True)
     name = StringField(max_length=300)
-    parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
+    host = StringField(max_length=300) # changed Jul 28: host uid(mac)
+    owner = StringField(max_length=300) # owner(user/group)
+    subitems = ListField(StringField(max_length=300)) #     
+    display_name = StringField(max_length=300)
+    timestamp = DateTimeField()
     
-    type = StringField(max_length=300)
-
+'''
 # Hostinfo model
 class HostInfoModel(DynamicDocument):
-    uuid = UUIDField(binary=False, primary_key=True)
+    uuid = StringField(max_length=300, primary_key=True)
     name = StringField(max_length=300)
-    parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    
+    parent = StringField(max_length=300) # parent entity
+    owner = StringField(max_length=300) # owner(user/group)
+    subitems = ListField(StringField(max_length=300)) #     
     address = StringField(max_length=32)
 
 class VMInfoModel(DynamicDocument):
-    uuid = UUIDField(binary=False, primary_key=True)
+    uuid = StringField(max_length=300, primary_key=True)
     name = StringField(max_length=300)
-    parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    
+    parent = StringField(max_length=300) # parent entity
+    owner = StringField(max_length=300) # owner(user/group)
+    subitems = ListField(StringField(max_length=300)) #     
     address = StringField(max_length=32)
-    vmid = UUIDField(binary=False)
+    vmid = StringField(max_length=300)
+    
+class ClusterInfoModel(DynamicDocument):
+    uuid = StringField(max_length=300, primary_key=True)
+    name = StringField(max_length=300)
+    parent = StringField(max_length=300) # parent entity
+    owner = StringField(max_length=300) # owner(user/group)
+    subitems = ListField(StringField(max_length=300)) #     
     
 class ServiceInfoModel(DynamicDocument):
-    uuid = UUIDField(binary=False, primary_key=True)
+    uuid = StringField(max_length=300, primary_key=True)
     name = StringField(max_length=300)
-    parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
+    parent = StringField(max_length=300) # parent entity
+    owner = StringField(max_length=300) # owner(user/group)
+    subitems = ListField(StringField(max_length=300)) # 
+'''
     
 class MetricInfoModel(DynamicDocument):
-    uuid = UUIDField(binary=False, primary_key=True)
+    uuid = StringField(max_length=300, primary_key=True)
     name = StringField(max_length=300)
-    parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
-    
+    parent = StringField(max_length=300) # parent entity
     type = StringField(max_length=300)
     description = StringField()
     interval = IntField()
@@ -99,11 +90,11 @@ class MetricInfoModel(DynamicDocument):
         pass
 
 class PluginInfoModel(DynamicDocument):
-    uuid = UUIDField(binary=False, primary_key=True)
+    uuid = StringField(max_length=300, primary_key=True)
     name = StringField(max_length=300)
-    parent = UUIDField(binary=False) # parent entity
-    owner = UUIDField(binary=False) # owner(user/group)
-    children = ListField(UUIDField(binary=False)) # 
+    parent = StringField(max_length=300) # parent entity
+    owner = StringField(max_length=300) # owner(user/group)
+    subitems = ListField(StringField(max_length=300)) # 
     
     description = StringField()
     type = StringField(max_length=300)
@@ -125,7 +116,7 @@ class PluginModel(DynamicDocument):
     uptime = DateTimeField()
 
 class AgentModel(DynamicDocument): 
-    host = UUIDField(binary=False)
+    host = StringField(max_length=300)
     # user = ReferenceField(UserModel)
     pid = IntField()
     uptime = DateTimeField()
@@ -159,4 +150,73 @@ class DeviceModel(Document):
     DISK = StringField(max_length=255, min_length=1)
 
 class platform(Document):
-    VMLIST = StringField()
+    VMLIST = StringField()    
+    
+# factory method
+# get specific metric model object from Metric object
+def from_metric(met):
+    ret = None
+    if met.type == "config":
+        ret = ConfigModel()
+    elif met.type == "metric":
+        ret = MetricModel()
+    elif met.type == "inventory":
+        ret = InventoryInfoModel()
+        ret.host = met.tags["uuid"]
+        ret.display_name = display.names[met.name]
+                
+    # backport
+    elif met.type == "MoniterModel":
+        re_uuid = met.tags["uuid"]
+        re_ts = met.timestamp
+        ret = []
+        for info in met.value:
+            for key, value in info.iteritems():
+                deviceID = key
+                for k,v in value.iteritems():
+                    model = MoniterModel(UUID = re_uuid, KEY = k, VALUE = json.dumps(v), TIME = datetime.fromtimestamp(re_ts), DEVICEID = deviceID)
+                  #  print "save -> ", met
+                    ret.append(model)
+        return ret
+    elif met.type == "DeviceModel":
+        re_uuid = met.tags["uuid"]
+        re_ts = met.timestamp
+        query = DeviceModel.objects(UUID=re_uuid)
+        if not query:
+            ret = DeviceModel(UUID=re_uuid, CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
+          #  print "save -> ", met
+            return ret
+        else:
+            DeviceModel.objects(UUID=re_uuid).update(CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
+            return None
+    else:
+        print "unknown metric:", met
+        ret = MetricModel()
+
+    ret.name = met.name
+    ret.timestamp = datetime.fromtimestamp(met.timestamp)
+    ret.value = met.value
+    for k, v in met.tags.iteritems():
+        setattr(ret, k, v)
+        
+    return ret
+    
+def _test():
+    model_list = [ConfigModel, MetricModel, UserInfoModel, InventoryInfoModel, MetricInfoModel, PluginInfoModel, 
+                  PluginModel, AgentModel, RuleModel, MoniterModel, DeviceModel]
+                  
+    for cls in model_list:
+        print cls
+        print "----------------------"
+
+        rows = []
+        for x in cls.objects(): 
+            for r in iter(x):
+                if r not in rows: rows.append(r)
+        
+        # csv format
+        print ",".join([r for r in rows])
+        for x in cls.objects():
+            print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
+
+if __name__ == "__main__": _test()

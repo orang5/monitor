@@ -2,6 +2,7 @@
 import json
 import collections
 import inspect
+import subprocess, shlex
 
 named_classes = {}
 
@@ -37,15 +38,17 @@ def to_dict(obj, classkey='__class__'):
         return obj
 
 def from_dict(d):
+    global named_classes
     # extract values (w/o '_')
     dd = {k : d[k] for k in d.keys() if not k.startswith('_')}
     # extract class name
     if d.has_key('__class__'):
         class_name = d['__class__']
         # save data structure in named_classes
-        if not named_classes.has_key(class_name):
-            named_classes[class_name] = collections.namedtuple(class_name, dd.keys())
+#        if not named_classes.has_key(class_name):
+#            named_classes[class_name] = collections.namedtuple(class_name, dd.keys())
         # use buffered namedtuples, caution: !assuming same data structure!
+        named_classes[class_name] = collections.namedtuple(class_name, dd.keys())
         return named_classes[class_name](*dd.values())
     else:
         return d
@@ -58,6 +61,14 @@ def to_json(obj):
 
 def from_json(str):
     return json.loads(str, object_hook=from_dict)
+    
+#def register_type(klass):
+#    global named_classes
+#    named_classes[klass.__name__] = klass
+
+def run_cmd(line):
+    line = "cmd /c \"" + line + "\""
+    return subprocess.check_output(shlex.split(line)).rstrip("\n\r")
 
 def _test():
     a = from_dict({'__class__':'MyTest', 'a':1, 'b':2, 'c':3})
@@ -65,3 +76,5 @@ def _test():
     print to_dict(a)
     print to_json(a)
     print from_json(to_json(a))
+
+if __name__ == "__main__" : _test()

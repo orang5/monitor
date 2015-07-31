@@ -25,16 +25,15 @@ def network(request):
     return render_to_response('Network.html')
 
 def virtualMachine_static(request):
-    return render_to_response('VirtualMachine_static.html')
-    
-def virtualMachine(request):
     vm_id = request.GET.get('uuid')
     query = DeviceModel.objects(UUID=vm_id)
     for q in query:
         device_dict = {'CPU':json.loads(q.CPU),'DISK':json.loads(q.DISK),'MEMORY':json.loads(q.MEMORY),'NETWORK':json.loads(q.Network_Adapter)}
-    return render_to_response('VirtualMachine.html',{'deviece':device_dict})
-
-
+    return render_to_response('VirtualMachine_static.html', {'deviece':device_dict})
+    
+def virtualMachine(request):
+    pass
+    
 def virtualMachine_update(request):
     vm_id = request.GET.get('uuid')
     device_id = request.GET.get('DeviceId')
