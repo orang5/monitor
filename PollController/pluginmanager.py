@@ -35,10 +35,8 @@ def load_plugin(fname):
             print ">", m.name
     elif p.type == "platform":
         print "start platform plugin: ", p.cmd_list["start"]
-        os.chdir("plugins") # hard coded here
         p.handle = subprocess.Popen(shlex.split(p.cmd_list["start"]))
         print "> pid =", p.pid
-        os.chdir("..")
     return p
 
 def load_all(path):
@@ -50,8 +48,8 @@ def send_metrics(met):
     # add tags
     met.update_tags(uuid=agent_info.host_id(), host=agent_info.hostname)
     if met.tags.has_key("plugin"):
-        print "send_metrics: (", met.tags["plugin"], "):", met.message_json()
-    else: print "send_metrics:", met.message_json()
+        print "send_metrics: (", met.tags["plugin"], "):", met.name, len(met.message_json())
+    else: print "send_metrics:", met.name, len(met.message_json())
     # send
     mq.remote_publish(met.message_json())
     print met.message_json()
@@ -82,7 +80,8 @@ def _test_callback(body):
 
 def _test():
     init_queue()
-    load_all("plugins")
+    os.chdir("plugins") # hard coded here
+    load_all(".")    
     start()
 
 if __name__ == "__main__" : _test()

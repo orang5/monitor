@@ -10,7 +10,6 @@
     { "name" : "cpu_CurrentClockSpeed", "type" : "metric", "interval" : 3},
     { "name" : "cpu_NumberOfCores", "type" : "config", "interval" : 60},
     { "name" : "cpu_MaxClockSpeed", "type" : "config", "interval" : 60},
-    { "name" : "cpu_MaxClockSpeed", "type" : "config", "interval" : 60},
     { "name" : "cpu_NumberOfLogicalProcessors", "type" : "config", "interval" : 60},
     { "name" : "cpu_Description", "type" : "config", "interval" : 60},
     { "name" : "cpu_Name", "type" : "config", "interval" : 60},
@@ -31,7 +30,7 @@
     { "name" : "disk_io_stat_write", "type" : "metric", "interval" : 3},
     { "name" : "disk_size", "type" : "config", "interval" : 60},
     
-    { "name" : "net_MACAddress", "type" : "config", "interval" : 60},
+    { "name" : "net_Caption", "type" : "config", "interval" : 60},
     { "name" : "net_IPSubnet", "type" : "config", "interval" : 60},
     { "name" : "net_DefaultIPGateway", "type" : "config", "interval" : 60},
     { "name" : "net_ip_address", "type" : "config", "interval" : 60},
@@ -46,6 +45,8 @@
     { "name" : "dev_cpu", "type" : "inventory", "interval" : 300},     
     { "name" : "dev_mem", "type" : "inventory", "interval" : 300},   
     { "name" : "dev_disk", "type" : "inventory", "interval" : 300},    
-    { "name" : "dev_nic", "type" : "inventory", "interval" : 300}
+    { "name" : "dev_nic", "type" : "inventory", "interval" : 300},  
+      
+    { "name" : "process_list", "type" : "metric", "interval" : 15}
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "name" : "hostinfo",
+  "description" : "returns basic host info",
+  "type" : "shell",
+  "metrics" : [
+    {
+      "name" : "host.info",
+      "type" : "inventory",
+      "interval" : 300,
+      "cmd" : "python hostinfo.py"
+    }
+  ]
+}

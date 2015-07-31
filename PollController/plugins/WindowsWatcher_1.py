@@ -43,26 +43,11 @@ class WinWatcher(object):
         self.obj = client.GetObject("winmgmts:\\root\cimv2")
         self.com = client.Dispatch("WbemScripting.SWbemRefresher")
         
-#    @with_wmi
-    def sys_version(self):
-        con = wmi.WMI(moniker = "//./root/cimv2")
-        for sys in con.Win32_OperatingSystem():
-            for k in sys.properties:
-                print getattr(sys, k)
-            #print "Version:%s" % sys.Caption,"Vernum:%s" % sys.BuildNumber 
-            #print 'OS Architecture: %s' % sys.OSArchitecture
+def format_mac(mac):
+    return "".join(mac.split(":")).lower()
 
-   # @with_wmi    
-    def current_process(self):         
-        com = client.Dispatch("WbemScripting.SWbemRefresher")
-        obj = client.GetObject("winmgmts:\\root\cimv2")
-        items = com.AddEnum(obj, "Win32_PerfFormattedData_PerfProc_Process").objectSet
-        com.Refresh()
-        for item in items:
-            timestamp = time.strftime('%a, %d %b %Y %H:%M:%S', time.localtime())
-            print item.IDProcess, item.Name, item.PriorityBase, item.VirtualBytes, item.PoolNonpagedBytes, item.PoolPagedBytes, item.PercentProcessorTime, item.WorkingSet, timestamp    
-     
 def metric_worker(met):
+    global net_bytes
     names = met.name.split("_", 1)
     if names[0] == "cpu":
         global perf
@@ -84,25 +69,31 @@ def metric_worker(met):
     elif names[0] == "mem":
         info_dict = {}
         cp = win.wmi.Win32_PhysicalMemory()
-        os = win.wmi.Win32_OperatingSystem()
-        pfu = win.wmi.Win32_PageFileUsage()  
-        info_dict['mem_Capacity'] =  float(cp[0].Capacity) / (1024*1024)    # 'unit':'MB'}
-        info_dict['mem_Free'] =  float(os[0].FreePhysicalMemory) / 1024     # 'unit':'MB'}
-        info_dict['mem_SwapTotal'] = float(pfu[0].AllocatedBaseSize)        # 'unit':'MB'}
-        info_dict['mem_SwapUsage'] = float(pfu[0].CurrentUsage)             #   'unit':'MB'}
-        info_dict["mem_SwapFree"] = float(pfu[0].AllocatedBaseSize - pfu[0].CurrentUsage) # 'unit':'MB'}
-        info_dict['mem_Speed'] =  cp[0].Speed       # 'unit':'MHZ'}
-        info_dict['mem_DeviceLocator'] = cp[0].DeviceLocator
         
-        met.value = info_dict[met.name]
-        met.tags["tag"] = cp[0].Tag
-        publish(met)        
+        if met.name == "mem_Capacity" or met.name == "mem_Speed" or met.name == "mem_DeviceLocator":
+            for mm in cp:
+                info_dict['mem_Capacity'] =  float(mm.Capacity) / (1024*1024)    # 'unit':'MB'}
+                info_dict['mem_Speed'] =  mm.Speed       # 'unit':'MHZ'}
+                info_dict['mem_DeviceLocator'] = mm.DeviceLocator
+                met.value = info_dict[met.name]
+                met.tags["tag"] = mm.Tag
+                publish(met)        
+        else:
+            os = win.wmi.Win32_OperatingSystem()
+            pfu = win.wmi.Win32_PageFileUsage()  
 
+            info_dict['mem_Free'] =  float(os[0].FreePhysicalMemory) / 1024     # 'unit':'MB'}
+            info_dict['mem_SwapTotal'] = float(pfu[0].AllocatedBaseSize)        # 'unit':'MB'}
+            info_dict['mem_SwapUsage'] = float(pfu[0].CurrentUsage)             #   'unit':'MB'}
+            info_dict["mem_SwapFree"] = float(pfu[0].AllocatedBaseSize - pfu[0].CurrentUsage) # 'unit':'MB'}
+            met.value = info_dict[met.name]
+            publish(met)     
+            
     elif names[0] == "disk":
         if names[1] == "size":
             for physical_disk in win.wmi.Win32_DiskDrive():
                 met.value = round(float(physical_disk.Size) / (1024*1024*1024), 2) # 'unit':'GB'}
-                met.tags["Caption"] = physical_disk.Caption
+                met.tags["caption"] = physical_disk.Caption
                 publish(met)
         elif names[1].startswith("io"):
             diskitems = win.com.AddEnum(win.obj, "Win32_PerfFormattedData_PerfDisk_LogicalDisk").objectSet
@@ -114,7 +105,7 @@ def metric_worker(met):
                     disk_dict['io_stat_write'] = float(item.DiskWriteBytesPerSec) / 1024    # 'unit':'KB/s'}
                 except: pass                
                 met.value = disk_dict[names[1]]
-                met.tags["item_name"] = item.Name
+                met.tags["caption"] = item.Name
                 publish(met)
             win.com.DeleteAll()
         else:
@@ -127,41 +118,46 @@ def metric_worker(met):
                 info_dict['disk_fstype'] = disk.FileSystem
                 
                 met.value = info_dict[met.name]
-                met.tags["DeviceID"] = disk.DeviceID
+                met.tags["caption"] = disk.DeviceID
                 met.tags["index"] = i
                 publish(met)
                 
     elif names[0] == "net":
+        net_info = []
+        net_dict = {}
         if met.type == "config":
-            net_info = []
-            net_dict = {}
             net_id_disk = {}
             for i,interface in enumerate(win.wmi.Win32_NetworkAdapterConfiguration (IPEnabled=1)):
+                met.tags = {}
                 info_dict = {}
                 info_dict['net_MACAddress'] = interface.MACAddress
                 info_dict['net_IPSubnet'] = interface.IPSubnet
                 info_dict['net_DefaultIPGateway'] = interface.DefaultIPGateway
                 info_dict['net_ip_address'] = []
-                info_dict['Caption'] = interface.Description
+                info_dict['net_Caption'] = interface.Description
                 if not interface.IPAddress is None:
                     for ip_address in interface.IPAddress:
                         info_dict['net_ip_address'].append(ip_address)
                         
                 met.value = info_dict[met.name]
-                met.tags["Caption"] = interface.Description
+                
+                if net_bytes[interface.Description].has_key("mac"):
+                    met.tags["mac"] = net_bytes[interface.Description]["mac"]
+                else:
+                    met.tags["caption"] = interface.Description
+
                 met.tags["index"] = i
                 publish(met)
         else:     
-            global net_bytes
-            net_dict = {}
             items = win.com.AddEnum(win.obj, "Win32_PerfRawData_Tcpip_NetworkInterface").objectSet
-            win.com.Refresh()            
+            win.com.Refresh() 
             for item in items:
+                met.tags = {}
                 # internal routine: update net perf aggregated values
                 ts = time.time()
-                if not net_bytes.has_key(item.Name):
-                    net_bytes[item.Name] = {"in" : long(item.BytesReceivedPerSec), "out" : long(item.BytesSentPerSec),
-                                       "s_in" : 0, "s_out" : 0, "ts" : ts}                     
+                if not net_bytes.has_key(item.Name): net_bytes[item.Name] = {}
+                net_bytes[item.Name].update({"in":long(item.BytesReceivedPerSec), "out":long(item.BytesSentPerSec),
+                                            "s_in":0, "s_out":0, "ts":ts})                     
                 it = net_bytes[item.Name]                
                 dt = ts - it["ts"]
 
@@ -183,28 +179,53 @@ def metric_worker(met):
                 net_dict["net_bytes_out"] = it["s_out"]
                 
                 met.value = net_dict[met.name]
-                met.tags["item_name"] = item.Name
+                
+                if net_bytes[item.Name].has_key("mac"):
+                    met.tags["mac"] = net_bytes[item.Name]["mac"]
+                else:
+                    met.tags["caption"] = item.Name
                 publish(met)
                 
             win.com.DeleteAll()
                    
     elif names[0] == "dev":
-        result = []
         if names[1] == "cpu":
             for cpu in win.wmi.Win32_Processor():
-                result.append({'caption':cpu.Name,'index':cpu.DeviceID})
+                met.tags['index'] = cpu.DeviceID
+                met.value = dict(index = cpu.DeviceID, caption = cpu.Name)
+                publish(met)
         elif names[1] == "disk":
             for i,disk in enumerate(win.wmi.Win32_LogicalDisk (DriveType=3)):
-                result.append({'caption':disk.DeviceID,'index':i})
+                met.tags['index'] = i
+                met.value = dict(index = i, caption = disk.DeviceID)
+                publish(met)
         elif names[1] == "nic":                
-            for i,interface in enumerate(win.wmi.Win32_NetworkAdapterConfiguration (IPEnabled=1)):
-                result.append({'caption':interface.Description,'index':i})   
+            for i,interface in enumerate(win.wmi.Win32_NetworkAdapterConfiguration ()):
+                if interface.MACAddress:
+                    met.tags = {}
+                    met.tags['index'] = i
+                    met.value = dict(mac=format_mac(interface.MACAddress), caption=interface.Description, index=i) 
+                    met.tags['mac'] = format_mac(interface.MACAddress)
+                    publish(met)
+                    if not net_bytes.has_key(interface.Description): net_bytes[interface.Description] = met.value
         elif names[1] == "mem":  
             cp = win.wmi.Win32_PhysicalMemory()
-            result.append({'caption':cp[0].Tag,'index':0})
-        
-        met.value = result
+            for mm in cp:
+                met.tags['index'] = mm.Tag
+                met.value = dict(index = mm.Tag, caption = mm.DeviceLocator)
+                publish(met)
+                
+    elif met.name == "process_list":
+        items = win.com.AddEnum(win.obj, "Win32_PerfFormattedData_PerfProc_Process").objectSet
+        win.com.Refresh()
+        met.value = []
+        for item in items:
+            met.value.append(dict(
+                pid=item.IDProcess, name=item.Name, cpu=item.PercentProcessorTime, 
+                elapsed=item.ElapsedTime, io=item.IODataBytesPerSec, mem=item.VirtualBytes))
         publish(met)
+        win.com.DeleteAll()
+            # print item.IDProcess, item.Name, item.PriorityBase, item.VirtualBytes, item.PoolNonpagedBytes, item.PoolPagedBytes, item.PercentProcessorTime, item.WorkingSet, timestamp    
         
 @with_wmi
 def do_work():
