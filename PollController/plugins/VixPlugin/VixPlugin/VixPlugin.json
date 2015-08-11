@@ -1,0 +1,14 @@
+{
+  "name" : "VixPlugin",
+  "description" : "monitor plugin for VMware Workstation, use VIX (COM) API to gather information",
+  "type" : "platform",
+  "cmd_list" : {
+    "start" : "VixPlugin.exe"
+  },
+  "metrics" : [
+    { "name" : "vm.name", "type" : "inventory", "interval" : 300}, 
+    { "name" : "vm.mem", "type" : "config", "interval" : 300},
+    { "name" : "vm.vcpu", "type" : "config", "interval" : 300},
+    { "name" : "vm.process_list", "type" : "metric", "interval" : 15}
+  ]
+}
