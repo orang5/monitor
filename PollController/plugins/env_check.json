@@ -1,0 +1,13 @@
+{
+  "name" : "env_check",
+  "description" : "scan host for available services and platform info.",
+  "type" : "shell",
+  "metrics" : [
+    {
+      "name" : "host.services",
+      "type" : "inventory",
+      "interval" : 300,
+      "cmd" : "python env_check.py"
+    }
+  ]
+}
