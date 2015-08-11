@@ -26,3 +26,5 @@ F:\experiment-vs\VixPlugin\VixPlugin\VixPlugin\bin\Debug\RabbitMQ.Client.xml
 F:\experiment-vs\VixPlugin\VixPlugin\VixPlugin\bin\Debug\Newtonsoft.Json.xml
 F:\experiment-vs\VixPlugin\VixPlugin\VixPlugin\bin\Debug\Interop.VixCOM.dll
 F:\experiment-vs\VixPlugin\VixPlugin\VixPlugin\obj\Debug\VixPlugin.csprojResolveAssemblyReference.cache
+F:\src\monitor\PollController\plugins\VixPlugin\VixPlugin\obj\Debug\Interop.VixCOM.dll
+F:\src\monitor\PollController\plugins\VixPlugin\VixPlugin\obj\Debug\VixPlugin.csproj.ResolveComReference.cache

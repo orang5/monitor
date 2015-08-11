@@ -8,3 +8,5 @@ monitor.wpr
 monitor.wpu
 db.sqlite3
 *.csv
+*.exe
+*.cache
