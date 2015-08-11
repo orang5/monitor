@@ -1,0 +1,10 @@
+F:\experiment-vs\VixPlugin\VixPlugin\obj\Release\Interop.VixCOM.dll
+F:\experiment-vs\VixPlugin\VixPlugin\obj\Release\VixPlugin.csproj.ResolveComReference.cache
+F:\experiment-vs\VixPlugin\VixPlugin\bin\Release\VixPlugin.exe
+F:\experiment-vs\VixPlugin\VixPlugin\bin\Release\VixPlugin.pdb
+F:\experiment-vs\VixPlugin\VixPlugin\bin\Release\Newtonsoft.Json.dll
+F:\experiment-vs\VixPlugin\VixPlugin\bin\Release\Newtonsoft.Json.xml
+F:\experiment-vs\VixPlugin\VixPlugin\bin\Release\Interop.VixCOM.dll
+F:\experiment-vs\VixPlugin\VixPlugin\obj\Release\VixPlugin.csprojResolveAssemblyReference.cache
+F:\experiment-vs\VixPlugin\VixPlugin\obj\Release\VixPlugin.exe
+F:\experiment-vs\VixPlugin\VixPlugin\obj\Release\VixPlugin.pdb
