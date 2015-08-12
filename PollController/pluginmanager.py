@@ -52,10 +52,13 @@ def send_metrics(met):
     else: print "send_metrics:", met.name, len(met.message_json())
     # send
     mq.remote_publish(met.message_json())
+    
+def control_callback(msg):
+    print "received control msg:", msg
 
 def init_queue():
     mq.setup_remote_queue()
-    mq.setup_local_queue(send_metrics)
+    mq.setup_local_queue(send_metrics, control_callback)
     commandbroker.metric_callback = send_metrics
 
 def update():
