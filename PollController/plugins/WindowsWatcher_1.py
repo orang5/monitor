@@ -225,7 +225,14 @@ def metric_worker(met):
                 elapsed=item.ElapsedTime, io=item.IODataBytesPerSec, mem=item.VirtualBytes))
         publish(met)
         win.com.DeleteAll()
-            # print item.IDProcess, item.Name, item.PriorityBase, item.VirtualBytes, item.PoolNonpagedBytes, item.PoolPagedBytes, item.PercentProcessorTime, item.WorkingSet, timestamp    
+            # print item.IDProcess, item.Name, item.PriorityBase, item.VirtualBytes, item.PoolNonpagedBytes, item.PoolPagedBytes, item.PercentProcessorTime, item.WorkingSet, timestamp
+    
+    elif met.name == "program_list":
+        met.value = []
+        for p in win.wmi.Win32_Product():
+            met.value.append(dict(
+                name=p.Caption, version=p.Version, description=p.Description, vendor=p.Vendor))
+        publish(met)    
         
 @with_wmi
 def do_work():
