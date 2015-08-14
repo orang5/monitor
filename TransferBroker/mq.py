@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import threading
+import threading, time
 import pika
 from agent_types import Metric
-import logging
-logging.getLogger('pika').setLevel(logging.DEBUG)
+import agent_info
 
 # use SelectConnection to maintain loop & consumers
 # it's all async (very nasty)
@@ -101,7 +100,7 @@ class MQ(object):
         kwargs["exchange"] = kwargs.get("exchange", "mq_auto_exc")
         self.channel.exchange_declare(**kwargs)
         self.exchanges[kwargs["exchange"]] = kwargs
-        print "exchange: ", kwargs["exchange"]
+#        print "exchange: ", kwargs["exchange"]
 
     def queue_declare(self, **kwargs):
     #    if not kwargs.has_key("queue"): kwargs["queue"] = "mq_auto_queue"
@@ -110,7 +109,7 @@ class MQ(object):
 
         self.channel.queue_declare(**kwargs)
         self.queues[kwargs["queue"]] = kwargs
-        print "queue: ", kwargs["queue"]
+#        print "queue: ", kwargs["queue"]
 
     # 将queue与exc绑定，和channel无关（channel不被绑定）
     def queue_bind(self, exchange, queue, routing_key):
@@ -132,63 +131,85 @@ class MQ(object):
         self.worker.add_consumer(qname, callback)
         print "start consuming from queue:", qname
         
-localq = None
-remoteq = None
-local_callback = None
-remote_callback = None
-local_conf = dict(exchange="monitor.exc", queue="monitor.local", routing_key="local", durable=True)
-remote_conf = dict(exchange="monitor.remote", queue="monitor.remote", routing_key="remote", durable=True)
-
-def subdict(dict, keys):
-    return {k:dict[k] for k in keys}
-   
 # default callback wrapper, currying default args
-def queue_callback(func):
+def queue_callback(func, parse=True):
+    parser = (lambda x: x)
+    if parse: parser = Metric.from_message_json
     def _cb(channel, method, p, body):
-        func(Metric.from_message_json(body))
+        func(parser(body))
         channel.basic_ack(delivery_tag = method.delivery_tag)
     return _cb
 
+# wrapper for wrapper methods
+def _init_queue(q, dir = "local", type = "dat", key = "m", callback = None, parse = True, durable = True, prefix = "m"):
+    ename = "%s.exc" % prefix
+    qname = "%s.%s.%s" % (prefix, dir, type)
+    
+    print "[init_queue] exchange=%s queue=%s key=%s" % (ename, qname, key)
+    
+    q.exchange_declare(exchange=ename, durable=durable)
+    q.queue_declare(queue=qname, durable=durable)
+    q.queue_bind(ename, qname, key)
+    if callback: q.add_consumer(qname, queue_callback(callback, parse))
+    
+def _publish(q, msg, dir = "local", type = "dat", key = "m", prefix = "m", dry=False):
+    ename = "%s.exc" % prefix
+    qname = "%s.%s.%s" % (prefix, dir, type)
+    
+    if not dry: q.publish(ename, key, msg)
+    else: print "[publish] [%s] %s" % (qname, msg)
+    
+localq = None
+remoteq = None
+
 # use this library routine to init local q for monitor project
-def setup_local_queue(callback=None):
+def setup_local_queue(data=None, control=None):
     global localq
     global local_callback
     q = MQ(r"amqp://monitor:root@localhost:5672/%2f")
     localq = q
-    if callback: local_callback = callback
     
     q.connect()
     print "wait for local MQWorker..."
     while not q.worker.ready: pass
-    q.exchange_declare(**subdict(local_conf, ["exchange", "durable"]))
-    q.queue_declare(**subdict(local_conf, ["queue", "durable"]))
-    q.queue_bind(**subdict(local_conf, ["exchange", "queue", "routing_key"]))
-    if local_callback: q.add_consumer(local_conf["queue"], queue_callback(local_callback))
+    
+    _init_queue(q, callback=data)
+    _init_queue(q, type="con.%s" % agent_info.pid, key = str(agent_info.pid), callback=control, parse=False)
     return q
 
 # use this library routine to init remote q for monitor project
-# rkey is host identification.
-def setup_remote_queue(callback=None):
+# routing key is host identification.
+def setup_remote_queue(data=None, control=None):
     global remoteq
     global remote_callback
     q = MQ(r"amqp://monitor:root@172.16.174.5:5672/%2f")
     remoteq = q
-    if callback: remote_callback = callback
 
     q.connect()
     print "wait for remote MQWorker..."
     while not q.worker.ready: pass
-    q.exchange_declare(**subdict(remote_conf, ["exchange", "durable"]))
-    q.queue_declare(**subdict(remote_conf, ["queue", "durable"]))
-    q.queue_bind(**subdict(remote_conf, ["exchange", "queue", "routing_key"]))
-    if remote_callback: q.add_consumer(remote_conf["queue"], queue_callback(remote_callback))
-    return q
     
-def local_publish(msg): localq.publish(local_conf["exchange"], local_conf["routing_key"], msg)
-def remote_publish(msg): remoteq.publish(remote_conf["exchange"], remote_conf["routing_key"], msg)
+    _init_queue(q, dir="remote", callback=data)
+    _init_queue(q, type="con.%s" % agent_info.host_id(), key=agent_info.host_id(), callback=control, parse=False)
+    return q
+
+# local plugin uses [local_publish] to send metrics to plugin_manager
+def local_publish(msg): _publish(localq, msg)
+
+# plugin_manager uses [remote_publish] to send metrics to transfer_broker (server)
+def remote_publish(msg): _publish(remoteq, msg, dir="remote")
+
+# plugin_manager uses [local_control] to send control to certain plugin (pid)
+def local_control(msg, pid): _publish(localq, msg, type="con.%s" % pid, key=str(pid))
+
+# server uses [remote_control] to send control to certain host (plugin_manager)
+def remote_control(msg, host_id): _publish(remoteq, msg, type="con.%s" % host_id, key=str(host_id)) 
 
 def _callback(body):
     print "Receive: ", body
+    
+def _con_callback(body):
+    print "Receive control msg: ", body
 
 def _test():
 #    m = MQ(r'amqp://guest:guest@localhost:5672/')
@@ -200,12 +221,17 @@ def _test():
 #    m.publish("myexc", "test", "33333333333333")
 #    m.publish("myexc", "test", "44444444444444")
 #    m.close()
-    setup_local_queue(_callback)
+    setup_local_queue(_callback, _con_callback)
     
     local_publish("1111111111111")
     local_publish("222222222222222")
     local_publish("3333333")
     local_publish("444444444444444")
+    
+    local_control("1111111", agent_info.pid)
+    local_control("22222222222", agent_info.pid)
+    
+    time.sleep(3)
 
     localq.close()
 

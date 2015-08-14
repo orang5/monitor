@@ -156,6 +156,7 @@ class platform(Document):
 # get specific metric model object from Metric object
 def from_metric(met):
     ret = None
+    met.tags["uuid"] = met.tags.get("uuid", "empty-uuid")
     if met.type == "config":
         ret = ConfigModel()
     elif met.type == "metric":
@@ -181,6 +182,7 @@ def from_metric(met):
     elif met.type == "DeviceModel":
         re_uuid = met.tags["uuid"]
         re_ts = met.timestamp
+        infos = met.value
         query = DeviceModel.objects(UUID=re_uuid)
         if not query:
             ret = DeviceModel(UUID=re_uuid, CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
@@ -217,6 +219,8 @@ def _test():
         # csv format
         print ",".join([r for r in rows])
         for x in cls.objects():
-            print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
+            try:
+              print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
+            except: pass
 
 if __name__ == "__main__": _test()

@@ -3,6 +3,7 @@ names = dict(
     dev_mem="mem",
     dev_disk="logical_disk",
     dev_nic="network",
+    program_list="installed_programs"
 )
 
 names["host.info"] = "host.info"

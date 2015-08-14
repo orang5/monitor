@@ -1,9 +1,10 @@
 import time,pythoncom, wmi, logging
 import win32com.client as client
+import threading
 from monitor_plugin import *
 plugin_info("WindowsWatcher.json")
 
-interval = 30
+interval = 1
 flag = True
 
 class _wmi_ctx(object):
@@ -200,8 +201,31 @@ class WinWatcher(object):
             
 if __name__ == '__main__':
     win = WinWatcher()
-    m = agent_types.Metric(name="", type="MoniterModel", interval=interval, cmd="")
-    d = agent_types.Metric(name="", type="DeviceModel", interval=interval, cmd="")
+    #m = agent_types.Metric(name="", type="MoniterModel", interval=interval, cmd="")
+    #d = agent_types.Metric(name="", type="DeviceModel", interval=interval, cmd="")
+    class Sender(threading.Thread):
+        def __init__(self,func,type="MoniterModel"):
+            super(Sender, self).__init__()
+            self.func = func
+            self.metic = agent_types.Metric(name="", type=type, interval=interval, cmd="")
+            
+        def run(self):
+            while True:
+                self.metic.value = self.func()
+                publish(self.metic)
+                time.sleep(interval)
+
+
+    def start_all(funcs):
+        for f in funcs:
+            t = Sender(f)
+            t.start()
+            
+    funcs = [win.mem_use,win.cpu_use,win.get_fs_info,win.network]
+    start_all(funcs)
+    t = Sender(win.device,"DeviceModel")
+    t.start()
+'''
     while flag:
         # mem
         m.value = win.mem_use()
@@ -223,7 +247,7 @@ if __name__ == '__main__':
         publish(d)
         
         time.sleep(interval)
-'''
+
     logging.basicConfig(level=logging.DEBUG)
     win = WinWatcher()
     print '--------memory---------------------------------------'
