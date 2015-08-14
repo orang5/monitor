@@ -1,9 +1,0 @@
-{
-  "name" : "WindowsWatcher",
-  "description" : "WMI plugin",
-  "type" : "platform",
-  "cmd_list" : {
-    "start" : "python WindowsWatcher.py"
-  },
-  "metrics" : []
-}
