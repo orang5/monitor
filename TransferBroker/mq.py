@@ -122,7 +122,6 @@ class MQ(object):
     # send = publish
     def publish(self, exc, rkey, msg):
         if not self.exchanges.has_key(exc): self.exchange_declare(exchange=exc)
-
         self.channel.basic_publish(exchange=exc, routing_key=rkey, body=msg)
 
     # recv = add consumer
@@ -165,7 +164,6 @@ remoteq = None
 # use this library routine to init local q for monitor project
 def setup_local_queue(data=None, control=None):
     global localq
-    global local_callback
     q = MQ(r"amqp://monitor:root@localhost:5672/%2f")
     localq = q
     
@@ -173,7 +171,7 @@ def setup_local_queue(data=None, control=None):
     print "wait for local MQWorker..."
     while not q.worker.ready: pass
     
-    _init_queue(q, callback=data)
+    _init_queue(q, callback=data, key="l")
     _init_queue(q, type="con.%s" % agent_info.pid, key = str(agent_info.pid), callback=control, parse=False)
     return q
 
@@ -181,7 +179,6 @@ def setup_local_queue(data=None, control=None):
 # routing key is host identification.
 def setup_remote_queue(data=None, control=None):
     global remoteq
-    global remote_callback
     q = MQ(r"amqp://monitor:root@172.16.174.5:5672/%2f")
     remoteq = q
 
@@ -189,15 +186,15 @@ def setup_remote_queue(data=None, control=None):
     print "wait for remote MQWorker..."
     while not q.worker.ready: pass
     
-    _init_queue(q, dir="remote", callback=data)
+    _init_queue(q, dir="remote", callback=data, key="r")
     _init_queue(q, type="con.%s" % agent_info.host_id(), key=agent_info.host_id(), callback=control, parse=False)
     return q
 
 # local plugin uses [local_publish] to send metrics to plugin_manager
-def local_publish(msg): _publish(localq, msg)
+def local_publish(msg): _publish(localq, msg, key="l")
 
 # plugin_manager uses [remote_publish] to send metrics to transfer_broker (server)
-def remote_publish(msg): _publish(remoteq, msg, dir="remote")
+def remote_publish(msg): _publish(remoteq, msg, dir="remote", key="r")
 
 # plugin_manager uses [local_control] to send control to certain plugin (pid)
 def local_control(msg, pid): _publish(localq, msg, type="con.%s" % pid, key=str(pid))

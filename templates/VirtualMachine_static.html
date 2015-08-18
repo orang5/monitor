@@ -33,6 +33,7 @@
                             <h3 class="box-title">Cpu利用率</h3>
                             <div class="box-tools pull-right">
                               Real time
+                              
                               <div class="btn-group" id="cpu_realtime" data-toggle="btn-toggle">
                                 <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
@@ -40,8 +41,9 @@
                               <div class="btn-group" id="device_cpu">
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
-                                  {% for item in deviece.CPU %}
-                                  <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                                  {% for item in deviece.cpu %}
+                                  
+                                  <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
                                   {% endfor %}
                                 </ul>
                               </div>
@@ -68,9 +70,7 @@
                               <div class="btn-group" id="device_mem">
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
-                                  {% for item in deviece.MEMORY %}
-                                  <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
-                                  {% endfor %}
+                                 <li data-toggle="SysMemory"> <a>Memory</a></li>
                                 </ul>
                               </div>
                             </div>
@@ -96,8 +96,8 @@
                               <div class="btn-group" id="device_net">
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
-                                  {% for item in deviece.NETWORK %}
-                                  <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
+                                {% for item in deviece.network %}
+                                  <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
                                   {% endfor %}
                                 </ul>
                               </div>
@@ -124,9 +124,11 @@
                               <div class="btn-group" id="device_disk">
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
-                                  {% for item in deviece.DISK %}
-                                  <li data-toggle="{{ item.index }}"> <a>{{ item.caption }}</a></li>
-                                  {% endfor %}
+                        
+                                 {% for item in deviece.logical_disk %}
+                                  <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
+                                 {% endfor %}
+                                 
                                 </ul>
                               </div>
                             </div>

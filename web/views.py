@@ -3,7 +3,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 from datetime import datetime
-from models import MoniterModel,DeviceModel
+from models import *
 import json,random,time
 
 
@@ -24,32 +24,53 @@ def vplatform(request):
 def network(request):
     return render_to_response('Network.html')
 
-def virtualMachine_static(request):
+def virtualMachine_static1(request):
     vm_id = request.GET.get('uuid')
-    query = DeviceModel.objects(UUID=vm_id)
+    query = InventoryInfoModel.objects(UUID=vm_id)
     for q in query:
         device_dict = {'CPU':json.loads(q.CPU),'DISK':json.loads(q.DISK),'MEMORY':json.loads(q.MEMORY),'NETWORK':json.loads(q.Network_Adapter)}
+    return render_to_response('VirtualMachine_static.html', {'deviece':device_dict})
+
+def virtualMachine_static(request):
+    vm_id = request.GET.get('uuid')
+    query = InventoryInfoModel.objects(uuid=vm_id)
+    
+    tmp = {}
+    device_dict = {}
+    
+    for q in query:
+        key = ''
+        try:
+            key = q.DeviceID
+        except:pass
+        tmp[key] = tmp.get(key, [])
+        tmp[key].append(q);
+    
+
+    keys = tmp.keys(); keys.sort()
+    for k in keys:
+        current = max(tmp[k], key=lambda x: x.timestamp)
+        key = current.display_name
+        device_dict[key] = device_dict.get(key, [])
+        device_dict[key].append(current);
+        
     return render_to_response('VirtualMachine_static.html', {'deviece':device_dict})
     
 def virtualMachine(request):
     pass
     
+
 def virtualMachine_update(request):
     vm_id = request.GET.get('uuid')
-    device_id = request.GET.get('DeviceId')
+    DeviceId = request.GET.get('DeviceId') 
     
-    device_type = request.GET.get('DeviceType')
-    #t = datetime.strptime('2015-05-04 11:04:35', '%Y-%m-%d %H:%M:%S')
     timestamp = request.GET.get('Time')
-    date_obj = datetime.fromtimestamp(int(timestamp)/1000)
-    datasets = MoniterModel.objects(UUID = vm_id,DEVICEID = device_id,TIME=date_obj)
+    date_obj = datetime.utcfromtimestamp(int(timestamp)/1000)
+    datasets = MetricModel.objects(uuid = vm_id,DeviceID = DeviceId,timestamp__gte=date_obj)
     info = {}
     for data in datasets:
-        #info_dict = json.loads(data.VALUE)
-        #if isinstance(info_dict, dict):
-            #info[data.KEY] = [info_dict['volume']]
-        #else:
-        info[data.KEY] = json.loads(data.VALUE)         
+        info[data.name] = data.value
+    
     return HttpResponse(json.dumps(info))
 
 def login(request):

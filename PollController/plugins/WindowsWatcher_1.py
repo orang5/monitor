@@ -60,16 +60,16 @@ def metric_worker(met):
             perf["cpu"]["snapshot"] = snapshot = win.wmi.Win32_Processor()
             perf["cpu"]["ts"] = snap_ts = time.time()
             
-        for cpu in snapshot:
+        for i,cpu in enumerate(snapshot):
             met.value = cpu.__getattr__(names[1])
             met.tags["DeviceID"] = cpu.DeviceID
+            met.tags["tag"] = cpu.DeviceID
             met.ts["latest"] = snap_ts
             publish(met)
             
     elif names[0] == "mem":
         info_dict = {}
         cp = win.wmi.Win32_PhysicalMemory()
-        
         if met.name == "mem_Capacity" or met.name == "mem_Speed" or met.name == "mem_DeviceLocator":
             for mm in cp:
                 info_dict['mem_Capacity'] =  float(mm.Capacity) / (1024*1024)    # 'unit':'MB'}
@@ -77,6 +77,7 @@ def metric_worker(met):
                 info_dict['mem_DeviceLocator'] = mm.DeviceLocator
                 met.value = info_dict[met.name]
                 met.tags["tag"] = mm.Tag
+                met.tags["DeviceID"] = mm.Tag.replace(' ','_')           
                 publish(met)        
         else:
             os = win.wmi.Win32_OperatingSystem()
@@ -87,13 +88,14 @@ def metric_worker(met):
             info_dict['mem_SwapUsage'] = float(pfu[0].CurrentUsage)             #   'unit':'MB'}
             info_dict["mem_SwapFree"] = float(pfu[0].AllocatedBaseSize - pfu[0].CurrentUsage) # 'unit':'MB'}
             met.value = info_dict[met.name]
+            met.tags["DeviceID"] = 'SysMemory'
             publish(met)     
             
     elif names[0] == "disk":
         if names[1] == "size":
             for physical_disk in win.wmi.Win32_DiskDrive():
                 met.value = round(float(physical_disk.Size) / (1024*1024*1024), 2) # 'unit':'GB'}
-                met.tags["caption"] = physical_disk.Caption
+                met.tags["tag"] = physical_disk.Caption
                 publish(met)
         elif names[1].startswith("io"):
             diskitems = win.com.AddEnum(win.obj, "Win32_PerfFormattedData_PerfDisk_LogicalDisk").objectSet
@@ -105,12 +107,13 @@ def metric_worker(met):
                     disk_dict['io_stat_write'] = float(item.DiskWriteBytesPerSec) / 1024    # 'unit':'KB/s'}
                 except: pass                
                 met.value = disk_dict[names[1]]
-                met.tags["caption"] = item.Name
+                met.tags["tag"] = item.Name
+                met.tags["DeviceID"] = item.Name
                 publish(met)
             win.com.DeleteAll()
         else:
             #  DriveType=3 : "Local Disk",
-            for i,disk in enumerate(win.wmi.Win32_LogicalDisk(DriveType=3)):
+            for disk in win.wmi.Win32_LogicalDisk(DriveType=3):
                 info_dict = {}
                 info_dict['disk_FreeSpace'] =  round(float(disk.FreeSpace) / (1024*1024*1024), 2)       # 'unit':'GB'}
                 info_dict['disk_capacity'] =  round(float(disk.Size) / (1024*1024*1024), 2)             # 'unit':'GB'}
@@ -118,8 +121,8 @@ def metric_worker(met):
                 info_dict['disk_fstype'] = disk.FileSystem
                 
                 met.value = info_dict[met.name]
-                met.tags["caption"] = disk.DeviceID
-                met.tags["index"] = i
+                met.tags["tag"] = disk.DeviceID
+                met.tags["DeviceID"] = disk.DeviceID
                 publish(met)
                 
     elif names[0] == "net":
@@ -144,9 +147,7 @@ def metric_worker(met):
                 if net_bytes[interface.Description].has_key("mac"):
                     met.tags["mac"] = net_bytes[interface.Description]["mac"]
                 else:
-                    met.tags["caption"] = interface.Description
-
-                met.tags["index"] = i
+                    met.tags["tag"] = interface.Description               
                 publish(met)
         else:     
             items = win.com.AddEnum(win.obj, "Win32_PerfRawData_Tcpip_NetworkInterface").objectSet
@@ -183,7 +184,8 @@ def metric_worker(met):
                 if net_bytes[item.Name].has_key("mac"):
                     met.tags["mac"] = net_bytes[item.Name]["mac"]
                 else:
-                    met.tags["caption"] = item.Name
+                    met.tags["tag"] = item.Name
+                met.tags["DeviceID"] = item.Name.replace(' ','_')
                 publish(met)
                 
             win.com.DeleteAll()
@@ -191,19 +193,19 @@ def metric_worker(met):
     elif names[0] == "dev":
         if names[1] == "cpu":
             for cpu in win.wmi.Win32_Processor():
-                met.tags['index'] = cpu.DeviceID
+                met.tags['DeviceID'] = cpu.DeviceID
                 met.value = dict(index = cpu.DeviceID, caption = cpu.Name)
                 publish(met)
         elif names[1] == "disk":
             for i,disk in enumerate(win.wmi.Win32_LogicalDisk (DriveType=3)):
-                met.tags['index'] = i
+                met.tags['DeviceID'] = disk.DeviceID
                 met.value = dict(index = i, caption = disk.DeviceID)
                 publish(met)
         elif names[1] == "nic":                
-            for i,interface in enumerate(win.wmi.Win32_NetworkAdapterConfiguration ()):
+            for i,interface in enumerate(win.wmi.Win32_NetworkAdapterConfiguration (IPEnabled=1)):
+                met.tags = {}
+                met.tags['DeviceID'] = interface.Description.replace(' ','_')
                 if interface.MACAddress:
-                    met.tags = {}
-                    met.tags['index'] = i
                     met.value = dict(mac=format_mac(interface.MACAddress), caption=interface.Description, index=i) 
                     met.tags['mac'] = format_mac(interface.MACAddress)
                     publish(met)
@@ -211,7 +213,8 @@ def metric_worker(met):
         elif names[1] == "mem":  
             cp = win.wmi.Win32_PhysicalMemory()
             for mm in cp:
-                met.tags['index'] = mm.Tag
+                met.tags['tag'] = mm.Tag
+                met.tags["DeviceID"] = mm.Tag.replace(' ','_')
                 met.value = dict(index = mm.Tag, caption = mm.DeviceLocator)
                 publish(met)
                 

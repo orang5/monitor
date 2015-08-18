@@ -25,7 +25,7 @@ class CommandWorker(threading.Thread):
             
             # commands.getstatusoutput(m.cmdline())
             m.ts['latest'] = time.time()
-            # todo: send
+            
             if metric_callback:
                 metric_callback(m)
             else: print m.message_json()

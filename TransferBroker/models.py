@@ -156,7 +156,7 @@ class platform(Document):
 # get specific metric model object from Metric object
 def from_metric(met):
     ret = None
-    met.tags["uuid"] = met.tags.get("uuid", "empty-uuid")
+        
     if met.type == "config":
         ret = ConfigModel()
     elif met.type == "metric":
@@ -220,7 +220,7 @@ def _test():
         print ",".join([r for r in rows])
         for x in cls.objects():
             try:
-              print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
+                print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
             except: pass
 
 if __name__ == "__main__": _test()

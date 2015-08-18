@@ -8,6 +8,11 @@ def callback(met):
     # print "<debug>", met.message_json()
     if met.type == "MoniterModel": return
     
+    if not met.tags.has_key("uuid"):
+        print "****** %s ******" % met.timestamp, met
+        print "------ %s ------" % met.timestamp, mq._body
+        met.tags["uuid"] = "empty-uuid"    
+    
     mdl = from_metric(met)
     if mdl:
         '''
