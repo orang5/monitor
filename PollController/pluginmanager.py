@@ -6,6 +6,7 @@ import json, os, time, subprocess, shlex
 plugins = []
 metrics = {}
 ts = {"init" : time.time()}
+sending = False
 
 def load_plugin(fname):
     f = file(fname)
@@ -44,15 +45,29 @@ def load_all(path):
         if fname.endswith(".json"):
             load_plugin("%s/%s" % (path,fname))
 
+# warning: synchronized
 def send_metrics(met):
+    global sending
+   
+    # print "here"; return
+    while (sending):
+        time.sleep(0.1)
+    sending = True  # fixme
+    
     # add tags
     met.update_tags(uuid=agent_info.host_id(), host=agent_info.hostname)
     if met.tags.has_key("plugin"):
-        print "send_metrics: (", met.tags["plugin"], "):", met.name, len(met.message_json())
-    else: print "send_metrics:", met.name, len(met.message_json())
+        print "send_metrics: (", met.tags["plugin"], "): [%d]" % met.timestamp, met.name, met.tags
+    else:
+        print "send_metrics: [%d]" % met.timestamp, met.name, met.tags, len(met.message_json())
+       # print "send_metrics [%d]" % met.timestamp, met.message_json()
     # send
+
     mq.remote_publish(met.message_json())
+    sending = False
     
+    
+
 def control_callback(msg):
     print "received control msg:", msg
 

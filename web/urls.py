@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^VirtualMachine/$', virtualMachine),
     url(r'^VirtualMachineUpdate/$', virtualMachine_update),
     url(r'^Network/$', network),
+    url(r'^Management/$', management),
     url(r'^users/$', usersManager)
 )
