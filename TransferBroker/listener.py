@@ -6,14 +6,16 @@ from models import *
 
 def callback(met):
     # print "<debug>", met.message_json()
-    if met.type == "MoniterModel": return
-    
+    #if met.type == "MoniterModel": return
+    '''
     if not met.tags.has_key("uuid"):
         print "****** %s ******" % met.timestamp, met
         print "------ %s ------" % met.timestamp, mq._body
         met.tags["uuid"] = "empty-uuid"    
-    
+    '''
     mdl = from_metric(met)
+    cur = current_metric(met)
+    
     if mdl:
         '''
         try:
@@ -29,9 +31,13 @@ def callback(met):
                 m.save()
         else:
             print "save ->", mdl.__class__, met.name, met.timestamp
-            mdl.save()    
+            m.save()
     elif met.type != "DeviceModel":
         print "received_else: ", met.message_json()
+        
+    if cur:
+        current_item(cur.__class__, met).delete()
+        cur.save()
 
 queue = mq.setup_remote_queue(callback)
 queue.worker.join()
