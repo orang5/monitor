@@ -1,0 +1,13 @@
+{
+  "name" : "arp",
+  "description" : "returns basic arp table",
+  "type" : "shell",
+  "metrics" : [
+    {
+      "name" : "host.arpinfo",
+      "type" : "config",
+      "interval" : 30,
+      "cmd" : "python arp.py"
+    }
+  ]
+}

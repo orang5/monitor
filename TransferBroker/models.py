@@ -18,6 +18,11 @@ class ConfigModel(DynamicDocument):
     name = StringField(max_length=300)
     timestamp = DateTimeField()
     value = DynamicField()
+    
+class CurrentModel(DynamicDocument):
+    name = StringField(max_length=300)
+    timestamp = DateTimeField()
+    value = DynamicField()
 
 # 1. STATIC INFO models
 # user and group info
@@ -30,7 +35,7 @@ class UserInfoModel(DynamicDocument):
     type = StringField(max_length=200) # user or group
     inventory = ListField(StringField(max_length=300)) # different from subitems(sub objects)
 
-# InventoryModel stores entity index and info
+# InventoryModel stores entity index and info 
 class InventoryInfoModel(DynamicDocument):
     name = StringField(max_length=300)
     host = StringField(max_length=300) # changed Jul 28: host uid(mac)
@@ -38,7 +43,13 @@ class InventoryInfoModel(DynamicDocument):
     subitems = ListField(StringField(max_length=300)) #     
     display_name = StringField(max_length=300)
     timestamp = DateTimeField()
-    
+   
+class CurrentInfoModel(DynamicDocument):
+    name = StringField(max_length=300)
+    host = StringField(max_length=300) # changed Jul 28: host uid(mac)
+    display_name = StringField(max_length=300)
+    timestamp = DateTimeField()   
+ 
 '''
 # Hostinfo model
 class HostInfoModel(DynamicDocument):
@@ -203,8 +214,33 @@ def from_metric(met):
         
     return ret
     
+def current_metric(met):
+    ret = None
+        
+    if met.type in ["config", "metric"]:
+        ret = CurrentModel()
+    elif met.type == "inventory":
+        ret = CurrentInfoModel()
+        ret.host = met.tags["uuid"]
+        ret.display_name = display.names[met.name]
+    else:
+        print "unknown metric:", met
+        ret = CurrentModel()
+
+    ret.name = met.name
+    ret.timestamp = datetime.fromtimestamp(met.timestamp)
+    ret.value = met.value
+    for k, v in met.tags.iteritems():
+        setattr(ret, k, v)
+    return ret
+    
+def current_item(model, met):
+    tags = dict(name = met.name)
+    tags.update(met.tags)
+    return model.objects(**tags)
+    
 def _test():
-    model_list = [ConfigModel, MetricModel, UserInfoModel, InventoryInfoModel, MetricInfoModel, PluginInfoModel, 
+    model_list = [CurrentModel, CurrentInfoModel, ConfigModel, MetricModel, UserInfoModel, InventoryInfoModel, MetricInfoModel, PluginInfoModel, 
                   PluginModel, AgentModel, RuleModel, MoniterModel, DeviceModel]
                   
     for cls in model_list:
