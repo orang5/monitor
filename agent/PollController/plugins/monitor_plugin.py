@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 # this is the common import file for all monitor plugins
-# fixme: actually needs agent_* import files, which is not standalone
-import sys, os, inspect, subprocess, shlex
-up_one_level = os.path.dirname(os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe()))))
-sys.path.append(up_one_level)
 
 import time, json
-import mq, agent_types, agent_utils
+import projectroot
+from common import mq, agent_types, agent_utils
 
 info = None
 metrics = {}

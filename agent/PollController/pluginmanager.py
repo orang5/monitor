@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from agent_types import *
-import agent_utils, agent_info, commandbroker, mq
+import commandbroker, projectroot
+from common import agent_utils, agent_info, commandbroker, mq
 import json, os, time, subprocess, shlex
 
 plugins = []

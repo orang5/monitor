@@ -179,7 +179,7 @@ def setup_local_queue(data=None, control=None):
 # routing key is host identification.
 def setup_remote_queue(data=None, control=None):
     global remoteq
-    q = MQ(r"amqp://monitor:root@172.16.174.5:5672/%2f")
+    q = MQ(r"amqp://monitor:root@192.168.133.1:5672/%2f")
     remoteq = q
 
     q.connect()

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import threading, time, commands, os
 import Queue
-from agent_types import *
+
+import projectroot
+from common.agent_types import *
 
 workqueue = Queue.Queue()
 metric_callback = None

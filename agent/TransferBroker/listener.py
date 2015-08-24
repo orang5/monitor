@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import agent_types
-import mq
+import projectroot
+from common import agent_types, mq
+from common.models import *
 import time, datetime
-from models import *
 
 def callback(met):
     # print "<debug>", met.message_json()
@@ -31,7 +31,7 @@ def callback(met):
                 m.save()
         else:
             print "save ->", mdl.__class__, met.name, met.timestamp
-            m.save()
+            mdl.save()
     elif met.type != "DeviceModel":
         print "received_else: ", met.message_json()
         
