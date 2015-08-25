@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
 import collections
-import inspect
+import inspect, logging, logging.config
 import subprocess, shlex
-
+import projectroot
 named_classes = {}
 
 # http://stackoverflow.com/questions/2166818/python-how-to-check-if-an-object-is-an-instance-of-a-namedtuple
@@ -70,11 +70,16 @@ def run_cmd(line):
     line = "cmd /c \"" + line + "\""
     return subprocess.check_output(shlex.split(line)).rstrip("\n\r")
 
+def getLogger():
+    logging.config.fileConfig(r"%s\log.conf" % projectroot.agent_root)
+    return logging.getLogger("root")    
+
 def _test():
+    log = getLogger()
     a = from_dict({'__class__':'MyTest', 'a':1, 'b':2, 'c':3})
-    print a
-    print to_dict(a)
-    print to_json(a)
-    print from_json(to_json(a))
+    log.debug(a)
+    log.debug(to_dict(a))
+    log.debug(to_json(a))
+    log.debug(from_json(to_json(a)))
 
 if __name__ == "__main__" : _test()

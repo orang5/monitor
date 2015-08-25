@@ -6,6 +6,7 @@ from agent_types import *
 import models_displayname as display
 
 connect("MoniterDB")
+log = agent_utils.getLogger()
 
 # 0. METRIC models
 class MetricModel(DynamicDocument):
@@ -203,7 +204,7 @@ def from_metric(met):
             DeviceModel.objects(UUID=re_uuid).update(CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
             return None
     else:
-        print "unknown metric:", met
+        log.warning("unknown metric: %s", met.message_json())
         ret = MetricModel()
 
     ret.name = met.name
@@ -224,7 +225,7 @@ def current_metric(met):
         ret.host = met.tags["uuid"]
         ret.display_name = display.names[met.name]
     else:
-        print "unknown metric:", met
+        log.warning("unknown metric: %s", met.message_json())
         ret = CurrentModel()
 
     ret.name = met.name

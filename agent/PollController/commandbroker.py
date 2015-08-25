@@ -3,7 +3,9 @@ import threading, time, commands, os
 import Queue
 
 import projectroot
+import common.agent_utils
 from common.agent_types import *
+log = common.agent_utils.getLogger()
 
 workqueue = Queue.Queue()
 metric_callback = None
@@ -17,11 +19,11 @@ class CommandWorker(threading.Thread):
         # self.retvar = 0
 
     def run(self):
-        print "start ", self.name
+        log.info("[shell] %s" % self.name)
         while not self.flag:
             m = self.q.get()
             m.ts['execute'] = time.time()
-            print self.name, m.cmdline()
+            log.info("[%s] %s" % (self.name, m.cmdline()))
             
             m.value = os.popen(m.cmdline()).read().rstrip("\n\r")
             
@@ -30,7 +32,7 @@ class CommandWorker(threading.Thread):
             
             if metric_callback:
                 metric_callback(m)
-            else: print m.message_json()
+            else: log.debug("[shell] %s" % m.message_json())
             self.q.task_done()
 
 cmds = []

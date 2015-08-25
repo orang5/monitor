@@ -2,7 +2,9 @@
 import threading, time
 import pika
 from agent_types import Metric
-import agent_info
+import agent_info, agent_utils
+
+log = agent_utils.getLogger()
 
 # use SelectConnection to maintain loop & consumers
 # it's all async (very nasty)
@@ -21,42 +23,39 @@ class MQWorker(threading.Thread):
         self.setDaemon(True)
 
     def connect(self):
-        print "MQWorker: open SelectConnection (data flow) -> ", self.mq.url
+        log.info("MQWorker: SelectConnection (data thread) -> %s" % self.mq.url)
         self.conn = pika.SelectConnection(pika.URLParameters(self.mq.url), self._on_connect)
 
     def _on_connect(self, conn):
-#        print "in _on_connect"
         self.conn #= conn
         self.create_channel()
 
     def create_channel(self):
-        print "in create_channel"
         self.channel = self.conn.channel(self._on_channel)
 
     def _on_channel(self, chn):
 #        print "in _on_channel"
         self.channel = chn
         self.ready = True
-        print "MQWorker: connection is ready."
+        log.info("MQWorker: connection thread ready.")
 
     def close(self):
         if self.conn:
             self.conn.close()
             self.conn = None
             self.channel = None
-            print "MQWorker: SelectConnection is closed."
+            log.info("MQWorker: SelectConnection closed.")
 
     # recv = add consumer
     def add_consumer(self, qname, callback):
         self.consumers[qname] = self.consumers.get("qname", {})
-
         cid = self.channel.basic_consume(callback, qname)
         self.consumers[qname][cid] = dict(cid=cid, queue=qname, callback=callback)
 
     def run(self):
-        print "start ioloop..."
+        log.info("MQWorker: start ioloop...")
         self.conn.ioloop.start()
-        print self.name, " is exiting..."
+        log.info("MQWorker: %s is exiting..." % self.name)
 
 # basic MQ object, use BlockingConnection to set attributes
 # DO NOT set Exclusive flag for objects
@@ -75,11 +74,9 @@ class MQ(object):
         # self.exchanges.clear()
         # self.queues.clear()
         # self.consumers.clear()
-        print "open BlockingConnection (control flow) -> ", self.url
+        log.info("MQ: BlockingConnection (control flow) -> %s", self.url)
         self.conn = pika.BlockingConnection(pika.URLParameters(self.url))
-    #    print self.conn
         self.channel = self.conn.channel()
-    #    print self.channel
         self.worker = MQWorker(self)
         self.worker.connect()
         self.worker.start()
@@ -91,7 +88,7 @@ class MQ(object):
             self.conn.close()
             self.conn = None
             self.channel = None
-            print "BlockingConnection is closed."
+            log.info("MQ: BlockingConnection closed.")
         if self.worker:
             self.worker.close()
 
@@ -117,7 +114,7 @@ class MQ(object):
         if not self.queues.has_key(queue): self.queue_declare(queue=queue)
 
         self.channel.queue_bind(exchange=exchange, queue=queue, routing_key=routing_key)
-        print "bind: (", exchange, ",", routing_key,  ") -> queue:", queue
+        log.info("".join(("MQ: bind: (", exchange, ",", routing_key,  ") -> queue:", queue)))
 
     # send = publish
     def publish(self, exc, rkey, msg):
@@ -128,7 +125,7 @@ class MQ(object):
     def add_consumer(self, qname, callback):
         if not self.queues.has_key(qname): self.queue_declare(queue=qname)
         self.worker.add_consumer(qname, callback)
-        print "start consuming from queue:", qname
+        log.info("MQ: consuming from queue - %s", qname)
         
 # default callback wrapper, currying default args
 def queue_callback(func, parse=True):
@@ -143,8 +140,7 @@ def queue_callback(func, parse=True):
 def _init_queue(q, dir = "local", type = "dat", key = "m", callback = None, parse = True, durable = True, prefix = "m"):
     ename = "%s.exc" % prefix
     qname = "%s.%s.%s" % (prefix, dir, type)
-    
-    print "[init_queue] exchange=%s queue=%s key=%s" % (ename, qname, key)
+    log.debug("exchange=%s queue=%s key=%s" % (ename, qname, key))
     
     q.exchange_declare(exchange=ename, durable=durable)
     q.queue_declare(queue=qname, durable=durable)
@@ -156,22 +152,22 @@ def _publish(q, msg, dir = "local", type = "dat", key = "m", prefix = "m", dry=F
     qname = "%s.%s.%s" % (prefix, dir, type)
     
     if not dry: q.publish(ename, key, msg)
-    else: print "[publish] [%s] %s" % (qname, msg)
+    else: log.debug("[%s] %s" % (qname, msg))
     
 localq = None
 remoteq = None
 
 # use this library routine to init local q for monitor project
-def setup_local_queue(data=None, control=None):
+def setup_local_queue(data=None, control=None, parse=True):
     global localq
     q = MQ(r"amqp://monitor:root@localhost:5672/%2f")
     localq = q
     
     q.connect()
-    print "wait for local MQWorker..."
+    log.info("MQ: wait for local MQWorker...")
     while not q.worker.ready: pass
     
-    _init_queue(q, callback=data, key="l")
+    _init_queue(q, callback=data, key="l", parse=parse)
     _init_queue(q, type="con.%s" % agent_info.pid, key = str(agent_info.pid), callback=control, parse=False)
     return q
 
@@ -183,7 +179,7 @@ def setup_remote_queue(data=None, control=None):
     remoteq = q
 
     q.connect()
-    print "wait for remote MQWorker..."
+    log.info("MQ: wait for remote MQWorker...")
     while not q.worker.ready: pass
     
     _init_queue(q, dir="remote", callback=data, key="r")
@@ -218,7 +214,7 @@ def _test():
 #    m.publish("myexc", "test", "33333333333333")
 #    m.publish("myexc", "test", "44444444444444")
 #    m.close()
-    setup_local_queue(_callback, _con_callback)
+    setup_local_queue(_callback, _con_callback, parse=False)
     
     local_publish("1111111111111")
     local_publish("222222222222222")

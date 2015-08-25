@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import projectroot
-from common import agent_types, mq
+from common import agent_types, mq, agent_utils
 from common.models import *
 import time, datetime
+
+log = agent_utils.getLogger()
 
 def callback(met):
     # print "<debug>", met.message_json()
@@ -17,23 +19,22 @@ def callback(met):
     cur = current_metric(met)
     
     if mdl:
-        '''
-        try:
-          print "[ " + str(mdl.__class__).split(".")[-1].replace("'>", "") + " ] " + met.name + " value=" + str(met.value) + " " +  " ".join(["%s=%s" % (k, v) for k, v in met.tags.iteritems()])
-       #    print met.message_json()
-        except: pass
-        '''
         if isinstance(mdl, list):
-          #  print "****************** ", len(mdl)
-          #  if len(mdl)>100: print met
+            '''
+            if len(mdl)>100:
+                log.warning(met)
+                log.warning("list length: %d" % len(mdl))
+            '''
             for m in mdl:
-                print "save ->", m.__class__, met.name, met.timestamp
+                # log.info(" ".join(("save ->", str(m.__class__), met.name, str(met.timestamp))))
+                print " ".join(("save ->", m.__class__.__name__, met.name, str(met.timestamp)))
                 m.save()
         else:
-            print "save ->", mdl.__class__, met.name, met.timestamp
+            # log.info(" ".join(("save ->", str(mdl.__class__), met.name, str(met.timestamp))))
+            print " ".join(("save ->", mdl.__class__.__name__, met.name, str(met.timestamp)))
             mdl.save()
     elif met.type != "DeviceModel":
-        print "received_else: ", met.message_json()
+        log.warning("received_else: %s" % met.message_json())
         
     if cur:
         current_item(cur.__class__, met).delete()
