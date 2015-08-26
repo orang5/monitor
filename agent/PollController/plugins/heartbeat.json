@@ -1,0 +1,13 @@
+{
+  "name" : "heartbeat",
+  "description" : "heartbeat message",
+  "type" : "shell",
+  "metrics" : [
+    {
+      "name" : "hb",
+      "type" : "current",
+      "interval" : 10,
+      "cmd" : "hostname"
+    }
+  ]
+}

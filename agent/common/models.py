@@ -177,6 +177,9 @@ def from_metric(met):
         ret = InventoryInfoModel()
         ret.host = met.tags["uuid"]
         ret.display_name = display.names[met.name]
+    # special type that do not save into db
+    elif met.type == "current":
+        return None
                 
     # backport
     elif met.type == "MoniterModel":
@@ -218,7 +221,7 @@ def from_metric(met):
 def current_metric(met):
     ret = None
         
-    if met.type in ["config", "metric"]:
+    if met.type in ["config", "metric", "current"]:
         ret = CurrentModel()
     elif met.type == "inventory":
         ret = CurrentInfoModel()

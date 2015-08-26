@@ -71,8 +71,9 @@ def run_cmd(line):
     return subprocess.check_output(shlex.split(line)).rstrip("\n\r")
 
 def getLogger():
+    logging.basicConfig(level=logging.DEBUG)
     logging.config.fileConfig(r"%s\log.conf" % projectroot.agent_root)
-    return logging.getLogger("root")    
+    return logging.getLogger("file")    
 
 def _test():
     log = getLogger()

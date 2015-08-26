@@ -5,8 +5,9 @@ import time, json
 
 # 配置文件中对metric和plugin的描述结构
 # 并不是必须的。因为只要发送的metric消息符合消息规则，就视为合法的
-MetricDesc = namedtuple("MetricDesc", "name, type, interval, cmd")
-PluginDesc = namedtuple("PluginDesc", "name, description, type, cmd_list, platform_data, metrics",
+# fixme: namedtuple is immutable, use class instead
+MetricDesc = namedtuple("MetricDesc", "name, type, interval, cmd, enabled")
+PluginDesc = namedtuple("PluginDesc", "name, description, type, enabled, cmd_list, platform_data, metrics",
 #                        verbose=True,
                        )
 
@@ -14,7 +15,6 @@ PluginDesc = namedtuple("PluginDesc", "name, description, type, cmd_list, platfo
 class Metric(MetricDesc):
     def __init__(self, *args, **kwargs):
         super(Metric, self).__init__(*args, **kwargs)
-        self.enabled = True
         # timestamps: latest, queue, execute
         self.ts = {'latest' : time.time()}
         self.value = None
@@ -27,13 +27,13 @@ class Metric(MetricDesc):
         
     @classmethod
     def _make(cls, m):
-        return cls(m.name, m.type, m.interval, m.cmd)
+        return cls(m.name, m.type, m.interval, m.cmd, getattr(m, "enabled", True))
         
     @classmethod
     def from_message_json(cls, msg):
         d = msg
         if isinstance(msg, basestring): d = json.loads(msg)
-        m = cls(d["name"], d["type"], 0, "")
+        m = cls(d["name"], d["type"], 0, "", True)
         m.ts = {'latest': d["timestamp"]}
         m.value = d["value"]
         m.tags = d["tags"]
@@ -71,7 +71,6 @@ class Plugin(PluginDesc):
     def __init__(self, *args, **kwargs):
        # print "init", args
         PluginDesc.__init__(*args, **kwargs)
-        self.enabled = True
         self.uptime = int(time.time())
         self.handle = None
         
@@ -79,6 +78,7 @@ class Plugin(PluginDesc):
     def _make(cls, p):
        # print "make", p
         return cls(p.name, p.description, p.type,
+            getattr(p, "enabled", True), 
             getattr(p, "cmd_list", {}),
             getattr(p, "platform_data", {}),
             getattr(p, "metrics", [])

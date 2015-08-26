@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os, sys
 global project_root
 project_root = os.environ.get("MONITOR_HOME")

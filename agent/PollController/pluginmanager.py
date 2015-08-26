@@ -50,14 +50,10 @@ def load_all(path):
 # warning: synchronized
 def send_metrics(met):
     global sending
-
+    log.debug("%s %s len=%d time=%d", met.name, str(met.tags), len(met.message_json()), met.timestamp)
+        
     # add tags
     met.update_tags(uuid=agent_info.host_id(), host=agent_info.hostname)
-    if met.tags.has_key("plugin"):
-        log.debug(" ".join(("[", met.tags["plugin"], "]: [%d]" % met.timestamp, met.name, str(met.tags))))
-    else:
-        log.debug(" ".join(("[%d]" % met.timestamp, met.name, str(met.tags), str(len(met.message_json())) )) )
-
     # send (with lock)
     if sending.acquire():
         mq.remote_publish(met.message_json())

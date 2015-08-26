@@ -33,7 +33,7 @@ def callback(met):
             # log.info(" ".join(("save ->", str(mdl.__class__), met.name, str(met.timestamp))))
             print " ".join(("save ->", mdl.__class__.__name__, met.name, str(met.timestamp)))
             mdl.save()
-    elif met.type != "DeviceModel":
+    elif met.type not in ["DeviceModel", "current"]:
         log.warning("received_else: %s" % met.message_json())
         
     if cur:
