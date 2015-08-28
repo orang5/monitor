@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
-import projectroot
-from common import agent_types, mq, agent_utils
-from common.models import *
 import time, datetime
+import projectroot
+from common import agent_types, mq, agent_utils, threadpool
+from common.models import *
+import analyzer
 
 log = agent_utils.getLogger()
 
-def callback(met):
+def do_work(met):
     # print "<debug>", met.message_json()
     #if met.type == "MoniterModel": return
+    
+    # in-line analyze routine, now too simple to become a method
+    # def do_analyze(met):
+    for a in analyzer.list:
+        if a.check(met): a.action(met)
+    
     '''
     if not met.tags.has_key("uuid"):
         print "****** %s ******" % met.timestamp, met
@@ -39,6 +46,16 @@ def callback(met):
     if cur:
         current_item(cur.__class__, met).delete()
         cur.save()
+
+class MetricWorker(threadpool.Worker):
+    def work(self, met):
+        do_work(met)
+
+
+# simply add metric to thread pool
+# so that original callback will return immediately
+pool = threadpool.ThreadPool(MetricWorker)
+def callback(met): pool.add_job(met)
 
 queue = mq.setup_remote_queue(callback)
 queue.worker.join()
