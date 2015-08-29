@@ -72,7 +72,7 @@ def run_cmd(line):
 
 def getLogger():
     logging.basicConfig(level=logging.DEBUG)
-    logging.config.fileConfig(r"%s\log.conf" % projectroot.agent_root)
+    logging.config.fileConfig(r"%s\log.conf" % projectroot.project_root)
     return logging.getLogger("file")    
 
 def _test():

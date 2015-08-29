@@ -57,8 +57,7 @@ def virtualMachine_static(request):
     return render_to_response('VirtualMachine_static.html', {'deviece':device_dict})
     
 def virtualMachine(request):
-    pass
-    
+    pass    
 
 def virtualMachine_update(request):
     vm_id = request.GET.get('uuid')

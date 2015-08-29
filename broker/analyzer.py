@@ -27,6 +27,6 @@ def add_analyzer(criteria, action, name="default"):
     
 add_analyzer(
     criteria = lambda x: x.name == "hb",
-    action   = lambda x: log.debug("[analyze] received heartbeat message from %s", x.tags.get("hostname", "NONAME")),
+    action   = lambda x: log.debug("[analyze] heartbeat -> %s", x.tags.get("host", "NONAME")),
     name     = "heartbeat"
     )
