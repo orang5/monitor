@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-from agent_types import *
-import agent_utils, agent_info, commandbroker, mq
-import json, os, time, subprocess, shlex
+import commandbroker, projectroot
+from common import agent_utils, agent_info, mq
+from common.agent_types import *
+import json, os, time, subprocess, shlex, threading
 
+log = agent_utils.getLogger()
 plugins = []
 metrics = {}
 ts = {"init" : time.time()}
-sending = False
+sending = threading.Lock()
 
 def load_plugin(fname):
     f = file(fname)
@@ -25,7 +27,7 @@ def load_plugin(fname):
     p = Plugin._make(agent_utils.from_json(agent_utils.to_json(d)))
     # append plugin and metrics to list
     plugins.append(p)
-    print "load_plugin ", p.name
+    log.info(p.name)
 
     if p.type == "shell":
         for m in p.metrics:
@@ -33,11 +35,11 @@ def load_plugin(fname):
                 metrics[m.interval] = []
                 ts[m.interval] = time.time() - m.interval
             metrics[m.interval].append(Metric._make(m))
-            print ">", m.name
+            log.info("[metric] %s" % m.name)
     elif p.type == "platform":
-        print "start platform plugin: ", p.cmd_list["start"]
+        log.info("start platform plugin -> %s" % p.cmd_list["start"])
         p.handle = subprocess.Popen(shlex.split(p.cmd_list["start"]))
-        print "> pid =", p.pid
+        log.info("pid = %d" % p.pid)
     return p
 
 def load_all(path):
@@ -48,28 +50,17 @@ def load_all(path):
 # warning: synchronized
 def send_metrics(met):
     global sending
-   
-    # print "here"; return
-    while (sending):
-        time.sleep(0.1)
-    sending = True  # fixme
-    
+    log.debug("%s %s len=%d time=%d", met.name, str(met.tags), len(met.message_json()), met.timestamp)
+        
     # add tags
     met.update_tags(uuid=agent_info.host_id(), host=agent_info.hostname)
-    if met.tags.has_key("plugin"):
-        print "send_metrics: (", met.tags["plugin"], "): [%d]" % met.timestamp, met.name, met.tags
-    else:
-        print "send_metrics: [%d]" % met.timestamp, met.name, met.tags, len(met.message_json())
-       # print "send_metrics [%d]" % met.timestamp, met.message_json()
-    # send
-
-    mq.remote_publish(met.message_json())
-    sending = False
-    
-    
+    # send (with lock)
+    if sending.acquire():
+        mq.remote_publish(met.message_json())
+        sending.release()
 
 def control_callback(msg):
-    print "received control msg:", msg
+    print "receive control:", msg
 
 def init_queue():
     mq.setup_remote_queue()

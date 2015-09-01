@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 # this is the common import file for all monitor plugins
-# fixme: actually needs agent_* import files, which is not standalone
-import sys, os, inspect, subprocess, shlex
-up_one_level = os.path.dirname(os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe()))))
-sys.path.append(up_one_level)
 
-import time, json
-import mq, agent_types, agent_utils
+import time, json, sys
+import projectroot
+from common import mq, agent_types, agent_utils
+log = agent_utils.getLogger()
 
 info = None
 metrics = {}
@@ -46,7 +44,7 @@ def publish(met, debug=False):
    # met.update_tags(**plugin_info_tags())
     if not debug:
         mq.local_publish(met.message_json())
-    else: print "[" + info.name +"] publish -> ", met.message_json()
+    else: log.debug("[" + info.name +"] publish -> %s" % met.message_json())
 
 def json_result(obj):
     return agent_utils.to_json(obj)
@@ -76,4 +74,4 @@ def update_metrics(worker, **kwargs):
                 if kwargs["publish"]:
                     for met in metrics[intv]: publish(met)
             
-    print "[" + info.name +"] update_metrics -> ", time.time() - t, "secs"
+    log.info("[" + info.name +"] -> %0.2f secs" % (time.time() - t))

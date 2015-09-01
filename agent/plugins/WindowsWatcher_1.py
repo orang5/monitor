@@ -240,13 +240,12 @@ def metric_worker(met):
 @with_wmi
 def do_work():
     global win
-    print "[WinWatcher] init WMI..."
+    log.info("[WinWatcher] init WMI...")
     win = WinWatcher()
     win.init_wmi()
-    print "[WinWatcher] start main loop..."
+    log.info("[WinWatcher] start main loop...")
     while flag:
         update_metrics(metric_worker, publish=False)
         time.sleep(1)
-
 
 if __name__ == '__main__': do_work()

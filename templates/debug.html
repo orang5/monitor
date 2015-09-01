@@ -1,0 +1,41 @@
+{% extends '__base__.html' %}
+{% load staticfiles %}
+{% block content-wrapper %}
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            调试页面
+            <small>debug message</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+            <li class="active">虚拟化平台</li>
+            <li class="active">主机1</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+           <div class="col-md-12">
+            <div class="box">
+              <div class="box-body">
+                {{ message }}
+              </div><!-- /.box-body-->
+            </div><!-- /.box -->
+          </div><!-- /.col -->
+         </div><!-- /.row -->
+
+        </section><!-- /.content -->
+
+     </div><!-- /.content-wrapper -->
+    {% endblock %}
+   {% block script %}
+      <script src="{% static "plugins/flot/jquery.flot.min.js" %}"></script>
+      <script src="{% static "plugins/flot/jquery.flot.resize.min.js" %}"></script>
+      <script src="{% static "plugins/flot/jquery.flot.pie.min.js" %}"></script>
+      <script src="{% static "plugins/flot/jquery.flot.categories.min.js" %}"></script>
+      <script src="{% static "js/pages/virtual_machine.js" %}"></script>
+    {% endblock %} 
