@@ -52,20 +52,39 @@ def metric_worker(met):
     if names[0] == "cpu":
         global perf
         ts = time.time()
-        perf["cpu"] = perf.get("cpu", {"snapshot" : None, "ts" : ts})
+        perf["cpu"] = perf.get("cpu", {"snapshot" : None, "ts" : ts, "perfos" : None})
         snapshot = perf["cpu"]["snapshot"]
         snap_ts = perf["cpu"]["ts"]
+        snap_perf = perf["cpu"]["perfos"]
         
-        if (not snapshot) or ts>snap_ts+met.interval:
+        if (not snapshot) or ts>snap_ts + 1:
             perf["cpu"]["snapshot"] = snapshot = win.wmi.Win32_Processor()
             perf["cpu"]["ts"] = snap_ts = time.time()
+            perf["cpu"]["perfos"] = snap_perf = win.wmi.Win32_PerfRawData_PerfOS_Processor()
             
-        for i,cpu in enumerate(snapshot):
-            met.value = cpu.__getattr__(names[1])
-            met.tags["DeviceID"] = cpu.DeviceID
-            met.tags["tag"] = cpu.DeviceID
-            met.ts["latest"] = snap_ts
-            publish(met)
+        if met.name == "cpu_LoadPercentage":
+            # use perfrawdata class instead.
+            for i in xrange(0, len(snap_perf)):
+                perf["cpu"][i] = perf["cpu"].get(i, { "count" : int(snap_perf[i].PercentIdleTime), "ts" : 0 })
+                raw = snap_perf[i]
+                count = int(raw.PercentIdleTime)
+                ts = int(raw.TimeStamp_Sys100NS)
+                print count, ts
+                if ts > perf["cpu"][i]["ts"]:
+                    met.value = 100 - 100 * (count - perf["cpu"][i]["count"]) / (ts - perf["cpu"][i]["ts"])
+                    perf["cpu"][i]["count"] = count
+                    perf["cpu"][i]["ts"] = ts                    
+                    
+                    met.tags["DeviceID"] = "CPU" + raw.Name
+                    met.ts["latest"] = snap_ts
+                    publish(met)
+        else:
+            for i,cpu in enumerate(snapshot):
+                met.value = cpu.__getattr__(names[1])
+                met.tags["DeviceID"] = cpu.DeviceID
+                met.tags["tag"] = cpu.DeviceID
+                met.ts["latest"] = snap_ts
+                publish(met)
             
     elif names[0] == "mem":
         info_dict = {}
@@ -155,10 +174,10 @@ def metric_worker(met):
             for item in items:
                 met.tags = {}
                 # internal routine: update net perf aggregated values
-                ts = time.time()
-                if not net_bytes.has_key(item.Name): net_bytes[item.Name] = {}
-                net_bytes[item.Name].update({"in":long(item.BytesReceivedPerSec), "out":long(item.BytesSentPerSec),
-                                            "s_in":0, "s_out":0, "ts":ts})                     
+                ts = int(item.Timestamp_PerfTime)
+                base = int(item.Frequency_PerfTime)  # cpu frequency as divisor
+                net_bytes[item.Name] = net_bytes.get(item.Name,
+                    {"in":long(item.BytesReceivedPerSec), "out":long(item.BytesSentPerSec), "s_in":0, "s_out":0, "ts":ts})
                 it = net_bytes[item.Name]                
                 dt = ts - it["ts"]
 
@@ -167,10 +186,12 @@ def metric_worker(met):
                 net_dict['net_pkts_in_cur'] = long(item.PacketsReceivedPerSec)
                 net_dict['net_pkts_out_cur'] = long(item.PacketsSentPerSec)
                 
-                if dt > 2:   # need refresh
+                if dt > base:   # need refresh
                     # count speed
-                    it["s_in"] = (br - it["in"])*8/(dt*1024)           # 'unit':'Kbps'}
-                    it["s_out"] = (bs - it["out"])*8/(dt*1024)         # 'unit':'Kbps'}
+                    it["s_in"] = (br-it["in"]) / (float(dt*1024)/base)           # 'unit':'Kbps'}
+                    it["s_out"] = (bs-it["out"]) / (float(dt*1024)/base)         # 'unit':'Kbps'}
+                    
+                  #  print item.name, "dt", float(dt)/base, "in", br-it["in"], "out", bs-it["out"], it["s_in"], it["s_out"]
                     # update in/out and timestamp
                     it["in"] = br
                     it["out"] = bs
@@ -186,7 +207,9 @@ def metric_worker(met):
                 else:
                     met.tags["tag"] = item.Name
                 met.tags["DeviceID"] = item.Name.replace(' ','_')
+            
                 publish(met)
+
                 
             win.com.DeleteAll()
                    
@@ -246,6 +269,6 @@ def do_work():
     log.info("[WinWatcher] start main loop...")
     while flag:
         update_metrics(metric_worker, publish=False)
-        time.sleep(1)
+        time.sleep(0.3)
 
 if __name__ == '__main__': do_work()

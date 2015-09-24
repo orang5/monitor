@@ -24,7 +24,7 @@
               <div class="box-header with-border">
                 <h3 class="box-title">实时状态</h3>
               </div>
-              <div class="box-body">
+            <div class="box-body">
                 <div class="row">
                      <div class="col-md-3">
                         <div class="box box-primary">
@@ -41,10 +41,14 @@
                               <div class="btn-group" id="device_cpu">
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
-                                  {% for item in deviece.cpu %}
-                                  
-                                  <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
+                                {% if vmInfo.summary_config_name %}
+                                    <li data-toggle="id__cpu_usage"> <a>{{ vmInfo.summary_hardware_cpuModel }}</a></li>
+                                {% else %}
+                                  {% for item in vmInfo.cpu %}
+                                    <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
                                   {% endfor %}
+                                {% endif %}
+
                                 </ul>
                               </div>
                             </div>
@@ -70,7 +74,11 @@
                               <div class="btn-group" id="device_mem">
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
-                                 <li data-toggle="SysMemory"> <a>Memory</a></li>
+                                {% if vmInfo.summary_config_name %}
+                                    <li data-toggle="id__mem_granted"> <a> 内存用量</a></li>
+                                {% else %}
+                                  <li data-toggle="SysMemory"> <a> 内存用量</a></li>
+                                {% endif %}
                                 </ul>
                               </div>
                             </div>
@@ -96,9 +104,13 @@
                               <div class="btn-group" id="device_net">
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
-                                {% for item in deviece.network %}
+                                {% if vmInfo.summary_config_name %}
+                                    <li data-toggle="id__net_bytesTx"> <a> 发送流量</a></li>
+                                {% else %}
+                                  {% for item in vmInfo.network %}
                                   <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
                                   {% endfor %}
+                                {% endif %}                                
                                 </ul>
                               </div>
                             </div>
@@ -124,10 +136,14 @@
                               <div class="btn-group" id="device_disk">
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
-                        
-                                 {% for item in deviece.logical_disk %}
+                                {% if vmInfo.summary_config_name %}
+                                    <li data-toggle="id__disk_write"> <a> 磁盘写操作</a></li>
+                                {% else %}
+                                 {% for item in vmInfo.logical_disk %}
                                   <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
                                  {% endfor %}
+                                {% endif %}    
+
                                  
                                 </ul>
                               </div>
@@ -146,7 +162,6 @@
           </div><!-- /.col -->
          </div><!-- /.row -->
 
-   
            <div class="row">
             <div class="col-xs-5">
               <div class="box">
@@ -154,36 +169,71 @@
                   <h3 class="box-title">详细属性</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
+               <!--  {{vmInfo}} -->
                   <table id="example2" class="table table-bordered table-hover">
                     <tbody>
                     <tr>
-                      <td>ID: OR9842</td>
-                      <td>操作系统: Windows8</td>
+                      <td>主机名: {{ vmInfo.host_info.hostname }} {{ vmInfo.summary_config_name }}</td>
+                      <td>操作系统: {{ vmInfo.host_info.os }} {{ vmInfo.summary_config_guestFullName }}</td>
                     </tr>
+                     {% if vmInfo.summary_config_name %}
+                     
                      <tr>
-                        <td>Cpu最大速度: 3.20GHZ</td>
-                        <td>内核: 4</td>
+                        <td>Cpu型号: VCPU </td>
+                        <td>核心数:  {{ vmInfo.config_hardware_numCPU }}</td>
                      </tr>
                      <tr>
-                        <td>逻辑处理器: 4</td>
-                        <td>虚拟化：已启用</td>
+                        <td>Cpu最大速度: {{ vmInfo.summary_hardware_cpuMhz }}</td>
+                        <td>CPU用量: {{ vmInfo.summary_quickStats_overallCpuUsage }} MHz</td>
+                     </tr>
+                     <tr>
+                        <td>内存容量: {{ vmInfo.summary_config_memorySizeMB }} MB</td>
+                        <td>独占内存: {{ vmInfo.summary_quickStats_privateMemory }} MB</td>
                      </tr>
                       <tr>
-                        <td>内存最大速度: 1333MHZ</td>
-                        <td>缓存内存: 1.6GB</td>
-                     </tr>
-                       <tr>
-                        <td>占用内存: 2GB</td>
-                        <td>可用内存：1.7GB</td>
-                     </tr>
-                    <tr>
-                        <td>适配器名称: Realtek PCIe GBE</td>
-                        <td>连接类型：以太网</td>
+                        <td>虚拟机镜像文件: {{ vmInfo.summary_config_vmPathName }}</td>
+                        <td>模板: {{ vmInfo.summary_config_template }}</td>
                      </tr>
                      <tr>
-                        <td>IPV4: 172.16.174.2</td>
-                        <td>IPV6: fe80::416:cfa6:f5d2e:e592%3</td>
+                        <td>IP地址: {{ vmInfo.guest_ipAddress }}</td>
+                        <td>UUID: {{ vmInfo.summary_config_uuid }} </td>                        
                      </tr>
+                     {% else %}
+                     
+                    {% for cpu in vmInfo.host_info.cpu %}
+                     <tr>
+                        <td>Cpu型号: {{ cpu.caption }} </td>
+                        <td>核心数: {{ cpu.NumberOfCores }} </td>
+                     </tr>
+                     <tr>
+                        <td>Cpu最大速度: {{ cpu.MaxClockSpeed }} </td>
+                        <td>逻辑处理器: {{ cpu.NumberOfLogicalProcessors }} </td>
+                     </tr>
+                     {% endfor %}
+                     {% for mem in vmInfo.host_info.mem %}
+                      <tr>
+                        <td>内存型号: {{ mem.Name }}</td>
+                        <td>总容量: {{ mem.Capacity }} GB</td>
+                     </tr>
+                     {% endfor %}
+                     {%for nic in vmInfo.host_info.nic %}
+                    <tr>
+                        <td>适配器名称: {{ nic.caption }}</td>
+                        <td>Mac: {{nic.mac}}</td>
+                     </tr>
+                     <tr>
+                        <td>IP: {{ vmInfo.host_info.ip.0 }}</td>
+                        <td>子网掩码： {{ nic.subnet_mask.0 }}/{{ nic.subnet_mask.1 }}</td>
+                     </tr>
+                     <tr>
+                        {% for gateway in nic.gateway %}
+                        <td>网关：{{gateway}}</td>
+                        {% endfor %}
+                     </tr>
+                     {% endfor %}
+                     {% endif %}
+                     
+                     <!--
                      <tr>
                         <td>磁盘容量: 466GB</td>
                         <td>文件系统：NTFS</td>
@@ -192,91 +242,44 @@
                         <td>磁盘平均相应时间: 4.3毫秒</td>
                         <td>磁盘活动时间: 6%</td>
                      </tr>
+                     -->
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
               </div><!-- /.box -->
             </div><!-- /.col -->          
- 
-            <div class="col-xs-7">
+            <div class="col-xs-7">            
               <div class="box">
                 <div class="box-header">
-                  <h3 class="box-title">服务/资源</h3>
+                  <h3 class="box-title">已安装的服务</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
                   <table id="example2" class="table table-bordered table-hover">
                     <thead>
                       <tr>
                         <th>名称</th>
-                        <th>PID</th>
-                        <th>描述</th>
-                        <th>状态</th>
-                        <th>启动类型</th>
+                      <!--  <th>描述</th> -->
+                        <th>供应商</th>
+                        <th>版本号</th>
                       </tr>
                     </thead>
                     <tbody>
-                     <tr>
-                        <td>MySQL57</td>
-                        <td>1568</td>
-                        <td>MySQL57</td>
-                        <td>正在运行</td>
-                        <td>手动</td>
-                     </tr>
+                    {% for process in vmInfo.installed_programs %}
                       <tr>
-                        <td>RabbitMQ</td>
-                        <td>1924</td>
-                        <td>RabbitMQ</td>
-                        <td>已停止</td>
-                        <td>自动</td>
-                     </tr>
-                      <tr>
-                        <td>Apache</td>
-                        <td>2588</td>
-                        <td>The Apache HTTP Server Project</td>
-                        <td>正在运行</td>
-                        <td>自动</td>
-                     </tr>
-                       <tr>
-                        <td>Nginx1.6</td>
-                        <td>1674</td>
-                        <td>Nginx1.6</td>
-                        <td>已停止</td>
-                        <td>自动</td>
-                     </tr>
-                      <tr>
-                        <td>FTTP</td>
-                        <td>1354</td>
-                        <td>FTTP Server</td>
-                        <td>正在运行</td>
-                        <td>手动</td>
-                     </tr>
-                      <tr>
-                        <td>DHCP</td>
-                        <td>1220</td>
-                        <td>DHCP Client</td>
-                        <td>正在运行</td>
-                        <td>自动</td>
-                     </tr>
-                      <tr>
-                        <td>APPinfo</td>
-                        <td>844</td>
-                        <td>Application Information</td>
-                        <td>正在运行</td>
-                        <td>自动</td>
-                     </tr>
-                       <tr>
-                        <td>Bonjour</td>
-                        <td>1674</td>
-                        <td>Bonjour</td>
-                        <td>已停止</td>
-                        <td>手动</td>
-                     </tr>
+                          <td> {{ process.name }} </td>
+                     <!--     <td> {{ process.description }} </td> -->
+                          <td> {{ process.vendor }} </td>
+                          <td> {{ process.version }} </td>
+                      </tr>
+                    {%endfor%}
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
               </div><!-- /.box -->
+              
+              
+              
             </div><!-- /.col -->
-
             
           </div><!-- /.row -->
  
@@ -287,31 +290,25 @@
                   <h3 class="box-title">日志</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
+                <!--{{  event }} -->
                   <table id="example2" class="table table-bordered table-hover">
                     <thead>
                       <tr>
                         <th>时间</th>
-                        <th>状态</th>
                         <th>消息类型</th>
                         <th>事件</th>
-                        <th>查看</th>
+                        <th>UUID</th>
                       </tr>
                     </thead>
                     <tbody>
+                    {% for evt in event %}
                        <tr>
-                        <td>2015-03-22 23:00:00</td>
-                        <td>已读</td>
-                        <td>通知</td>
-                        <td>重启</td>
-                        <td>...</td>
-                      </tr>   
-                      <tr>
-                        <td>2015-03-22 23:00:00</td>
-                        <td>处理中</td>
-                        <td>紧急</td>
-                        <td>内存溢出</td>
-                        <td>...</td>
-                      </tr> 
+                        <td> {{ evt.timestamp}} </td>
+                        <td> {{ evt.name}} </td>
+                        <td> {{ evt.value}} </td>
+                        <td> <a href='/Host_static/?uuid={{ evt.uuid }}'>{{ evt.uuid}} </a> </td>
+                      </tr>  
+                    {%endfor%} 
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->

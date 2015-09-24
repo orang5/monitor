@@ -1,11 +1,13 @@
 from mongoengine import *
 from datetime import datetime
 import json, time
-import agent_utils
-from agent_types import *
+import projectroot
+from common import agent_utils
+from common.agent_types import *
 import models_displayname as display
 
 connect("MoniterDB")
+log = agent_utils.getLogger()
 
 # 0. METRIC models
 class MetricModel(DynamicDocument):
@@ -15,6 +17,11 @@ class MetricModel(DynamicDocument):
     # tags: will be dynamically added
     
 class ConfigModel(DynamicDocument):
+    name = StringField(max_length=300)
+    timestamp = DateTimeField()
+    value = DynamicField()
+    
+class CurrentModel(DynamicDocument):
     name = StringField(max_length=300)
     timestamp = DateTimeField()
     value = DynamicField()
@@ -30,7 +37,7 @@ class UserInfoModel(DynamicDocument):
     type = StringField(max_length=200) # user or group
     inventory = ListField(StringField(max_length=300)) # different from subitems(sub objects)
 
-# InventoryModel stores entity index and info
+# InventoryModel stores entity index and info 
 class InventoryInfoModel(DynamicDocument):
     name = StringField(max_length=300)
     host = StringField(max_length=300) # changed Jul 28: host uid(mac)
@@ -38,7 +45,13 @@ class InventoryInfoModel(DynamicDocument):
     subitems = ListField(StringField(max_length=300)) #     
     display_name = StringField(max_length=300)
     timestamp = DateTimeField()
-    
+   
+class CurrentInfoModel(DynamicDocument):
+    name = StringField(max_length=300)
+    host = StringField(max_length=300) # changed Jul 28: host uid(mac)
+    display_name = StringField(max_length=300)
+    timestamp = DateTimeField()   
+ 
 '''
 # Hostinfo model
 class HostInfoModel(DynamicDocument):
@@ -164,7 +177,10 @@ def from_metric(met):
     elif met.type == "inventory":
         ret = InventoryInfoModel()
         ret.host = met.tags["uuid"]
-        ret.display_name = display.names[met.name]
+        ret.display_name = display.names.get(met.name, met.name)
+    # special type that do not save into db
+    elif met.type == "current":
+        return None
                 
     # backport
     elif met.type == "MoniterModel":
@@ -192,7 +208,7 @@ def from_metric(met):
             DeviceModel.objects(UUID=re_uuid).update(CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
             return None
     else:
-        print "unknown metric:", met
+        log.warning("unknown metric: %s", met.message_json())
         ret = MetricModel()
 
     ret.name = met.name
@@ -203,8 +219,33 @@ def from_metric(met):
         
     return ret
     
+def current_metric(met):
+    ret = None
+        
+    if met.type in ["config", "metric", "current"]:
+        ret = CurrentModel()
+    elif met.type == "inventory":
+        ret = CurrentInfoModel()
+        ret.host = met.tags["uuid"]
+        ret.display_name = display.names.get(met.name, met.name)
+    else:
+        log.warning("unknown metric: %s", met.message_json())
+        ret = CurrentModel()
+
+    ret.name = met.name
+    ret.timestamp = datetime.fromtimestamp(met.timestamp)
+    ret.value = met.value
+    for k, v in met.tags.iteritems():
+        setattr(ret, k, v)
+    return ret
+    
+def current_item(model, met):
+    tags = dict(name = met.name)
+    tags.update(met.tags)
+    return model.objects(**tags)
+    
 def _test():
-    model_list = [ConfigModel, MetricModel, UserInfoModel, InventoryInfoModel, MetricInfoModel, PluginInfoModel, 
+    model_list = [CurrentModel, CurrentInfoModel, ConfigModel, MetricModel, UserInfoModel, InventoryInfoModel, MetricInfoModel, PluginInfoModel, 
                   PluginModel, AgentModel, RuleModel, MoniterModel, DeviceModel]
                   
     for cls in model_list:
@@ -223,28 +264,4 @@ def _test():
                 print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
             except: pass
 
-if __name__ == "__main__":
-    vm_id = 'a41f724e5fb8'
-    
-    query = InventoryInfoModel.objects(uuid=vm_id)
-    
-    tmp = {}
-    device_dict = {}
-    
-    for q in query:
-        key = ''
-        try:
-            key = q.DeviceID
-        except:pass
-        tmp[key] = tmp.get(key, [])
-        tmp[key].append(q);
-    
-
-    keys = tmp.keys(); keys.sort()
-    for k in keys:
-        current = max(tmp[k], key=lambda x: x.timestamp)
-        print k,current
-        key = current.display_name
-        device_dict[key] = device_dict.get(key, [])
-        device_dict[key].append(current);
-    print device_dict
+if __name__ == "__main__":_test()

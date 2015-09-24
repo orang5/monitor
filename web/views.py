@@ -3,7 +3,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 from datetime import datetime
-from models import *
+from common.models import *
+from common.agent_utils import *
 import json,random,time
 
 
@@ -24,14 +25,108 @@ def vplatform(request):
 def network(request):
     return render_to_response('Network.html')
 
-def virtualMachine_static1(request):
-    vm_id = request.GET.get('uuid')
-    query = InventoryInfoModel.objects(UUID=vm_id)
-    for q in query:
-        device_dict = {'CPU':json.loads(q.CPU),'DISK':json.loads(q.DISK),'MEMORY':json.loads(q.MEMORY),'NETWORK':json.loads(q.Network_Adapter)}
-    return render_to_response('VirtualMachine_static.html', {'deviece':device_dict})
 
+def query_vminfo(vmid):
+    query = CurrentInfoModel.objects(uuid=vmid)
+    cap = CurrentModel.objects(uuid=vmid, name="mem_Capacity")
+    capacity = 0
+    for c in cap:
+        capacity += int(c.value)
+    vmInfo = {}
+    for q in query:
+        key = q.display_name
+        if(key=="host_info"):
+            temp = from_json(q.value)
+            for mem in temp["mem"]:
+                mem["Capacity"] = capacity
+            niclist = []
+            for nic in temp["nic"]:
+                if nic["has_ip"]:
+                    niclist.append(nic)
+            temp["nic"] = niclist
+            vmInfo[key] = temp
+        elif(key == "installed_programs"):
+            if len(q.value) > 8:
+                temp = q.value[1:9]
+            else:
+                temp = q.value
+            vmInfo[key] = temp
+        else:
+            vmInfo[key] = vmInfo.get(key,q.value)
+            
+    return vmInfo
+    
+def query_log(uuid=None):
+    collection = None
+    if uuid:
+        collection = MetricModel.objects(name__startswith="Vim25Api", uuid=uuid)
+    else:
+        collection = MetricModel.objects(name__startswith="Vim25Api")
+    ret = {}
+    for evt in collection:
+        ret[evt.key] = json.loads(evt.to_json())
+    return ret.values()
+    
+def query_vmlist(host_uuid=None):
+    if not host_uuid:
+    # all
+    # query entity_list in CurrentInfoModel
+    # only one entry.
+        host = {}
+        for q in CurrentInfoModel.objects(name="entity_list"):
+            for item in q.value:
+                if item["mo_type"] == "HostSystem":
+                    host[item["uuid"]] = item
+                    
+        # query vm_list in CurrentModel
+        # one entry for each host.
+        vmlist = {}
+        for q in CurrentModel.objects(name="vm_list"):
+            if q.uuid:
+                vmlist[q.uuid] = q.value
+
+        # return values
+        for uuid in host.keys():
+            host[uuid]["vm"] = vmlist[uuid]
+            
+        return host.values()
+    
+    else:
+      # query vm_list in CurrentModel
+      # one entry for each host.
+      for q in CurrentModel.objects(name="vm_list", uuid=host_uuid):
+          return q.value    
+          
+# get entity list in sidebar js
+def vm_list(request):
+    return HttpResponse(json.dumps(query_vmlist())) 
+
+def Host_static(request):
+    try:
+        vm_id = request.GET.get('uuid')
+    except:
+        vm_id = request
+    ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
+           'event':query_log(vm_id)}
+    print ret
+    return render_to_response('Host_static.html', ret)
+    
+def eventLog(request):
+    try:
+        id = request.GET.get('uuid')
+    except:
+        id = None
+    return HttpResponse(json.dumps(query_log(id)))
+        
 def virtualMachine_static(request):
+    try:
+        vm_id = request.GET.get('uuid')
+    except:
+        vm_id = request
+    vmInfo = query_vminfo(vm_id)
+    return render_to_response('VirtualMachine_static.html', {'vmInfo':vmInfo})
+
+def virtualMachine_static_old(request):
     vm_id = request.GET.get('uuid')
     query = InventoryInfoModel.objects(uuid=vm_id)
     
@@ -57,9 +152,28 @@ def virtualMachine_static(request):
     return render_to_response('VirtualMachine_static.html', {'deviece':device_dict})
     
 def virtualMachine(request):
-    pass    
-
+    pass
+    
 def virtualMachine_update(request):
+    try:
+        vm_id = request.GET.get('uuid')
+        DeviceId = request.GET.get('DeviceId') 
+    except:
+        vm_id = request["uuid"]
+        DeviceId = request["DeviceId"]
+        
+    datasets = CurrentModel.objects(uuid = vm_id,DeviceID = DeviceId)
+    capacity = CurrentModel.objects(uuid = vm_id,DeviceID = "Physical_Memory_0")
+    info = {"vmid" : vm_id, "dev" : DeviceId}
+    for data in datasets:
+        info[data.name] = data.value
+    for data in capacity:
+        info[data.name] = data.value
+    # print request, info
+    
+    return HttpResponse(json.dumps(info))    
+
+def virtualMachine_update_old(request):
     vm_id = request.GET.get('uuid')
     DeviceId = request.GET.get('DeviceId') 
     
@@ -90,6 +204,14 @@ def management(request):
     return render_to_response('Management.html')
     
 if __name__ == '__main__':
-    from models import Employee
-    for e in Employee.objects.all():
-        print e["id"], e["name"], e["age"]
+    vm_id = "a41f724e5fb8"
+    #print query_vmlist()
+    #print query_vmlist("00e081e21135")
+    # Host_static(vm_id)
+    # print query_vminfo(vm_id)
+    # print virtualMachine_static(vm_id)
+    # print virtualMachine_update({"uuid":vm_id, "DeviceId":"SysMemory"})
+    print query_log()
+    
+    
+    

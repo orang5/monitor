@@ -162,23 +162,37 @@ function vessel(interval, caption, plot, point,deviceid){
       self.time = new Date(self.time.getTime() + 1000)
       if (self.caption == 'cpu')
       { 
-        self.queue0.push.apply(self.queue0, [res.cpu_LoadPercentage]);
+        self.queue0.push.apply(self.queue0, [res.cpu_LoadPercentage ? res.cpu_LoadPercentage : res.cpu_usage]);
       }
  
       if (self.caption == 'mem')
       {
-        self.queue0.push.apply(self.queue0, [res.mem_Free]);
+        self.queue0.push.apply(self.queue0, [res.mem_Capacity ? res.mem_Capacity - res.mem_Free : res.mem_granted]);
       }
       
       if (self.caption == 'net')
-      { 
-        self.queue0.push.apply(self.queue0, [res.net_bytes_out]);
-        self.queue1.push.apply(self.queue1, [res.net_bytes_in]);
+      {
+        if (res.net_bytes_out)
+        {
+          self.queue0.push.apply(self.queue0, [res.net_bytes_out]);
+          self.queue1.push.apply(self.queue1, [res.net_bytes_in]);
+        }
+        else
+        {
+          self.queue0.push.apply(self.queue0, [res.net_bytesTx]);
+        }
       }
       if (self.caption == 'disk')
       {
-        self.queue0.push.apply(self.queue0, [res.disk_io_stat_read]);
-        self.queue1.push.apply(self.queue1, [res.disk_io_stat_write]);
+        if (res.disk_io_stat_read)
+        {
+          self.queue0.push.apply(self.queue0, [res.disk_io_stat_read]);
+          self.queue1.push.apply(self.queue1, [res.disk_io_stat_write]);
+        }
+        else
+        {
+          self.queue0.push.apply(self.queue1, [res.disk_write]);
+        }
       }
       var l = self.queue0.length
       

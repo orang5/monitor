@@ -6,4 +6,4 @@ names = dict(
     program_list="installed_programs"
 )
 
-names["host.info"] = "host.info"
+names["host_info"] = "host_info"

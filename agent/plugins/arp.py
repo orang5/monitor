@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-import sys, os, inspect, subprocess, shlex
+# -*- coding: cp936 -*-
+import sys, os, inspect, subprocess, shlex, json
 import re
 from monitor_plugin import *
 plugin_info("arp.json")
@@ -16,11 +16,11 @@ for line in agent_utils.run_cmd("arp -a").splitlines():
     
     if m1:
         # print "m1", m1.groups()
-        result[m1.group(1)] = []
-        current = result[m1.group(1)]
+        result[undottify(m1.group(1))] = []
+        current = result[undottify(m1.group(1))]
         
     if m2:
         # print "m2", m2.groups()
         current.append([m2.group(1), m2.group(2).replace("-", ""), type_chn[m2.group(3)]])
 
-print result
+print json.dumps(result)

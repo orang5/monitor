@@ -1,0 +1,61 @@
+{
+  "name" : "monitor_vsphere",
+  "description" : "monitor plugin for VMware Workstation, use vSphere WebService API to gather information",
+  "type" : "platform",
+  "cmd_list" : {
+    "start" : "monitor_vsphere/monitor_vsphere.exe"
+  },
+  "platform_data" : {
+    "username" : "administrator@vsphere.local", 
+    "ipaddr" : "192.168.19.49",
+    "instance_filter" : [
+      "host$", "host/system$", "host/user$", "host/vim$", "host/vim/vimuser$", "host/vim/vmvisor$", "vmnic*"
+    ]
+  },
+  "metrics" : [
+    { "name" : "platform_info", "type" : "inventory", "interval" : 300 }, 
+    { "name" : "name", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "config_product_productLineId", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_hardware_cpuMhz", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_hardware_numCpuCores", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_hardware_cpuModel", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_hardware_uuid", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_hardware_vendor", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_hardware_model", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_hardware_memorySize", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_hardware_numNics", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_config_name", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_config_product_osType", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_config_vmotionEnabled", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_quickStats_overallCpuUsage", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
+    { "name" : "summary_quickStats_overallMemoryUsage", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} },     
+    { "name" : "summary_config_guestFullName", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_config_guestId", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_config_instanceUuid", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_config_memorySizeMB", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_config_name", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_config_numCpu", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_config_guestFullName", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_config_template", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_config_uuid", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_config_vmPathName", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_balloonedMemory", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_compressedMemory", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_consumedOverheadMemory", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_overallCpuUsage", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_privateMemory", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_sharedMemory", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_ssdSwappedMemory", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_staticCpuEntitlement", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_staticMemoryEntitlement", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_swappedMemory", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "summary_quickStats_uptimeSeconds", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },    
+    { "name" : "config_files_logDirectory", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "config_hardware_memoryMB", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "config_hardware_numCPU", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "config_hardware_numCoresPerSocket", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "runtime_powerState", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+    { "name" : "runtime_connectionState", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+  	{ "name" : "guest_ipAddress", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} }
+  ]
+}

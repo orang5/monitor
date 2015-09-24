@@ -6,7 +6,7 @@
     "start" : "python WindowsWatcher_1.py"
   },
   "metrics" : [
-    { "name" : "cpu_LoadPercentage", "type" : "metric", "interval" : 3},
+    { "name" : "cpu_LoadPercentage", "type" : "metric", "interval" : 1},
     { "name" : "cpu_CurrentClockSpeed", "type" : "metric", "interval" : 3},
     { "name" : "cpu_NumberOfCores", "type" : "config", "interval" : 60},
     { "name" : "cpu_MaxClockSpeed", "type" : "config", "interval" : 60},

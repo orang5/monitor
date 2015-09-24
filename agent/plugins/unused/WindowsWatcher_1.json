@@ -1,0 +1,53 @@
+{
+  "name" : "WindowsWatcher",
+  "description" : "WMI plugin",
+  "type" : "platform",
+  "cmd_list" : {
+    "start" : "python WindowsWatcher_1.py"
+  },
+  "metrics" : [
+    { "name" : "cpu_LoadPercentage", "type" : "metric", "interval" : 1},
+    { "name" : "cpu_CurrentClockSpeed", "type" : "metric", "interval" : 3},
+    { "name" : "cpu_NumberOfCores", "type" : "config", "interval" : 60},
+    { "name" : "cpu_MaxClockSpeed", "type" : "config", "interval" : 60},
+    { "name" : "cpu_NumberOfLogicalProcessors", "type" : "config", "interval" : 60},
+    { "name" : "cpu_Description", "type" : "config", "interval" : 60},
+    { "name" : "cpu_Name", "type" : "config", "interval" : 60},
+    
+    { "name" : "mem_Capacity", "type" : "config", "interval" : 60},
+    { "name" : "mem_Free", "type" : "metric", "interval" : 3},
+    { "name" : "mem_SwapTotal", "type" : "metric", "interval" : 60},
+    { "name" : "mem_SwapUsage", "type" : "metric", "interval" : 10},
+    { "name" : "mem_SwapFree", "type" : "metric", "interval" : 10},
+    { "name" : "mem_Speed", "type" : "config", "interval" : 60},
+    { "name" : "mem_DeviceLocator", "type" : "config", "interval" : 60},
+    
+    { "name" : "disk_FreeSpace", "type" : "metric", "interval" : 3},
+    { "name" : "disk_capacity", "type" : "config", "interval" : 60},
+    { "name" : "disk_Used", "type" : "metric", "interval" : 3},
+    { "name" : "disk_fstype", "type" : "config", "interval" : 60},
+    { "name" : "disk_io_stat_read", "type" : "metric", "interval" : 3},
+    { "name" : "disk_io_stat_write", "type" : "metric", "interval" : 3},
+    { "name" : "disk_size", "type" : "config", "interval" : 60},
+    
+    { "name" : "net_Caption", "type" : "config", "interval" : 60},
+    { "name" : "net_IPSubnet", "type" : "config", "interval" : 60},
+    { "name" : "net_DefaultIPGateway", "type" : "config", "interval" : 60},
+    { "name" : "net_ip_address", "type" : "config", "interval" : 60},
+    
+    { "name" : "net_bytes_in", "type" : "metric", "interval" : 3},
+    { "name" : "net_bytes_out", "type" : "metric", "interval" : 3},
+    { "name" : "net_bytes_in_cur", "type" : "metric", "interval" : 3},
+    { "name" : "net_bytes_out_cur", "type" : "metric", "interval" : 3},
+    { "name" : "net_pkts_in_cur", "type" : "metric", "interval" : 3},
+    { "name" : "net_pkts_out_cur", "type" : "metric", "interval" : 3},
+    
+    { "name" : "dev_cpu", "type" : "inventory", "interval" : 300},     
+    { "name" : "dev_mem", "type" : "inventory", "interval" : 300},   
+    { "name" : "dev_disk", "type" : "inventory", "interval" : 300},    
+    { "name" : "dev_nic", "type" : "inventory", "interval" : 300},  
+      
+    { "name" : "process_list", "type" : "metric", "interval" : 15},
+    { "name" : "program_list", "type" : "inventory", "interval" : 600}
+  ]
+}

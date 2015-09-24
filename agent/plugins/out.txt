@@ -1,0 +1,372 @@
+[INFO][connect]	MQ: BlockingConnection (control flow) -> amqp://monitor:root@localhost:5672/%2f
+[INFO][connect]	MQWorker: SelectConnection (data thread) -> amqp://monitor:root@localhost:5672/%2f
+[INFO][connect_worker]	MQ: wait for local MQWorker...
+[INFO][run]	MQWorker: start ioloop...
+[INFO][_on_channel]	MQWorker: connection thread ready.
+[INFO][run]	MQWatchdog: started for amqp://monitor:root@localhost:5672/%2f
+[DEBUG][_init_queue]	exchange=m.exc queue=m.local.dat key=l
+[INFO][queue_bind]	MQ: bind: (m.exc,l) -> queue:m.local.dat
+[DEBUG][_init_queue]	exchange=m.exc queue=m.local.con.6056 key=6056
+[INFO][queue_bind]	MQ: bind: (m.exc,6056) -> queue:m.local.con.6056
+[INFO][do_work]	[WinWatcher] init WMI...
+[INFO][do_work]	[WinWatcher] start main loop...
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059029, "type": "metric", "value": 62058921}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059029, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059029, "type": "metric", "value": 23180215}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059029, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059029, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.23 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059032, "type": "metric", "value": 62174763}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059032, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059032, "type": "metric", "value": 23198772}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059032, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059032, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.04 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059035, "type": "metric", "value": 62281040}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059035, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059035, "type": "metric", "value": 23209932}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059035, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059035, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059038, "type": "metric", "value": 62406525}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059038, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059038, "type": "metric", "value": 23224860}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059038, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059038, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059041, "type": "metric", "value": 62407862}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059041, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059041, "type": "metric", "value": 23227007}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059041, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059041, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.07 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059044, "type": "metric", "value": 62409433}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059044, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059044, "type": "metric", "value": 23227507}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059044, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059044, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059047, "type": "metric", "value": 62435968}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059047, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059047, "type": "metric", "value": 23249706}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059047, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059047, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.04 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059050, "type": "metric", "value": 62555158}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059050, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059050, "type": "metric", "value": 23272710}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059050, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059050, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059053, "type": "metric", "value": 65641476}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059053, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059053, "type": "metric", "value": 23386269}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059053, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059053, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.04 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059056, "type": "metric", "value": 67884389}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059056, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059056, "type": "metric", "value": 23462040}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059056, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059056, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.07 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059059, "type": "metric", "value": 68604169}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059059, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059059, "type": "metric", "value": 23477415}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059059, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059059, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059062, "type": "metric", "value": 68951523}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059062, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059062, "type": "metric", "value": 23491960}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059062, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059062, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059065, "type": "metric", "value": 69001237}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059065, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059065, "type": "metric", "value": 23500969}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059065, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059065, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059068, "type": "metric", "value": 69005226}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059068, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059068, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059068, "type": "metric", "value": 23501266}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059069, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059069, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059069, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059072, "type": "metric", "value": 69016229}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059072, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059072, "type": "metric", "value": 23510968}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059072, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059072, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059075, "type": "metric", "value": 69030455}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059075, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059075, "type": "metric", "value": 23520975}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059075, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059075, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.05 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059078, "type": "metric", "value": 69030893}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059078, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059078, "type": "metric", "value": 23521734}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059078, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059078, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.05 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059081, "type": "metric", "value": 70279799}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059081, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059081, "type": "metric", "value": 23556856}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059081, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059081, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.06 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059084, "type": "metric", "value": 74523225}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059084, "type": "metric", "value": 456}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_in_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Realtek_PCIe_GBE_\u7cfb\u5217\u63a7\u5236\u5668", "tag": "Realtek PCIe GBE \u7cfb\u5217\u63a7\u5236\u5668"}, "timestamp": 1443059084, "type": "metric", "value": 23658899}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "VPN_Client_Adapter_-_VPN", "tag": "VPN Client Adapter - VPN"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "Teredo_Tunneling_Pseudo-Interface", "tag": "Teredo Tunneling Pseudo-Interface"}, "timestamp": 1443059084, "type": "metric", "value": 12788}
+[DEBUG][publish]	[WindowsWatcher] publish -> {"name": "net_bytes_out_cur", "tags": {"DeviceID": "isatap.mydomain.com", "tag": "isatap.mydomain.com"}, "timestamp": 1443059084, "type": "metric", "value": 0}
+[INFO][update_metrics]	[WindowsWatcher] -> 0.05 secs
+[INFO][update_metrics]	[WindowsWatcher] -> 0.00 secs

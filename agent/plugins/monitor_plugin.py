@@ -10,6 +10,9 @@ info = None
 metrics = {}
 ts = {}
 
+def dottify(str):   return str.replace("_", ".").replace("..", "_")
+def undottify(str): return str.replace("_", "..").replace(".", "_")
+
 def plugin_info(filename):
     global info
     global metrics
@@ -58,7 +61,7 @@ def update_metrics(worker, **kwargs):
     kwargs["group"] = kwargs.get("group", False)
     t = time.time()
     for intv in metrics.keys():
-        if intv>0 and t > ts[intv]+intv:
+        if intv>0 and t >= ts[intv]+intv:
             ts[intv] = t
             for met in metrics[intv]:
                 met.ts["execute"] = time.time()

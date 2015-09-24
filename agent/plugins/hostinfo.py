@@ -1,5 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-import time, pythoncom, wmi, logging, socket, uuid
+import time, pythoncom, wmi, logging, socket, uuid,json
 import win32com.client as client
 from monitor_plugin import *
 plugin_info("hostinfo.json")
@@ -67,5 +67,5 @@ result = dict(
     ip          = iplist,
     nic         = nic_list
     )
-
-print result
+    
+print json.dumps(result)

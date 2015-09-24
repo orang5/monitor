@@ -44,12 +44,19 @@ def do_work(met):
         log.warning("received_else: %s" % met.message_json())
         
     if cur:
+#        if met.name == "Vim25Api_EventEx":
+#            print met.message_json()
+#            print cur.__class__
         current_item(cur.__class__, met).delete()
         cur.save()
+
+def do_test(met):
+    print met
 
 class MetricWorker(threadpool.Worker):
     def work(self, met):
         do_work(met)
+     #  do_test(met)
 
 
 # simply add metric to thread pool

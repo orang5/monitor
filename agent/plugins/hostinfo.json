@@ -4,7 +4,7 @@
   "type" : "shell",
   "metrics" : [
     {
-      "name" : "host.info",
+      "name" : "host_info",
       "type" : "inventory",
       "interval" : 300,
       "cmd" : "python hostinfo.py"

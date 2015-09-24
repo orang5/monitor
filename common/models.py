@@ -176,7 +176,7 @@ def from_metric(met):
     elif met.type == "inventory":
         ret = InventoryInfoModel()
         ret.host = met.tags["uuid"]
-        ret.display_name = display.names[met.name]
+        ret.display_name = display.names.get(met.name, met.name)
     # special type that do not save into db
     elif met.type == "current":
         return None
@@ -226,7 +226,7 @@ def current_metric(met):
     elif met.type == "inventory":
         ret = CurrentInfoModel()
         ret.host = met.tags["uuid"]
-        ret.display_name = display.names[met.name]
+        ret.display_name = display.names.get(met.name, met.name)
     else:
         log.warning("unknown metric: %s", met.message_json())
         ret = CurrentModel()
@@ -263,4 +263,4 @@ def _test():
                 print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
             except: pass
 
-if __name__ == "__main__": _test()
+if __name__ == "__main__":_test()
