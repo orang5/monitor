@@ -26,135 +26,11 @@
               </div>
             <div class="box-body">
                 <div class="row">
+										{% for ins in vmInfo %}
                      <div class="col-md-3">
-                        <div class="box box-primary">
-                          <div class="box-header with-border">
-                            <i class="fa fa-bar-chart-o"></i>
-                            <h3 class="box-title">Cpu利用率</h3>
-                            <div class="box-tools pull-right">
-                              Real time
-                              
-                              <div class="btn-group" id="cpu_realtime" data-toggle="btn-toggle">
-                                <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
-                              </div>
-                              <div class="btn-group" id="device_cpu">
-                                <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
-                                <ul class="dropdown-menu pull-right" role="menu">
-                                {% if vmInfo.summary_config_name %}
-                                    <li data-toggle="id__cpu_usage"> <a>{{ vmInfo.summary_hardware_cpuModel }}</a></li>
-                                {% else %}
-                                  {% for item in vmInfo.cpu %}
-                                    <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
-                                  {% endfor %}
-                                {% endif %}
-
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="box-body">
-                            <div id="cpu-chart" style="height: 200px;" class="full-width-chart"></div>
-                          </div><!-- /.box-body-->
-                        </div><!-- /.box -->
-                      </div><!-- /.col -->
-                    
-                     <div class="col-md-3">
-                        <!-- memery chart -->
-                        <div class="box box-primary">
-                          <div class="box-header with-border">
-                            <i class="fa fa-bar-chart-o"></i>
-                            <h3 class="box-title">内存用量</h3>
-                            <div class="box-tools pull-right">
-                              Real time
-                              <div class="btn-group" id="mem_realtime" data-toggle="btn-toggle">
-                                <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
-                              </div>
-                              <div class="btn-group" id="device_mem">
-                                <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
-                                <ul class="dropdown-menu pull-right" role="menu">
-                                {% if vmInfo.summary_config_name %}
-                                    <li data-toggle="id__mem_granted"> <a> 内存用量</a></li>
-                                {% else %}
-                                  <li data-toggle="SysMemory"> <a> 内存用量</a></li>
-                                {% endif %}
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="box-body">
-                            <div id="mem-chart" style="height: 200px;" class="full-width-chart"></div>
-                          </div><!-- /.box-body-->
-                        </div><!-- /.box -->
-                      </div><!-- /.col -->
-                     
-                     <div class="col-md-3">
-                        <!-- memery chart -->
-                        <div class="box box-primary">
-                          <div class="box-header with-border">
-                            <i class="fa fa-bar-chart-o"></i>
-                            <h3 class="box-title">网络流量</h3>
-                            <div class="box-tools pull-right">
-                              Real time
-                              <div class="btn-group" id="net_realtime" data-toggle="btn-toggle">
-                                <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
-                              </div>
-                              <div class="btn-group" id="device_net">
-                                <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
-                                <ul class="dropdown-menu pull-right" role="menu">
-                                {% if vmInfo.summary_config_name %}
-                                    <li data-toggle="id__net_bytesTx"> <a> 发送流量</a></li>
-                                {% else %}
-                                  {% for item in vmInfo.network %}
-                                  <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
-                                  {% endfor %}
-                                {% endif %}                                
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="box-body">
-                            <div id="net-chart" style="height: 200px;" class="full-width-chart"></div>
-                          </div><!-- /.box-body-->
-                        </div><!-- /.box -->
-                      </div><!-- /.col -->
-                    
-                     <div class="col-md-3">
-                        <!-- memery chart -->
-                        <div class="box box-primary">
-                          <div class="box-header with-border">
-                            <i class="fa fa-bar-chart-o"></i>
-                            <h3 class="box-title">磁盘IO</h3>
-                            <div class="box-tools pull-right">
-                              Real time
-                              <div class="btn-group" id="disk_realtime" data-toggle="btn-toggle">
-                                <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
-                              </div>
-                              <div class="btn-group" id="device_disk">
-                                <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
-                                <ul class="dropdown-menu pull-right" role="menu">
-                                {% if vmInfo.summary_config_name %}
-                                    <li data-toggle="id__disk_write"> <a> 磁盘写操作</a></li>
-                                {% else %}
-                                 {% for item in vmInfo.logical_disk %}
-                                  <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
-                                 {% endfor %}
-                                {% endif %}    
-
-                                 
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="box-body">
-                            <div id="disk-chart" style="height: 200px;" class="full-width-chart"></div>
-                          </div><!-- /.box-body-->
-                        </div><!-- /.box -->
-                      </div><!-- /.col -->
-                      
+                        {% include "component\plot.html" %}
+                     </div><!-- /.col -->
+                    {% endfor %}                      
                </div><!-- /.row -->
                
               </div><!-- /.box-body-->
@@ -169,7 +45,7 @@
                   <h3 class="box-title">详细属性</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-               <!--  {{vmInfo}} -->
+               {{vmInfo}}
                   <table id="example2" class="table table-bordered table-hover">
                     <tbody>
                     <tr>
