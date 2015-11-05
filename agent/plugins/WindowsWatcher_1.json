@@ -48,6 +48,6 @@
     { "name" : "dev_nic", "type" : "inventory", "interval" : 300},  
       
     { "name" : "process_list", "type" : "metric", "interval" : 15},
-    { "name" : "program_list", "type" : "inventory", "interval" : 600}
+    { "name" : "program_list", "type" : "inventory", "interval" : 60}
   ]
 }
