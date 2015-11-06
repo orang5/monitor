@@ -42,7 +42,7 @@
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                 {% if vmInfo.summary_config_name %}
-                                    <li data-toggle="id__cpu_usage"> <a>{{ vmInfo.summary_hardware_cpuModel }}</a></li>
+                                    <li data-toggle="id__cpu"> <a>{{ vmInfo.summary_hardware_cpuModel }}</a></li>
                                 {% else %}
                                   {% for item in vmInfo.cpu %}
                                     <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
@@ -75,7 +75,7 @@
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                 {% if vmInfo.summary_config_name %}
-                                    <li data-toggle="id__mem_granted"> <a> 内存用量</a></li>
+                                    <li data-toggle="id__mem"> <a> 内存用量</a></li>
                                 {% else %}
                                   <li data-toggle="SysMemory"> <a> 内存用量</a></li>
                                 {% endif %}
@@ -105,7 +105,7 @@
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                 {% if vmInfo.summary_config_name %}
-                                    <li data-toggle="id__net_bytesTx"> <a> 发送流量</a></li>
+                                    <li data-toggle="id__net"> <a> 发送流量</a></li>
                                 {% else %}
                                   {% for item in vmInfo.network %}
                                   <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
@@ -137,7 +137,7 @@
                                 <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                 {% if vmInfo.summary_config_name %}
-                                    <li data-toggle="id__disk_write"> <a> 磁盘写操作</a></li>
+                                    <li data-toggle="id__disk"> <a> 磁盘写操作</a></li>
                                 {% else %}
                                  {% for item in vmInfo.logical_disk %}
                                   <li data-toggle="{{ item.DeviceID }}"> <a>{{ item.value.caption }}</a></li>
