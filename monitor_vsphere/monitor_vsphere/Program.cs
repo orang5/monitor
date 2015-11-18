@@ -118,21 +118,17 @@ namespace monitor_vsphere
             MQ.setup_local_queue();
            
             // print/send platform info
-            MQ.publish(PropHelper.BuildPlatformInfo().message_json);
-            
-            // retrieve host/vm list
-            PropHelper.RetrieveAllEntities();
-            PropHelper.RetrieveArrays();
-
-      //      foreach (var k in VCenter.entity_props.Keys)
-      //          EventHelper.GetAlarms(k);
-
-            // print/send entity info
-            PropHelper.BuildPropMetric();
+            MQ.publish(PropHelper.BuildPlatformInfo());
             
             // for each entity, print/send perf items
             while (true)
             {
+                // retrieve host/vm list
+                PropHelper.RetrieveAllEntities();
+                PropHelper.RetrieveArrays();
+                // print/send entity info
+                PropHelper.BuildPropMetric();
+
                 Console.WriteLine("------perf info------");
                 foreach (var it in VCenter.entity_props.Keys)
                 {

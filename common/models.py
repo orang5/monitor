@@ -3,7 +3,7 @@ from datetime import datetime
 import json, time
 import agent_utils
 from agent_types import *
-import models_displayname as display
+import models_route as route
 
 connect("MoniterDB")
 log = agent_utils.getLogger()
@@ -167,81 +167,42 @@ class platform(Document):
 # factory method
 # get specific metric model object from Metric object
 def from_metric(met):
-    ret = None
-        
-    if met.type == "config":
-        ret = ConfigModel()
-    elif met.type == "metric":
-        ret = MetricModel()
-    elif met.type == "inventory":
-        ret = InventoryInfoModel()
-        ret.host = met.tags["uuid"]
-        ret.display_name = display.names.get(met.name, met.name)
-    # special type that do not save into db
-    elif met.type == "current":
-        return None
-                
-    # backport
-    elif met.type == "MoniterModel":
-        re_uuid = met.tags["uuid"]
-        re_ts = met.timestamp
-        ret = []
-        for info in met.value:
-            for key, value in info.iteritems():
-                deviceID = key
-                for k,v in value.iteritems():
-                    model = MoniterModel(UUID = re_uuid, KEY = k, VALUE = json.dumps(v), TIME = datetime.fromtimestamp(re_ts), DEVICEID = deviceID)
-                  #  print "save -> ", met
-                    ret.append(model)
-        return ret
-    elif met.type == "DeviceModel":
-        re_uuid = met.tags["uuid"]
-        re_ts = met.timestamp
-        infos = met.value
-        query = DeviceModel.objects(UUID=re_uuid)
-        if not query:
-            ret = DeviceModel(UUID=re_uuid, CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
-          #  print "save -> ", met
-            return ret
+    ret = []
+    for mdl in route.type_models[met.type]:
+        obj = MetricModel()
+        if globals().has_key(mdl):
+            obj = globals()[mdl]()
+            if met.type == "inventory":
+                obj.host = met.tags["uuid"]
+                obj.display_name = route.names.get(met.name, met.name)
         else:
-            DeviceModel.objects(UUID=re_uuid).update(CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
-            return None
-    else:
-        log.warning("unknown metric: %s", met.message_json())
-        ret = MetricModel()
-
-    ret.name = met.name
-    ret.timestamp = datetime.fromtimestamp(met.timestamp)
-    ret.value = met.value
-    for k, v in met.tags.iteritems():
-        setattr(ret, k, v)
-        
+            log.warning("unknown metric: %s", met.message_json())
+        obj.name = met.name
+        obj.timestamp = datetime.fromtimestamp(met.timestamp)
+        obj.value = met.value
+        for k, v in met.tags.iteritems():
+            setattr(obj, k, v)
+        ret.append(obj)  
+    print ret      
     return ret
     
-def current_metric(met):
-    ret = None
-        
-    if met.type in ["config", "metric", "current"]:
-        ret = CurrentModel()
-    elif met.type == "inventory":
-        ret = CurrentInfoModel()
-        ret.host = met.tags["uuid"]
-        ret.display_name = display.names.get(met.name, met.name)
-    else:
-        log.warning("unknown metric: %s", met.message_json())
-        ret = CurrentModel()
-
-    ret.name = met.name
-    ret.timestamp = datetime.fromtimestamp(met.timestamp)
-    ret.value = met.value
-    for k, v in met.tags.iteritems():
-        setattr(ret, k, v)
-    return ret
-    
+# get latest item for given model and metric entry
 def current_item(model, met):
     tags = dict(name = met.name)
     tags.update(met.tags)
     return model.objects(**tags)
+
+# uniform save method
+# save metric to each model defined in models_route.py
+def save_metric(met, debug=False):
+    for mdl in from_metric(met):
+        # check if only save latest value
+        if route.model_conf[mdl.__class__.__name__]["latest"]:
+            current_item(mdl.__class__, met).delete()
+            
+        # log.info(" ".join(("save ->", str(mdl.__class__), met.name, str(met.timestamp))))
+        print " ".join(("save ->", mdl.__class__.__name__, met.name, str(met.timestamp)))
+        if not debug: mdl.save()
     
 def _test():
     model_list = [CurrentModel, CurrentInfoModel, ConfigModel, MetricModel, UserInfoModel, InventoryInfoModel, MetricInfoModel, PluginInfoModel, 

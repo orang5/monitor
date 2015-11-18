@@ -45,3 +45,5 @@ F:\snippets\monitor_vsphere\monitor_vsphere\bin\Debug\RabbitMQ.Client.xml
 F:\snippets\monitor_vsphere\monitor_vsphere\bin\Debug\Newtonsoft.Json.xml
 F:\snippets\monitor_vsphere\monitor_vsphere\obj\Debug\monitor_vsphere.csprojResolveAssemblyReference.cache
 F:\snippets\monitor_vsphere\monitor_vsphere\bin\Debug\Microsoft.Web.Services3.dll
+F:\experiment-vs\monitor\monitor_vsphere\monitor_vsphere\obj\Debug\monitor_vsphere.exe
+F:\experiment-vs\monitor\monitor_vsphere\monitor_vsphere\obj\Debug\monitor_vsphere.pdb

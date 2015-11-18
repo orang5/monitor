@@ -29,6 +29,19 @@ namespace monitor_vsphere
         // call vSphere API to retrieve props and cache them
         // --------------------------
 
+        /// <summary>
+        /// retrieve data in each turn, call this for update
+        /// </summary>
+        public static void RetrieveUpdate()
+        {
+            // backup existing moref list
+            var morefs = VCenter.entity_props.Keys.ToList();
+            // first, update two main caches
+            RetrieveAllEntities();
+            RetrieveArrays();
+
+        }
+
         // get groups of moref+props as described in monitor_vsphere.json
         // for each kind of entities, invoke one call of getEntitiesByType to retrieve all listed props in JSON.
         // then flatten the nested dictionary into entity_props
@@ -51,6 +64,7 @@ namespace monitor_vsphere
         // store these arrays in entity_cache
         public static void RetrieveArrays()
         {
+            // host arrays
             var host_arrays = VCenter.su.getEntitiesByType("HostSystem", new string[] {
                 "config.network.netStackInstance",          // net stack inst array
                 "config.network.vnic",                      // host virtual nic array
@@ -78,6 +92,10 @@ namespace monitor_vsphere
                 VCenter.entity_cache[item.Key] = dict;
             }
 
+            // can call GetMac/GetIP for HostSystem from here on
+            //----------------------------------------------------------------------------------------------------
+
+            // vm arrays
             var vm_arrays = VCenter.su.getEntitiesByType("VirtualMachine", new string[] {
                 "runtime.host",          // host moref (not an array!)
                 "layoutEx.file",         // file list
@@ -104,13 +122,17 @@ namespace monitor_vsphere
                 VCenter.entity_cache[item.Key] = dict;
             }
 
+            // can call GetMac/GetIP for VirtualMachine from here on
+            //----------------------------------------------------------------------------------------------------
+
             foreach (var item in host_arrays)
             {
                 List<ManagedObjectReference> t_vm = new List<ManagedObjectReference>((ManagedObjectReference[])item.Value["vm"]);
                 VCenter.entity_cache[item.Key]["vm.info"] = t_vm.Select(x => new Dictionary<string, string>() {
                     { "uuid", GetMac(x) },
                     { "mo", Get(x, "name") },
-                    { "is_template", IsTemplate(x).ToString() }
+                    { "is_template", IsTemplate(x).ToString() },
+                    { "ip", GetIP(x) }
                 }).ToList();
             }
         }
@@ -191,6 +213,16 @@ namespace monitor_vsphere
                 return (string)VCenter.entity_props[moref][key];
         }
 
+        /// <summary>
+        /// get unique identifier for moref
+        /// </summary>
+        /// <param name="moref">given moref</param>
+        /// <returns>
+        /// host / running VM:  mac
+        /// VM template:        uuid
+        /// other (VM w/o tools and not running): "n/a"
+        /// other moref:        "empty/type"
+        /// </returns>
         public static string GetMac(ManagedObjectReference moref)
         {
             if (moref.type == "HostSystem")
@@ -204,8 +236,35 @@ namespace monitor_vsphere
                 }
                 catch (Exception e)
                 {
-                    return "no_data";
+                    return "n/a";
                 }
+            else return "empty/" + moref.type;
+        }
+
+        /// <summary>
+        /// return IP of given moref
+        /// </summary>
+        /// <param name="moref">given moref</param>
+        /// <returns>string: ip address. WARNING: when value==null, returns "n/a" .</returns>
+        public static string GetIP(ManagedObjectReference moref)
+        {
+            if (moref.type == "HostSystem")
+            {
+                List<HostIpConfig> hip = VCenter.entity_cache[moref]["vnic.spec.ip"];
+                if (hip[0].ipAddress == null)
+                    return "n/a";
+                else return hip[0].ipAddress;
+            }
+            else if (moref.type == "VirtualMachine")
+            {
+                try
+                {
+                    string ret = (string)VCenter.entity_props[moref]["guest.ipAddress"];
+                    if (ret == null) ret = "n/a";
+                    return ret;
+                }
+                catch { return "n/a"; }
+            }
             else return "empty/" + moref.type;
         }
 
@@ -265,7 +324,7 @@ namespace monitor_vsphere
             Metric met = new Metric()
             {
                 name = "entity_list",
-                type = "inventory",
+                type = "inventory", //todo: change type to RUNTIME
                 value = VCenter.entity_props.Keys.Select(x => new Dictionary<string, string>() {
                     { "uuid", GetMac(x) },
                     { "mo", Get(x, "name") },
@@ -274,7 +333,7 @@ namespace monitor_vsphere
                     }).ToArray(),
                 ts = new Dictionary<string, long>() { { "latest", Helper.now() } }
             };
-            MQ.publish(met.message_json);
+            MQ.publish(met);
 
             foreach (var it in VCenter.entity_props)
             {
@@ -296,7 +355,7 @@ namespace monitor_vsphere
                     };
                     // print/send metric
                     //Console.WriteLine(met.message_json);
-                    MQ.publish(met.message_json);
+                    MQ.publish(met);
                 }
 
                 if (it.Key.type == "HostSystem")
@@ -325,7 +384,7 @@ namespace monitor_vsphere
                     { "uuid", GetMac(moref) }
                 }
             };
-            MQ.publish(met.message_json);
+            MQ.publish(met);
 
             // host ip summary
             met.name = "host_ip";
@@ -336,7 +395,7 @@ namespace monitor_vsphere
                 { "mask", hip[0].subnetMask },
            //     { "gateway", cache["nsi.ipRouteConfig.defaultGateway"][0] }
             };
-            MQ.publish(met.message_json);
+            MQ.publish(met);
 
             // host ip list
             met.name = "host_ipConfig";
@@ -364,7 +423,7 @@ namespace monitor_vsphere
                 }
                 catch { }
             }
-            MQ.publish(met.message_json);
+            MQ.publish(met);
 
         }
 
@@ -385,7 +444,7 @@ namespace monitor_vsphere
                     { "uuid", GetMac(moref) }
                 }
             };
-            MQ.publish(met.message_json);
+            MQ.publish(met);
 
             // ip summary
             if (!IsTemplate(moref) && GetMac(moref) != "no_data")
@@ -399,7 +458,7 @@ namespace monitor_vsphere
                         { "ip", (string)VCenter.entity_props[moref]["guest.ipAddress"] },
                         { "mac", cache["guest.net.mac"][0].Replace(":", "") }
                     };
-                    MQ.publish(met.message_json);
+                    MQ.publish(met);
                 }
                 catch { }
 
@@ -441,7 +500,7 @@ namespace monitor_vsphere
                     };
                     met.value.Add(f);
                 }
-                MQ.publish(met.message_json);
+                MQ.publish(met);
             }
 
             // file list
@@ -456,7 +515,7 @@ namespace monitor_vsphere
                     };
                 met.value.Add(f);
             }
-            MQ.publish(met.message_json);
+            MQ.publish(met);
         }
 
         // update methods.
@@ -490,7 +549,7 @@ namespace monitor_vsphere
                             if (pci != null)
                             {
                                 Metric met = BuildPerfMetric(moref, pci, ((PerfMetricIntSeries)series).value[0], info[0].timestamp, spec.metricId[i].instance);
-                                MQ.publish(met.message_json);
+                                MQ.publish(met);
 //                                Console.WriteLine("{0}\t{1}\t{2}\t{3} = \t{4}",
   //                                                  met.tags["mo_type"], met.tags["mo"], met.tags["inst"], met.name, met.value);
                             }

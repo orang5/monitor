@@ -72,17 +72,17 @@ namespace MonitorPlugin
 
         public long timestamp { get { return ts["latest"]; } }
 
-        public string message
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder(base.ToString());
-                sb.Append(string.Format(", {0}, {1}", timestamp, JsonConvert.SerializeObject(value)));
-                foreach (KeyValuePair<string, string> kv in tags)
-                    sb.Append(string.Format(", {0} = {1}", kv.Key, kv.Value));
-                return sb.ToString();
-            }
-        }
+        //public string message
+        //{
+        //    get
+        //    {
+        //        StringBuilder sb = new StringBuilder(base.ToString());
+        //        sb.Append(string.Format(", {0}, {1}", timestamp, JsonConvert.SerializeObject(value)));
+        //        foreach (KeyValuePair<string, string> kv in tags)
+        //            sb.Append(string.Format(", {0} = {1}", kv.Key, kv.Value));
+        //        return sb.ToString();
+        //    }
+        //}
 
         public string message_json
         {
@@ -95,6 +95,23 @@ namespace MonitorPlugin
                 Dictionary<string, dynamic> dict = new Dictionary<string, dynamic>()
                 {   { "name", name }, { "timestamp", timestamp }, { "type", type }, { "value", value }, { "tags", tags } };
                 return JsonConvert.SerializeObject(dict);
+            }
+        }
+
+        /// <summary>
+        /// name+tags (flattened)
+        /// unique id string for a metric ( without value and timestamp )
+        /// example:
+        /// "name=cpu_usage DeviceID=cpu0 host=host1"
+        /// </summary>
+        public string Tag
+        {
+            get {
+                StringBuilder sb = new StringBuilder();
+                foreach (var kv in tags)
+                    sb.Append(kv.Key + "=" + kv.Value + " ");
+                sb.Append(name);
+                return sb.ToString();
             }
         }
     }
@@ -129,6 +146,17 @@ namespace MonitorPlugin
                 Console.WriteLine("[publish] {0}", msg);
         }
 
+        public static void publish(Metric met, bool check=true, bool debug=false)
+        {
+            if (!check)
+                publish(met.message_json, debug);
+            else if (Helper.metric_changed(met))
+            {
+                Helper.save_metric(met);        //add to cache
+                publish(met.message_json, debug);
+            }
+        }
+
         public static void close()
         {
             channel.Close();
@@ -141,6 +169,7 @@ namespace MonitorPlugin
         public static PluginDesc info;
         public static Dictionary<int, List<Metric>> metrics = new Dictionary<int, List<Metric>>();
         public static Dictionary<int, long> ts = new Dictionary<int, long>();
+        public static Dictionary<string, Metric> metric_cache = new Dictionary<string, Metric>();
 
         public static void plugin_info(string filename)
         {
@@ -170,6 +199,29 @@ namespace MonitorPlugin
 
         public delegate void MetricWorker(Metric met);
 
+        // check if current metric value has changed
+        public static bool metric_changed(Metric met)
+        {
+            // metrics remains unchanged only if:
+            // (1) cached, AND then
+            // (2) value equals OR (3) json value equals
+            // otherwise changed.
+            try
+            {
+                return !(metric_cache.ContainsKey(met.Tag) && (
+                    (metric_cache[met.Tag].value == met.value) ||
+                    JsonConvert.SerializeObject(metric_cache[met.Tag].value) == JsonConvert.SerializeObject(met.value))
+                    );
+            }
+            catch { return true; }
+        }
+        
+        // wrapper for Helper.metric_cache[met.Tag] = met
+        public static void save_metric(Metric met)
+        {
+            metric_cache[met.Tag] = met;
+        }
+
         // check metric list
         public static void update_metrics(MetricWorker worker, bool publish=true)
         {
@@ -188,7 +240,7 @@ namespace MonitorPlugin
 
                         met.ts["latest"] = to_timestamp(DateTime.Now);
                         if (publish)
-                            MQ.publish(met.message_json);
+                            MQ.publish(met);
                         else
                             Debug.Print("[update] {0}", met.message_json);
                     }

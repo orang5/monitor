@@ -64,7 +64,7 @@ namespace monitor_vsphere
                             if (e.dvs != null) met.tags["mo"] = e.dvs.name;
                             
 
-                            MQ.publish(met.message_json);
+                            MQ.publish(met);
                             //Console.WriteLine("Event {0} [{1}] host={2} vm={3} | {4}", e.GetType(), e.createdTime, e.host.name, e.vm.name, e.fullFormattedMessage);
                         }
                         catch (Exception exc)
