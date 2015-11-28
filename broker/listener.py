@@ -2,8 +2,7 @@
 import time, datetime
 import projectroot
 from common import agent_types, mq, agent_utils, threadpool
-from common.models import *
-import analyzer
+import analyzer, models_action
 
 log = agent_utils.getLogger()
 
@@ -13,7 +12,7 @@ def do_work(met):
     for a in analyzer.list:
         if a.check(met): a.action(met)
     # save
-    save_metric(met)
+    models_action.save_metric(met)
 
 def do_test(met):
     print met

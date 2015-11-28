@@ -3,7 +3,6 @@ from datetime import datetime
 import json, time
 import agent_utils
 from agent_types import *
-import models_route as route
 
 connect("MoniterDB")
 log = agent_utils.getLogger()
@@ -163,46 +162,6 @@ class DeviceModel(Document):
 
 class platform(Document):
     VMLIST = StringField()    
-    
-# factory method
-# get specific metric model object from Metric object
-def from_metric(met):
-    ret = []
-    for mdl in route.type_models[met.type]:
-        obj = MetricModel()
-        if globals().has_key(mdl):
-            obj = globals()[mdl]()
-            if met.type == "inventory":
-                obj.host = met.tags["uuid"]
-                obj.display_name = route.names.get(met.name, met.name)
-        else:
-            log.warning("unknown metric: %s", met.message_json())
-        obj.name = met.name
-        obj.timestamp = datetime.fromtimestamp(met.timestamp)
-        obj.value = met.value
-        for k, v in met.tags.iteritems():
-            setattr(obj, k, v)
-        ret.append(obj)  
-    print ret      
-    return ret
-    
-# get latest item for given model and metric entry
-def current_item(model, met):
-    tags = dict(name = met.name)
-    tags.update(met.tags)
-    return model.objects(**tags)
-
-# uniform save method
-# save metric to each model defined in models_route.py
-def save_metric(met, debug=False):
-    for mdl in from_metric(met):
-        # check if only save latest value
-        if route.model_conf[mdl.__class__.__name__]["latest"]:
-            current_item(mdl.__class__, met).delete()
-            
-        # log.info(" ".join(("save ->", str(mdl.__class__), met.name, str(met.timestamp))))
-        print " ".join(("save ->", mdl.__class__.__name__, met.name, str(met.timestamp)))
-        if not debug: mdl.save()
     
 def _test():
     model_list = [CurrentModel, CurrentInfoModel, ConfigModel, MetricModel, UserInfoModel, InventoryInfoModel, MetricInfoModel, PluginInfoModel, 

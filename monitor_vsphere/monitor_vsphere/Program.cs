@@ -136,6 +136,7 @@ namespace monitor_vsphere
                 }
                 EventHelper.Update();
                 Thread.Sleep(20000);
+
             }
 
             VCenter.close();

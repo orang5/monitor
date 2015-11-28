@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.IO;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -120,30 +121,78 @@ namespace MonitorPlugin
     {
         public static ConnectionFactory factory;
         public static IConnection conn;
-        public static IModel channel;
+        public static IModel channel, consumer_chn;
         public static QueueingBasicConsumer consumer;
-        public static bool ready = false;
+        public static Thread th;
+        public static bool restart_flag = false;
+        public static string pid;
 
         public static void setup_local_queue()
         {
+            restart_flag = true;
             factory = new ConnectionFactory();
             factory.Uri = @"amqp://monitor:root@localhost:5672";
             conn = factory.CreateConnection();
             channel = conn.CreateModel();
+            consumer_chn = conn.CreateModel();
 
             channel.ExchangeDeclare("m.exc", "direct", true);
             channel.QueueDeclare("m.local.dat", true, false, false, null);
             channel.QueueBind("m.local.dat", "m.exc", "l");
-            //todo: add consumer
-            ready = true;
+
+            pid = Process.GetCurrentProcess().Id.ToString();
+            string consumer_queue = "m.local.con." + pid;
+            consumer_chn.QueueDeclare(consumer_queue, false, false, true, null);
+            consumer_chn.QueueBind(consumer_queue, "m.exc", pid);
+
+            consumer = new QueueingBasicConsumer(consumer_chn);
+            consumer_chn.BasicConsume(consumer_queue, false, consumer);
+
+            // start consumer
+            th = new Thread(new ThreadStart(consumer_thread));
+            th.Start();
+            restart_flag = false;
+            Console.WriteLine("[MonitorPlugin] MQ is ready.");
+        }
+
+        public static void consumer_thread()
+        {
+            try
+            {
+                Console.WriteLine("[MonitorPlugin] control thread started.");
+                while (!restart_flag)
+                {
+                    var recv = consumer.Queue.Dequeue();
+                    string msg = Encoding.UTF8.GetString(recv.Body);
+                    Debug.WriteLine(msg);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            restart_flag = true;
         }
 
         public static void publish(string msg, bool debug=false)
         {
-            if (!debug)
-                channel.BasicPublish("m.exc", "l", null, Encoding.UTF8.GetBytes(msg));
-            else
-                Console.WriteLine("[publish] {0}", msg);
+            check_conn();
+            try {
+                if (!debug)
+                    channel.BasicPublish("m.exc", "l", null, Encoding.UTF8.GetBytes(msg));
+                else
+                {
+                    Console.WriteLine("[publish] {0}", msg);
+                //    Exception e = new Exception("test");
+                 //   throw e;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                restart_flag = true;
+                check_conn();
+            }
         }
 
         public static void publish(Metric met, bool check=true, bool debug=false)
@@ -157,11 +206,46 @@ namespace MonitorPlugin
             }
         }
 
+        public static void publish_con(string msg, bool debug = false)
+        {
+            if (!debug)
+                consumer_chn.BasicPublish("m.exc", pid, null, Encoding.UTF8.GetBytes(msg));
+            else
+                Console.WriteLine("[control] {0}", msg);
+        }
+
+        // check connection, if screwed, restart it
+        // only call it in main thread. if child thread fails, leave it
+        public static void check_conn()
+        {
+            if (restart_flag)
+            {
+                Console.WriteLine("*** MonitorPlugin MQ Failed ***");
+                try
+                {
+                    th.Abort();
+                }
+                catch { }
+                consumer = null;
+                channel = null;
+                conn = null;
+                factory = null;
+                GC.Collect();
+
+                Console.WriteLine("*** wait 3 secs ***");
+                Thread.Sleep(3000);
+
+                Console.WriteLine("*** MonitorPlugin: try to restart MQ ***");
+                setup_local_queue();
+            }
+        }
+
         public static void close()
         {
             channel.Close();
             conn.Close();
         }
+
     }
 
     public class Helper

@@ -55,16 +55,14 @@ class Metric(MetricDesc):
         for k in kwargs.keys():
             self.tags[k] = self.tags.get(k, kwargs[k])
 
-#    def message(self):
-#        msg = " ".join([self.name, self.timestamp().__str__(), self.value.__str__(),
-#                        " ".join(["%s=%s" % (k, v.__str__()) for k, v in self.tags.iteritems()])
-#                      ])
-#        return msg
-
     def message_json(self):
         return agent_utils.to_json({'name' : self.name, 'timestamp' : self.timestamp, 'type' : self.type, 
                              'value' : self.value, 'tags' : self.tags})
-
+                             
+    def tagdict(self):
+        t = dict(name = self.name)
+        t.update(self.tags)
+        return t
 
 # plugin运行时结构
 class Plugin(PluginDesc):
