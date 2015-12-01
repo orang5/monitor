@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 cd ..
 cd broker
 echo "启动传输代理"
@@ -8,12 +9,17 @@ cd agent
 echo "启动监控代理"
 start "监控代理" python pluginmanager.py
 =======
+=======
+>>>>>>> kongwu/master
 @echo off
 cd broker
 start python listener.py
 cd ..
 cd agent
 start python pluginmanager.py
+<<<<<<< HEAD
+>>>>>>> kongwu/master
+=======
 >>>>>>> kongwu/master
 echo "等待一会（约12秒），服务器会自动启动"
 ping 127.0.0.1>nul
@@ -21,8 +27,12 @@ ping 127.0.0.1>nul
 ping 127.0.0.1>nul
 cd ..
 <<<<<<< HEAD
+<<<<<<< HEAD
 echo "启动服务器"
 start "服务器" python manage.py runserver 0.0.0.0:8000
+=======
+start python manage.py runserver 0.0.0.0:8000
+>>>>>>> kongwu/master
 =======
 start python manage.py runserver 0.0.0.0:8000
 >>>>>>> kongwu/master
