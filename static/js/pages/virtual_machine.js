@@ -50,7 +50,7 @@ var cpu_plot = $.plot("#cpu-chart", [], {
   },
   yaxis: {
     min: 0,
-    max: 2500,
+    max: 100,
     show: true
   },
   xaxis: {
@@ -77,7 +77,7 @@ var mem_plot = $.plot("#mem-chart", [], {
   },
   yaxis: {
     min: 0,
-    max: 11000,
+    max: 4096,
     show: true
   },
   xaxis: {
@@ -167,7 +167,7 @@ function vessel(interval, caption, plot, point,deviceid){
  
       if (self.caption == 'mem')
       {
-        self.queue0.push.apply(self.queue0, [res.mem_Capacity ? res.mem_Capacity - res.mem_Free : res.mem_usage]);
+        self.queue0.push.apply(self.queue0, [res.mem_Capacity ? res.mem_Capacity - res.mem_Free : res.mem_granted]);
       }
       
       if (self.caption == 'net')

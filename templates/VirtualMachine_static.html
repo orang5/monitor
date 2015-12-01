@@ -1,0 +1,206 @@
+{% extends '__base__.html' %}
+{% load staticfiles %}
+{% block content-wrapper %}
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            主机
+            <small>version1.0</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+            <li class="active">虚拟化平台</li>
+            <li class="active">主机1</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+           <div class="col-md-12">
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title">实时状态</h3>
+              </div>
+            <div class="box-body">
+                <div class="row">
+										{% for ins in vmInfo %}
+                     <div class="col-md-3">
+                        {% include "component\plot.html" %}
+                     </div><!-- /.col -->
+                    {% endfor %}                      
+               </div><!-- /.row -->
+               
+              </div><!-- /.box-body-->
+            </div><!-- /.box -->
+          </div><!-- /.col -->
+         </div><!-- /.row -->
+
+           <div class="row">
+            <div class="col-xs-5">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">详细属性</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+               {{vmInfo}}
+                  <table id="example2" class="table table-bordered table-hover">
+                    <tbody>
+                    <tr>
+                      <td>主机名: {{ vmInfo.host_info.hostname }} {{ vmInfo.summary_config_name }}</td>
+                      <td>操作系统: {{ vmInfo.host_info.os }} {{ vmInfo.summary_config_guestFullName }}</td>
+                    </tr>
+                     {% if vmInfo.summary_config_name %}
+                     
+                     <tr>
+                        <td>Cpu型号: VCPU </td>
+                        <td>核心数:  {{ vmInfo.config_hardware_numCPU }}</td>
+                     </tr>
+                     <tr>
+                        <td>Cpu最大速度: {{ vmInfo.summary_hardware_cpuMhz }}</td>
+                        <td>CPU用量: {{ vmInfo.summary_quickStats_overallCpuUsage }} MHz</td>
+                     </tr>
+                     <tr>
+                        <td>内存容量: {{ vmInfo.summary_config_memorySizeMB }} MB</td>
+                        <td>独占内存: {{ vmInfo.summary_quickStats_privateMemory }} MB</td>
+                     </tr>
+                      <tr>
+                        <td>虚拟机镜像文件: {{ vmInfo.summary_config_vmPathName }}</td>
+                        <td>模板: {{ vmInfo.summary_config_template }}</td>
+                     </tr>
+                     <tr>
+                        <td>IP地址: {{ vmInfo.guest_ipAddress }}</td>
+                        <td>UUID: {{ vmInfo.summary_config_uuid }} </td>                        
+                     </tr>
+                     {% else %}
+                     
+                    {% for cpu in vmInfo.host_info.cpu %}
+                     <tr>
+                        <td>Cpu型号: {{ cpu.caption }} </td>
+                        <td>核心数: {{ cpu.NumberOfCores }} </td>
+                     </tr>
+                     <tr>
+                        <td>Cpu最大速度: {{ cpu.MaxClockSpeed }} </td>
+                        <td>逻辑处理器: {{ cpu.NumberOfLogicalProcessors }} </td>
+                     </tr>
+                     {% endfor %}
+                     {% for mem in vmInfo.host_info.mem %}
+                      <tr>
+                        <td>内存型号: {{ mem.Name }}</td>
+                        <td>总容量: {{ mem.Capacity }} GB</td>
+                     </tr>
+                     {% endfor %}
+                     {%for nic in vmInfo.host_info.nic %}
+                    <tr>
+                        <td>适配器名称: {{ nic.caption }}</td>
+                        <td>Mac: {{nic.mac}}</td>
+                     </tr>
+                     <tr>
+                        <td>IP: {{ vmInfo.host_info.ip.0 }}</td>
+                        <td>子网掩码： {{ nic.subnet_mask.0 }}/{{ nic.subnet_mask.1 }}</td>
+                     </tr>
+                     <tr>
+                        {% for gateway in nic.gateway %}
+                        <td>网关：{{gateway}}</td>
+                        {% endfor %}
+                     </tr>
+                     {% endfor %}
+                     {% endif %}
+                     
+                     <!--
+                     <tr>
+                        <td>磁盘容量: 466GB</td>
+                        <td>文件系统：NTFS</td>
+                     </tr>
+                       <tr>
+                        <td>磁盘平均相应时间: 4.3毫秒</td>
+                        <td>磁盘活动时间: 6%</td>
+                     </tr>
+                     -->
+                    </tbody>
+                  </table>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->          
+            <div class="col-xs-7">            
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">已安装的服务</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>名称</th>
+                      <!--  <th>描述</th> -->
+                        <th>供应商</th>
+                        <th>版本号</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for process in vmInfo.installed_programs %}
+                      <tr>
+                          <td> {{ process.name }} </td>
+                     <!--     <td> {{ process.description }} </td> -->
+                          <td> {{ process.vendor }} </td>
+                          <td> {{ process.version }} </td>
+                      </tr>
+                    {%endfor%}
+                    </tbody>
+                  </table>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+              
+              
+              
+            </div><!-- /.col -->
+            
+          </div><!-- /.row -->
+ 
+            <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">日志</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                <!--{{  event }} -->
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>时间</th>
+                        <th>消息类型</th>
+                        <th>事件</th>
+                        <th>UUID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for evt in event %}
+                       <tr>
+                        <td> {{ evt.timestamp}} </td>
+                        <td> {{ evt.name}} </td>
+                        <td> {{ evt.value}} </td>
+                        <td> <a href='/Host_static/?uuid={{ evt.uuid }}'>{{ evt.uuid}} </a> </td>
+                      </tr>  
+                    {%endfor%} 
+                    </tbody>
+                  </table>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+        
+        
+
+     </div><!-- /.content-wrapper -->
+    {% endblock %}
+   {% block script %}
+      <script src="{% static "plugins/flot/jquery.flot.min.js" %}"></script>
+      <script src="{% static "plugins/flot/jquery.flot.resize.min.js" %}"></script>
+      <script src="{% static "plugins/flot/jquery.flot.pie.min.js" %}"></script>
+      <script src="{% static "plugins/flot/jquery.flot.categories.min.js" %}"></script>
+      <script src="{% static "js/pages/virtual_machine.js" %}"></script>
+    {% endblock %} 
