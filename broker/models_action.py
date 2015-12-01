@@ -1,12 +1,13 @@
 ﻿# -*- coding: utf-8 -*-
 from mongoengine import *
 from datetime import datetime
-import json, time
-import agent_utils
-from agent_types import *
-from models import *
+import json, time, numbers
+from common import agent_utils
+from common.agent_types import *
+from common.models import *
 
 debug = False
+timespan = 300
 
 # display_name: alias for metric.name
 names = dict(
@@ -37,26 +38,30 @@ def save_one(met, mdl):
         current_item(met, mdl).delete()
         save(met, mdl)    
     else: print "- in save_one"
- 
+
+# note: if value is string then do not pack 
 def save_packed(met, mdl):
-    offset = met.timestamp % 60
-    time_min = met.timestamp - offset
-    
-    # find correct entry and alter it.
-    search_keys = met.tagdict()
-    search_keys["timestamp"] = time_min
-    items = mdl.__class__.objects(**search_keys)
-    if items.count() == 0:
-        # no such entry, create it
-        newlist = [""] * 60
-        newlist[offset] = met.value
-        mdl.packed = True
-        mdl.value = newlist
-        mdl.timestamp = time_min
-        mdl.save()
+    if not isinstance(met.value, numbers.Number):
+        save(met, mdl)
     else:
-        # magic arg
-        items.update(set__value__offset=met.value)
+        offset = met.timestamp % timespan
+        time_min = datetime.fromtimestamp(met.timestamp - offset)
+        
+        # find correct entry and alter it.
+        search_keys = met.tagdict()
+        search_keys["timestamp"] = time_min
+        items = mdl.__class__.objects(**search_keys)
+        if items.count() == 0:
+            # no such entry, create it
+            newlist = [""] * timespan
+            newlist[offset] = met.value
+            mdl.packed = True
+            mdl.value = newlist
+            mdl.timestamp = time_min
+            mdl.save()
+        else:
+            # magic
+            items.update(**{"set__value__%d" % offset : met.value})
 
 # metric type routes: describes how to deal with certain metric type
 # to which model this metric is saved
@@ -75,7 +80,7 @@ routes = dict(
 # describes how to save into this model
 actions = dict(
     ConfigModel         = save,
-    MetricModel         = save,
+    MetricModel         = save_packed,
     InventoryInfoModel  = save,
     CurrentModel        = save_one,
     CurrentInfoModel    = save_one
@@ -110,7 +115,7 @@ def save_metric(met):
     for mdl in from_metric(met):
         cls = mdl.__class__.__name__
         act = actions[cls]
-        print "%s %s -> %s" % (act.__name__, cls, met.tagdict().__str__())
+        print "%s %s -> %s" % (act.__name__, cls, met.name)
         act(met, mdl)
 
 if __name__ == "__main__":
