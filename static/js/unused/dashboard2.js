@@ -1,6 +1,6 @@
 'use strict';
 
-function sales_chart(d) {
+$(function () {
   var salesChartCanvas = $("#salesChart").get(0).getContext("2d");
   // This will get the first returned node in the jQuery collection.
   var salesChart = new Chart(salesChartCanvas);
@@ -16,7 +16,7 @@ function sales_chart(d) {
         pointStrokeColor: "#c1c7d1",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgb(220,220,220)",
-        data: d.data1
+        data : [58, 28, 30, 69, 16, 37, 20]
       },
       {
         label: "Digital Goods",
@@ -26,10 +26,11 @@ function sales_chart(d) {
         pointStrokeColor: "rgba(60,141,188,1)",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(60,141,188,1)",
-        data: d.data2
+        data: [28, 48, 40, 19, 86, 27, 90]
       }
     ]
   };
+  //salesChartData.datasets[0].data = [65, 59, 80, 81, 56, 55, 40]
 
   var salesChartOptions = {
     //Boolean - If we should show the scale at all
@@ -73,9 +74,5 @@ function sales_chart(d) {
   //Create the line chart
   salesChart.Line(salesChartData, salesChartOptions);
 
-}
-
-$(function(){
-  _ajax('GET', '/index_update/', null ,sales_chart)
 });
 
