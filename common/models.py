@@ -3,7 +3,6 @@ from datetime import datetime
 import json, time
 import agent_utils
 from agent_types import *
-import models_displayname as display
 
 connect("MoniterDB")
 log = agent_utils.getLogger()
@@ -164,85 +163,6 @@ class DeviceModel(Document):
 class platform(Document):
     VMLIST = StringField()    
     
-# factory method
-# get specific metric model object from Metric object
-def from_metric(met):
-    ret = None
-        
-    if met.type == "config":
-        ret = ConfigModel()
-    elif met.type == "metric":
-        ret = MetricModel()
-    elif met.type == "inventory":
-        ret = InventoryInfoModel()
-        ret.host = met.tags["uuid"]
-        ret.display_name = display.names.get(met.name, met.name)
-    # special type that do not save into db
-    elif met.type == "current":
-        return None
-                
-    # backport
-    elif met.type == "MoniterModel":
-        re_uuid = met.tags["uuid"]
-        re_ts = met.timestamp
-        ret = []
-        for info in met.value:
-            for key, value in info.iteritems():
-                deviceID = key
-                for k,v in value.iteritems():
-                    model = MoniterModel(UUID = re_uuid, KEY = k, VALUE = json.dumps(v), TIME = datetime.fromtimestamp(re_ts), DEVICEID = deviceID)
-                  #  print "save -> ", met
-                    ret.append(model)
-        return ret
-    elif met.type == "DeviceModel":
-        re_uuid = met.tags["uuid"]
-        re_ts = met.timestamp
-        infos = met.value
-        query = DeviceModel.objects(UUID=re_uuid)
-        if not query:
-            ret = DeviceModel(UUID=re_uuid, CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
-          #  print "save -> ", met
-            return ret
-        else:
-            DeviceModel.objects(UUID=re_uuid).update(CPU=json.dumps(infos['CPU']), MEMORY = json.dumps(infos['MEMORY']), DISK = json.dumps(infos['DISK']), Network_Adapter=json.dumps(infos['Network_Adapter']))
-            return None
-    else:
-        log.warning("unknown metric: %s", met.message_json())
-        ret = MetricModel()
-
-    ret.name = met.name
-    ret.timestamp = datetime.fromtimestamp(met.timestamp)
-    ret.value = met.value
-    for k, v in met.tags.iteritems():
-        setattr(ret, k, v)
-        
-    return ret
-    
-def current_metric(met):
-    ret = None
-        
-    if met.type in ["config", "metric", "current"]:
-        ret = CurrentModel()
-    elif met.type == "inventory":
-        ret = CurrentInfoModel()
-        ret.host = met.tags["uuid"]
-        ret.display_name = display.names.get(met.name, met.name)
-    else:
-        log.warning("unknown metric: %s", met.message_json())
-        ret = CurrentModel()
-
-    ret.name = met.name
-    ret.timestamp = datetime.fromtimestamp(met.timestamp)
-    ret.value = met.value
-    for k, v in met.tags.iteritems():
-        setattr(ret, k, v)
-    return ret
-    
-def current_item(model, met):
-    tags = dict(name = met.name)
-    tags.update(met.tags)
-    return model.objects(**tags)
-    
 def _test():
     model_list = [CurrentModel, CurrentInfoModel, ConfigModel, MetricModel, UserInfoModel, InventoryInfoModel, MetricInfoModel, PluginInfoModel, 
                   PluginModel, AgentModel, RuleModel, MoniterModel, DeviceModel]
@@ -252,15 +172,21 @@ def _test():
         print "----------------------"
 
         rows = []
+        packed_model = False
         for x in cls.objects(): 
             for r in iter(x):
                 if r not in rows: rows.append(r)
+                if r == "packed": packed_model = True
         
         # csv format
         print ",".join([r for r in rows])
         for x in cls.objects():
             try:
-                print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
+                if (not packed_model) or (not x.packed):
+                    print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
+                else:
+                    x.value = agent_utils.packed_to_dict(x.value)
+                    print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])                    
             except: pass
 
 if __name__ == "__main__":_test()

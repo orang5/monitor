@@ -55,8 +55,6 @@ def send_metrics(met):
     # add tags
     met.update_tags(uuid=agent_info.host_id(), host=agent_info.hostname)
     
-    # grace period (brute throttle)
-    time.sleep(0.005)
     # send (with lock)
     if sending.acquire():
         mq.remote_publish(met.message_json())
