@@ -83,6 +83,38 @@ def start():
     while True:
         update()
         time.sleep(0.5)
+        
+# Dec 1: add self monitor functions
+#　retrieve agent information, and save into a dict
+def get_agent_info():
+    return dict(
+        uuid = agent_info.host_id(),
+        hostname = agent_info.hostname,
+        ip = agent_info.ip, 
+        pid = agent_info.pid,
+    )
+
+def get_plugin_info():
+    return [p.describe() for p in plugins if p.type == "platform"]
+   
+def get_metric_info():
+    mets = []
+    for group in metrics.values():
+        for m in group:
+            d = Metric.describe(m)
+            d.update(
+                value = m.value,
+                tags = m.tags,
+                timestamp = m.timestamp,
+                ts = m.ts
+            )
+            mets.append(d)
+    return mets
+
+def build_metric(name, d):
+    met = Metric(name, "inventory", 30, "", True)
+    # todo
+    
 
 def _test_callback(body):
     print "recv ", body
@@ -90,7 +122,10 @@ def _test_callback(body):
 def _test():
     init_queue()
     os.chdir("plugins") # hard coded here
-    load_all(".")    
-    start()
+    load_all(".")
+    print get_agent_info()
+    print get_plugin_info()
+    print get_metric_info()
+  #  start()
 
 if __name__ == "__main__" : _test()
