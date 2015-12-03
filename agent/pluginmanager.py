@@ -111,10 +111,11 @@ def get_metric_info():
             mets.append(d)
     return mets
 
-def build_metric(name, d):
+def build_metric(name, v, t={}):
     met = Metric(name, "inventory", 30, "", True)
-    # todo
-    
+    met.tags = t
+    met.value = v
+    return met
 
 def _test_callback(body):
     print "recv ", body
@@ -123,9 +124,6 @@ def _test():
     init_queue()
     os.chdir("plugins") # hard coded here
     load_all(".")
-    print get_agent_info()
-    print get_plugin_info()
-    print get_metric_info()
   #  start()
 
 if __name__ == "__main__" : _test()

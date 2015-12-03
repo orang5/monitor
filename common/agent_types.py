@@ -47,8 +47,10 @@ class Metric(MetricDesc):
             name = m.name,
             type = m.type,
             interval = m.interval,
-            cmd = m.cmd
+            cmd = m.cmd, 
+            args = getattr(m, "args", {})
         )
+        
     @property
     def timestamp(self):
         # to be modified in future
