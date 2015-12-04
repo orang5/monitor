@@ -7,7 +7,9 @@ import json, os, time, subprocess, shlex, threading
 log = agent_utils.getLogger()
 plugins = []
 metrics = {}
-ts = {"init" : time.time()}
+ts = {"init" : time.time(), "heartbeat" : time.time()}
+heartbeat_interval = 30
+
 sending = threading.Lock()
 
 def load_plugin(fname):
@@ -63,9 +65,16 @@ def send_metrics(met):
 def control_callback(msg):
     print "receive control:", msg
 
+def control_callback_remote(msg):
+    print "receive remote control:", msg
+
 def init_queue():
     mq.setup_remote_queue()
-    mq.setup_local_queue(send_metrics, control_callback)
+    try:
+    #    mq.setup_remote_control_queue(control_callback_remote)
+    except:
+        print "** note: remote control disabled."
+    mq.setup_local_queue(send_metrics, control_callback)    
     commandbroker.metric_callback = send_metrics
 
 def update():
@@ -78,6 +87,9 @@ def update():
                 # current: queue all
                 for m in metrics[interval]:
                     commandbroker.queue(m)
+    # update heartbeat
+    if now-ts["heartbeat"] > heartbeat_interval:
+        send_heartbeat_metrics()
                     
 def start():
     while True:
@@ -92,6 +104,7 @@ def get_agent_info():
         hostname = agent_info.hostname,
         ip = agent_info.ip, 
         pid = agent_info.pid,
+        uptime = time.time() - ts["init"]
     )
 
 def get_plugin_info():
@@ -112,10 +125,15 @@ def get_metric_info():
     return mets
 
 def build_metric(name, v, t={}):
-    met = Metric(name, "inventory", 30, "", True)
+    met = Metric(name, "runtime", 30, "", True)
     met.tags = t
     met.value = v
     return met
+    
+def send_heartbeat_metrics():
+    send_metrics(build_metric("agent_info", get_agent_info()))
+    send_metrics(build_metric("agent_plugin_list", get_plugin_info()))
+    send_metrics(build_metric("agent_metric_list", get_metric_info()))
 
 def _test_callback(body):
     print "recv ", body
@@ -124,6 +142,6 @@ def _test():
     init_queue()
     os.chdir("plugins") # hard coded here
     load_all(".")
-  #  start()
+    start()
 
 if __name__ == "__main__" : _test()

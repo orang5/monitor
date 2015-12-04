@@ -238,6 +238,7 @@ def _publish(q, msg, dir = "local", type = "dat", key = "m", prefix = "m", dry=F
     
 localq = None
 remoteq = None
+remotecon = None
 
 # use this library routine to init local q for monitor project
 def setup_local_queue(data=None, control=None, parse=True):
@@ -254,16 +255,16 @@ def setup_local_queue(data=None, control=None, parse=True):
 
 # use this library routine to init remote q for monitor project
 # routing key is host identification.
-def setup_remote_queue(data=None, control=None):
+def setup_remote_queue(data=None):
     global remoteq
-    q = MQ("amqp://monitor:root@%s/%%2f" % config.mq_server)
+    q = MQ("amqp://monitor:root@%s/%%2f" % config.mq_broker)
     remoteq = q
 
     q.connect()
     q.connect_worker()
     
-    _init_queue(q, dir="remote", callback=data, key="r")
-    _init_queue(q, type="con.%s" % agent_info.host_id(), key=agent_info.host_id(), callback=control, parse=False, durable=False, auto_delete=True)
+    _init_queue(q, dir="remote", callback=data, key="r") # m.remote.dat
+    # _init_queue(q, type="con.%s" % agent_info.host_id(), key=agent_info.host_id(), callback=control, parse=False, durable=False, auto_delete=True)
     return q
 
 # local plugin uses [local_publish] to send metrics to plugin_manager
@@ -276,7 +277,7 @@ def remote_publish(msg): _publish(remoteq, msg, dir="remote", key="r")
 def local_control(msg, pid): _publish(localq, msg, type="con.%s" % pid, key=str(pid))
 
 # server uses [remote_control] to send control to certain host (plugin_manager)
-def remote_control(msg, host_id): _publish(remoteq, msg, type="con.%s" % host_id, key=str(host_id)) 
+# def remote_control(msg, host_id): _publish(remoteq, msg, type="con.%s" % host_id, key=str(host_id)) 
 
 g = False
 def _callback(body):
