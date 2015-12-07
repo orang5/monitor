@@ -240,44 +240,80 @@ localq = None
 remoteq = None
 remotecon = None
 
-# use this library routine to init local q for monitor project
-def setup_local_queue(data=None, control=None, parse=True):
+# use this library routine to init local (agent<-plugin) DATA queue for monitor project
+def setup_local_queue(data=None, parse=True):
     global localq
-    q = MQ(r"amqp://monitor:root@localhost:5672/%2f")
-    localq = q
-    
+    q = MQ("amqp://monitor:root@localhost:5672/%%2f")
+    localq = q    
     q.connect()
-    q.connect_worker()
-    
-    _init_queue(q, callback=data, key="l", parse=parse)
-    _init_queue(q, type="con.%s" % agent_info.pid, key = str(agent_info.pid), callback=control, parse=False, durable=False, auto_delete=True)
+    q.connect_worker()    
+    # data (plugin->agent). queue: m.local.dat routing_key: ld
+    _init_queue(q, callback=handler, key="ld", parse=parse)    
     return q
-
-# use this library routine to init remote q for monitor project
-# routing key is host identification.
+    
+# use this library routine to init remote (agent->broker) DATA queue for monitor project
 def setup_remote_queue(data=None):
     global remoteq
     q = MQ("amqp://monitor:root@%s/%%2f" % config.mq_broker)
     remoteq = q
-
     q.connect()
-    q.connect_worker()
-    
-    _init_queue(q, dir="remote", callback=data, key="r") # m.remote.dat
-    # _init_queue(q, type="con.%s" % agent_info.host_id(), key=agent_info.host_id(), callback=control, parse=False, durable=False, auto_delete=True)
+    q.connect_worker()    
+    # data (plugin->broker). queue: m.remote.dat routing_key: rd
+    _init_queue(q, dir="remote", callback=data, key="rd")
     return q
+    
+# init local (agent<->plugin) control queues.
+def setup_local_control(request=None, reply=None)
+    if request:
+        # request (agent->plugin) queue: m.local.[pid] routing_key: [pid]
+        _init_queue(localq, type=str(agent_info.pid), key=str(agent_info.pid), callback=request, parse=False, durable=False, auto_delete=True)
+    # reply (plugin->agent) queue: m.local.reply routing_key: lr
+    _init_queue(localq, type="reply", key="lr", callback=reply, parse=False, durable=False, auto_delete=True)
 
-# local plugin uses [local_publish] to send metrics to plugin_manager
-def local_publish(msg): _publish(localq, msg, key="l")
+def setup_remote_control(request=None, reply=None)
+    if request:
+        # request (server->agent) queue: m.remote.[hostid] routing_key: [hostid]
+        _init_queue(remoteq, type=str(agent_info.pid), key=str(agent_info.pid), callback=request, parse=False, durable=False, auto_delete=True)
+    # reply (agent->server) queue: m.remote.reply routing_key: rr
+    _init_queue(remoteq, type="reply", key="rr", callback=reply, parse=False, durable=False, auto_delete=True)
+    
+#--------------------------
+#           data
+# plugin ---------> agent
+#--------------------------
+def local_publish(msg): _publish(localq, msg, key="ld")
 
-# plugin_manager uses [remote_publish] to send metrics to transfer_broker (server)
-def remote_publish(msg): _publish(remoteq, msg, dir="remote", key="r")
+#--------------------------
+#          request
+# agent ------------> plugin
+#            pid
+#--------------------------
+def local_request(msg, pid): _publish(localq, msg, type=str(pid), key=str(pid))
 
-# plugin_manager uses [local_control] to send control to certain plugin (pid)
-def local_control(msg, pid): _publish(localq, msg, type="con.%s" % pid, key=str(pid))
+#--------------------------
+#           reply
+# plugin ----------> agent
+#--------------------------
+def local_reply(msg): _publish(localq, msg, type="reply", key="lr")
 
-# server uses [remote_control] to send control to certain host (plugin_manager)
-# def remote_control(msg, host_id): _publish(remoteq, msg, type="con.%s" % host_id, key=str(host_id)) 
+#--------------------------
+#          data
+# agent ---------> broker
+#--------------------------
+def remote_publish(msg): _publish(remoteq, msg, dir="remote", key="rd")
+
+#--------------------------
+#           request
+# server ------------> agent
+#           host_id
+#--------------------------
+def remote_request(msg, host_id): _publish(remoteq, msg, dir="remote", type=str(host_id), key=str(host_id)) 
+
+#--------------------------
+#           reply
+# plugin ----------> agent
+#--------------------------
+def remote_reply(msg): _publish(remoteq, msg, dir="remote", type="reply", key="rr")
 
 g = False
 def _callback(body):
@@ -291,30 +327,6 @@ def _con_callback(body):
     print "Receive control msg: ", body
 
 def _test():
-#    m = MQ(r'amqp://guest:guest@localhost:5672/')
-#    m.connect()
-#    m.queue_bind("myexc", "myqueue", "test")
-#    m.add_consumer("myqueue", _callback)
-#    m.publish("myexc", "test", "11111111111111")
-#    m.publish("myexc", "test", "22222222222222")
-#    m.publish("myexc", "test", "33333333333333")
-#    m.publish("myexc", "test", "44444444444444")
-#    m.close()
-    setup_local_queue(_callback, _con_callback, parse=False)
-    
-    time.sleep(1)
-    
-    local_publish("1111111111111")
-    local_publish("222222222222222")
-    local_publish("3333333")
-    local_publish("444444444444444")
-    
-    local_control("1111111", agent_info.pid)
-    local_control("22222222222", agent_info.pid)
-    
-    time.sleep(10)
-
-    localq.close()
-    localq.worker.close()
+    pass
 
 if __name__ == "__main__" : _test()
