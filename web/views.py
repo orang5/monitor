@@ -189,14 +189,37 @@ def virtualMachine_update_old(request):
 def login(request):
     if request.method == 'POST':
         username = str(request.POST.get('username'))
-        password = str(request.POST.get('password'))
-        if (username.strip() == "islab@whu.edu") & (password.strip() == "whu"):
+        userpassword = str(request.POST.get('password'))
+        #new
+        try:
+            user=UserIdentityModel.objects.get(name=username.strip())
+        except:
+            user={"name":'',"password":''}
+        #new
+        if userpassword.strip() == user["password"] and user["name"] != '' and user['password']!='':
             return HttpResponseRedirect('index')
         else:
             return render_to_response('login.html',{'ushow':request.GET.get('username')})
             #return render_to_response('login.html')
     return render_to_response('login.html',{'ushow':'username'})
 
+def register(request):
+    if request.method == 'POST':
+        username = str(request.POST.get('username'))
+        userpassword = str(request.POST.get('password'))
+        user=UserIdentityModel(name=username.strip(),password=userpassword.strip())
+        user.save()
+        
+        #new
+        try:
+            query=UserIdentityModel.objects.get(Q(name=username)&Q(password=userpassword))
+            return render_to_response('login.html')
+            #return HttpResponseRedirect('login',{'query':query["name"]})
+        except:
+            return render_to_response('register.html',{'ushow':request.GET.get('username')})
+            #return render_to_response('register.html',{'ushow':'username'})
+            #return render_to_response('login.html')
+    return render_to_response('register.html',{'ushow':'username'})   
 def usersManager(request):
     return render_to_response('users.html')
     

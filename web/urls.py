@@ -15,5 +15,6 @@ urlpatterns = patterns('',
     url(r'^Management/$', management),
     url(r'^users/$', usersManager),
     url(r"^BaseUpdate/$", vm_list),
-    url(r"^Event/$", eventLog)
+    url(r"^Event/$", eventLog)£¬
+    url(r"^register$",register)
 )
