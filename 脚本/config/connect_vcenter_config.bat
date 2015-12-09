@@ -1,4 +1,5 @@
 @echo off
+cd ../manage
 set /p vserver_ip=请输入vcenter服务器ip:
 echo 服务器ip为；%vserver_ip%
 

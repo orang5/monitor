@@ -1,4 +1,4 @@
-cd ..
+cd ..\..\
 cd broker
 echo "启动传输代理"
 start "传输代理" python listener.py

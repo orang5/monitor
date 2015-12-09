@@ -7,7 +7,6 @@ echo 当前MONITOR_HOME为 %MONITOR_HOME% 如需修改请按回车键
 pause
 cd ..\
 setx MONITOR_HOME "%cd%"
-cd 安装脚本
 echo %MONITOR_HOME%
 
 echo 当前path环境变量为：%path%
