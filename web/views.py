@@ -7,10 +7,10 @@ from common.models import *
 from common.agent_utils import *
 import json,random,time
 
-
+from web.conf.Vchart import vc
 
 def index(request):
-    return render_to_response('index2.html')
+    return render_to_response('index.html')
 
 def index_update(request):
     
@@ -25,11 +25,31 @@ def vplatform(request):
 def network(request):
     return render_to_response('Network.html')
 
+def query_did(vmid):
+    qc = CurrentModel.objects(uuid=vmid)
+    devid = []        
+    for q in qc:
+        try:
+            if not q.inst:
+                try:
+								    devid.append(q.DeviceID)
+                except:
+										pass
+            else:
+						    pass
+        except:
+            try:
+								devid.append(q.DeviceID)
+            except:
+								pass			    
+    devid = list(set(devid))                    
+    return devid
 
 def query_vminfo(vmid):
     query = CurrentInfoModel.objects(uuid=vmid)
     cap = CurrentModel.objects(uuid=vmid, name="mem_Capacity")
     capacity = 0
+
     for c in cap:
         capacity += int(c.value)
     vmInfo = {}
@@ -53,7 +73,6 @@ def query_vminfo(vmid):
             vmInfo[key] = temp
         else:
             vmInfo[key] = vmInfo.get(key,q.value)
-            
     return vmInfo
     
 def query_log(uuid=None):
@@ -116,7 +135,24 @@ def eventLog(request):
         id = request.GET.get('uuid')
     except:
         id = None
-    return HttpResponse(json.dumps(query_log(id)))
+    return HttpResponse(json.dumps(query_log(id)))    
+    
+def virtualMachine(request):
+		try:
+				vm_id = request.GET.get('uuid')
+		except:
+				vm_id = request
+		vmInfo = query_vminfo(vm_id)
+		charts = vc["charts"]
+		did = query_did(vm_id)
+		for ch in charts:
+		    tag = ch["tag"]
+		    ret = []
+		    for id in did:
+		        if tag in id:
+		            ret.append(id)
+		    ch["did"] = ret
+		return render_to_response('VirtualMachine.html' , {'vmInfo':vmInfo,'charts':charts})
         
 def virtualMachine_static(request):
     try:
@@ -125,44 +161,29 @@ def virtualMachine_static(request):
         vm_id = request
     vmInfo = query_vminfo(vm_id)
     return render_to_response('VirtualMachine_static.html', {'vmInfo':vmInfo})
-
-def virtualMachine_static_old(request):
-    vm_id = request.GET.get('uuid')
-    query = InventoryInfoModel.objects(uuid=vm_id)
-    
-    tmp = {}
-    device_dict = {}
-    
-    for q in query:
-        key = ''
-        try:
-            key = q.DeviceID
-        except:pass
-        tmp[key] = tmp.get(key, [])
-        tmp[key].append(q);
-    
-
-    keys = tmp.keys(); keys.sort()
-    for k in keys:
-        current = max(tmp[k], key=lambda x: x.timestamp)
-        key = current.display_name
-        device_dict[key] = device_dict.get(key, [])
-        device_dict[key].append(current);
-        
-    return render_to_response('VirtualMachine_static.html', {'deviece':device_dict})
-    
-def virtualMachine(request):
-    pass
     
 def virtualMachine_update(request):
     try:
         vm_id = request.GET.get('uuid')
-        DeviceId = request.GET.get('DeviceId') 
+        DeviceId = request.GET.get('DeviceId')
+        tag = request.GET.get("tag") 
     except:
         vm_id = request["uuid"]
         DeviceId = request["DeviceId"]
+        tag = request["tag"]
         
     datasets = CurrentModel.objects(uuid = vm_id,DeviceID = DeviceId)
+    points = []
+    for ch in vc["charts"]:
+        if tag == ch["tag"]:
+            points = ch["points"]
+    ret = []
+    for p in points:
+        for data in datasets:
+            if data.name in p["value"]:
+                ret.append(data.value)
+                continue
+    '''
     capacity = CurrentModel.objects(uuid = vm_id,DeviceID = "Physical_Memory_0")
     info = {"vmid" : vm_id, "dev" : DeviceId}
     for data in datasets:
@@ -170,21 +191,9 @@ def virtualMachine_update(request):
     for data in capacity:
         info[data.name] = data.value
     # print request, info
+    '''
     
-    return HttpResponse(json.dumps(info))    
-
-def virtualMachine_update_old(request):
-    vm_id = request.GET.get('uuid')
-    DeviceId = request.GET.get('DeviceId') 
-    
-    timestamp = request.GET.get('Time')
-    date_obj = datetime.utcfromtimestamp(int(timestamp)/1000)
-    datasets = MetricModel.objects(uuid = vm_id,DeviceID = DeviceId,timestamp__gte=date_obj)
-    info = {}
-    for data in datasets:
-        info[data.name] = data.value
-    
-    return HttpResponse(json.dumps(info))
+    return HttpResponse(json.dumps(ret))    
 
 def login(request):
     if request.method == 'POST':
@@ -227,14 +236,17 @@ def management(request):
     return render_to_response('Management.html')
     
 if __name__ == '__main__':
-    vm_id = "a41f724e5fb8"
+    vm_id = "0050568b044b"
     #print query_vmlist()
     #print query_vmlist("00e081e21135")
     # Host_static(vm_id)
-    # print query_vminfo(vm_id)
+    #for i in range(4):
+        #v = query_vminfo(vm_id)
+        #for d in v["devs"]:
+            #print d
     # print virtualMachine_static(vm_id)
     # print virtualMachine_update({"uuid":vm_id, "DeviceId":"SysMemory"})
-    print query_log()
-    
-    
+    #print query_log()
+    #print query_did(vm_id, 'disk')
+    #print vc
     

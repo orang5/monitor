@@ -12,6 +12,6 @@ ping 127.0.0.1>nul
 ping 127.0.0.1>nul
 cd ..
 echo "启动服务器"
-start "服务器" python manage.py runserver 0.0.0.0:8000
+start "服务器" python manage.py runserver 0.0.0.0:80
 start http://localhost/
 
