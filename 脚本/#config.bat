@@ -2,8 +2,7 @@ echo 本程序需管理员权限运行
 PUSHD %~dp0
 echo “将mongodb注册为服务”
 pause
-cd C:\monitor\data\
-echo >mongodb.Log
+echo >C:\monitor\data\mongodb.Log
 mongod --dbpath C:\monitor\data\ --logpath C:\monitor\data\mongodb.Log --install --serviceName mongodb
 
 echo 启动rabbitmq
