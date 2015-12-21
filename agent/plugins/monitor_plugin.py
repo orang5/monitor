@@ -13,6 +13,9 @@ ts = {}
 def dottify(str):   return str.replace("_", ".").replace("..", "_")
 def undottify(str): return str.replace("_", "..").replace(".", "_")
 
+def request_callback(msg):
+    print "receive request: ", msg
+
 def plugin_info(filename):
     global info
     global metrics
@@ -37,7 +40,8 @@ def plugin_info(filename):
         
     if info.type == "platform":
         # init local mq queue with PollController
-        mq.setup_local_queue()    
+        mq.setup_local_queue()
+        mq.setup_local_control(request=request_callback)    
 
 def plugin_info_tags():
     return dict(plugin=info.name, pid=os.getpid())

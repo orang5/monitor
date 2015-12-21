@@ -42,6 +42,8 @@ def load_plugin(fname):
         log.info("start platform plugin -> %s" % p.cmd_list["start"])
         p.handle = subprocess.Popen(shlex.split(p.cmd_list["start"]))
         log.info("pid = %d" % p.pid)
+        # debug
+        mq.local_request('{"op" : "open", "vm" : "003ccf332154", "host" : "1a3c57092177"}', p.pid)
     return p
 
 def load_all(path):
@@ -63,20 +65,21 @@ def send_metrics(met):
         sending.release()
 
 def control_callback(msg):
-    print "receive control:", msg
+    print "receive from plugin:", msg
 
 def control_callback_remote(msg):
-    print "receive remote control:", msg
+    print "receive from server:", msg
 
 def init_queue():
     mq.setup_remote_queue()
+    mq.setup_local_queue(send_metrics)
+    mq.setup_local_control(request=None, reply=control_callback)    
     try:
     #    mq.setup_remote_control_queue(control_callback_remote)
     except:
         print "** note: remote control disabled."
-    mq.setup_local_queue(send_metrics, control_callback)    
     commandbroker.metric_callback = send_metrics
-
+   
 def update():
     now = time.time()
     for interval in metrics.keys():
