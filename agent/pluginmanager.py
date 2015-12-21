@@ -74,10 +74,10 @@ def init_queue():
     mq.setup_remote_queue()
     mq.setup_local_queue(send_metrics)
     mq.setup_local_control(request=None, reply=control_callback)    
-    try:
+    #try:
     #    mq.setup_remote_control_queue(control_callback_remote)
-    except:
-        print "** note: remote control disabled."
+    #except:
+    #    print "** note: remote control disabled."
     commandbroker.metric_callback = send_metrics
    
 def update():

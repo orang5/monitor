@@ -3,7 +3,7 @@
 
 import time, json, sys
 import projectroot
-from common import mq, agent_types, agent_utils
+from common import mq, agent_types, agent_utils, agent_info
 log = agent_utils.getLogger()
 
 info = None
@@ -15,6 +15,7 @@ def undottify(str): return str.replace("_", "..").replace(".", "_")
 
 def request_callback(msg):
     print "receive request: ", msg
+    mq.local_reply("[plugin] message: %s pid: %d" % (msg, agent_info.pid))
 
 def plugin_info(filename):
     global info

@@ -243,12 +243,12 @@ remotecon = None
 # use this library routine to init local (agent<-plugin) DATA queue for monitor project
 def setup_local_queue(data=None, parse=True):
     global localq
-    q = MQ("amqp://monitor:root@localhost:5672/%%2f")
+    q = MQ(r"amqp://monitor:root@localhost:5672/%2f")
     localq = q    
     q.connect()
     q.connect_worker()    
     # data (plugin->agent). queue: m.local.dat routing_key: ld
-    _init_queue(q, callback=handler, key="ld", parse=parse)    
+    _init_queue(q, callback=data, key="ld", parse=parse)    
     return q
     
 # use this library routine to init remote (agent->broker) DATA queue for monitor project
@@ -263,14 +263,14 @@ def setup_remote_queue(data=None):
     return q
     
 # init local (agent<->plugin) control queues.
-def setup_local_control(request=None, reply=None)
+def setup_local_control(request=None, reply=None):
     if request:
         # request (agent->plugin) queue: m.local.[pid] routing_key: [pid]
         _init_queue(localq, type=str(agent_info.pid), key=str(agent_info.pid), callback=request, parse=False, durable=False, auto_delete=True)
     # reply (plugin->agent) queue: m.local.reply routing_key: lr
     _init_queue(localq, type="reply", key="lr", callback=reply, parse=False, durable=False, auto_delete=True)
 
-def setup_remote_control(request=None, reply=None)
+def setup_remote_control(request=None, reply=None):
     if request:
         # request (server->agent) queue: m.remote.[hostid] routing_key: [hostid]
         _init_queue(remoteq, type=str(agent_info.pid), key=str(agent_info.pid), callback=request, parse=False, durable=False, auto_delete=True)
