@@ -279,8 +279,8 @@ namespace monitor_vsphere
         public static Metric BuildPlatformInfo()
         {
             AboutInfo ai = VCenter.sic.about;
-            Console.WriteLine(ai.fullName);
-            Console.WriteLine("{0} {1}", ai.apiType, ai.version);
+            Console.WriteLine("虚拟化平台: {0}", ai.fullName);
+            Console.WriteLine("API版本: {0} {1}", ai.apiType, ai.version);
             return new Metric() {
                 name = "platform_info",
                 type = "inventory",

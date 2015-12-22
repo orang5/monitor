@@ -160,19 +160,19 @@ namespace MonitorPlugin
             th = new Thread(new ThreadStart(consumer_thread));
             th.Start();
             restart_flag = false;
-            Console.WriteLine("[MonitorPlugin] MQ is ready.");
+            Console.WriteLine("[MonitorPlugin] MQ 连接就绪.");
         }
 
         public static void consumer_thread()
         {
             try
             {
-                Console.WriteLine("[MonitorPlugin] control thread started.");
+                Console.WriteLine("[MonitorPlugin] 控制线程已启动.");
                 while (!restart_flag)
                 {
                     var recv = consumer.Queue.Dequeue();
                     string msg = Encoding.UTF8.GetString(recv.Body);
-                    Debug.WriteLine("[vsphere] Received control: {0}", msg);
+                    Debug.WriteLine("[vsphere] 控制消息: {0}", msg);
                     publish_con("{\"reply\" : \"[vsphere] received control message.\", \"pid\" : " + pid.ToString());
                 }
             }
@@ -229,7 +229,7 @@ namespace MonitorPlugin
         {
             if (restart_flag)
             {
-                Console.WriteLine("*** MonitorPlugin MQ Failed ***");
+                Console.WriteLine("*** MonitorPlugin MQ 连接异常 ***");
                 try
                 {
                     th.Abort();
@@ -241,10 +241,10 @@ namespace MonitorPlugin
                 factory = null;
                 GC.Collect();
 
-                Console.WriteLine("*** wait 3 secs ***");
+                Console.WriteLine("*** 等待3秒 ***");
                 Thread.Sleep(3000);
 
-                Console.WriteLine("*** MonitorPlugin: try to restart MQ ***");
+                Console.WriteLine("*** MonitorPlugin: 尝试恢复MQ ***");
                 setup_local_queue();
             }
         }

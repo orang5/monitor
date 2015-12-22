@@ -29,7 +29,7 @@ def load_plugin(fname):
     p = Plugin._make(agent_utils.from_json(agent_utils.to_json(d)))
     # append plugin and metrics to list
     plugins.append(p)
-    log.info(p.name)
+    log.info(u"监控插件: [%s] %s" % (p.type, p.name))
 
     if p.type == "shell":
         for m in p.metrics:
@@ -37,13 +37,13 @@ def load_plugin(fname):
                 metrics[m.interval] = []
                 ts[m.interval] = time.time() - m.interval
             metrics[m.interval].append(Metric._make(m))
-            log.info("[metric] %s" % m.name)
+            log.info(u"数据点 %s" % m.name)
     elif p.type == "platform":
-        log.info("start platform plugin -> %s" % p.cmd_list["start"])
         p.handle = subprocess.Popen(shlex.split(p.cmd_list["start"]))
-        log.info("pid = %d" % p.pid)
+        log.info(u"加载平台插件 %s, pid = %d" % (p.cmd_list["start"], p.pid))
+        mq.connect_control("local", p.pid)
         # debug
-        mq.local_request('{"op" : "open", "vm" : "003ccf332154", "host" : "1a3c57092177"}', p.pid)
+        # mq.local_request(agent_utils.to_json(dict(op="open", vm="66ccff66ccff", host="a9b8c7d6e5f4")), p.pid)
     return p
 
 def load_all(path):
@@ -54,7 +54,8 @@ def load_all(path):
 # warning: synchronized
 def send_metrics(met):
     global sending
-    log.debug("%s %s len=%d time=%d", met.name, str(met.tags), len(met.message_json()), met.timestamp)
+    # log.debug("%s %s len=%d time=%d", met.name, str(met.tags), len(met.message_json()), met.timestamp)
+    log.debug("%s" % met.name)
         
     # add tags
     met.update_tags(uuid=agent_info.host_id(), host=agent_info.hostname)

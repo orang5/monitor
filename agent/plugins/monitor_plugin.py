@@ -14,8 +14,8 @@ def dottify(str):   return str.replace("_", ".").replace("..", "_")
 def undottify(str): return str.replace("_", "..").replace(".", "_")
 
 def request_callback(msg):
-    print "receive request: ", msg
-    mq.local_reply("[plugin] message: %s pid: %d" % (msg, agent_info.pid))
+    print "接收到控制消息: ", msg
+    mq.local_reply("[plugin] 返回: %s pid: %d" % (msg, agent_info.pid))
 
 def plugin_info(filename):
     global info

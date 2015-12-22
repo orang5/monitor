@@ -23,10 +23,10 @@ class Analyzer(object):
 def add_analyzer(criteria, action, name="default"):
     global list
     list.append(Analyzer(criteria, action))
-    log.info("[analyze] register analyzer: %s", name)
+    log.info("[预处理] 加载预处理器 %s", name)
     
 add_analyzer(
     criteria = lambda x: x.name == "hb",
-    action   = lambda x: log.debug("[analyze] heartbeat -> %s", x.tags.get("host", "NONAME")),
+    action   = lambda x: log.debug(u"[预处理] 心跳 -> %s", x.tags.get("host", "NONAME")),
     name     = "heartbeat"
     )
