@@ -3,7 +3,7 @@ import json
 import collections
 import inspect, logging, logging.config
 import subprocess, shlex
-import projectroot, encoding
+import projectroot, encoding, profiler
 named_classes = {}
 
 # http://stackoverflow.com/questions/2166818/python-how-to-check-if-an-object-is-an-instance-of-a-namedtuple

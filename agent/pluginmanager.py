@@ -41,7 +41,7 @@ def load_plugin(fname):
     elif p.type == "platform":
         p.handle = subprocess.Popen(shlex.split(p.cmd_list["start"]))
         log.info(u"加载平台插件 %s, pid = %d" % (p.cmd_list["start"], p.pid))
-        mq.connect_control("local", p.pid)
+        mq.connect_control(p.pid)
         # debug
         # mq.local_request(agent_utils.to_json(dict(op="open", vm="66ccff66ccff", host="a9b8c7d6e5f4")), p.pid)
     return p
@@ -54,6 +54,7 @@ def load_all(path):
 # warning: synchronized
 def send_metrics(met):
     global sending
+    global ntime
     # log.debug("%s %s len=%d time=%d", met.name, str(met.tags), len(met.message_json()), met.timestamp)
     log.debug("%s" % met.name)
         

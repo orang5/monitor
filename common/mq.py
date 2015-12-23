@@ -238,31 +238,32 @@ def _publish(q, msg, dir = "local", type = "dat", key = "m", prefix = "m", dry=F
     
 localq = None
 remoteq = None
-remotecon = None
+remotecon = {}
+
+def setup_connection(uri):
+    log.info("[MQ] 连接 %s" % uri)
+    q = MQ(uri)
+    q.connect()
+    q.connect_worker()
+    return q
 
 # use this library routine to init local (agent<-plugin) DATA queue for monitor project
 def setup_local_queue(data=None, parse=True):
-    log.info("[MQ] 初始化本地消息通道...")
+    log.info("[MQ] 初始化本地数据通道...")
     global localq
-    q = MQ("amqp://monitor:root@%s:5672/%%2f" % agent_info.ip)
-    localq = q    
-    q.connect()
-    q.connect_worker()    
+    localq = setup_connection("amqp://monitor:root@%s:5672/%%2f" % agent_info.ip)
     # data (plugin->agent). queue: m.local.dat routing_key: ld
-    _init_queue(q, callback=data, key="ld", parse=parse)    
-    return q
+    _init_queue(localq, callback=data, key="ld", parse=parse)    
+    return localq
     
 # use this library routine to init remote (agent->broker) DATA queue for monitor project
 def setup_remote_queue(data=None):
-    log.info("[MQ] 初始化远程消息通道...")
+    log.info("[MQ] 初始化远程数据通道...")
     global remoteq
-    q = MQ("amqp://monitor:root@%s/%%2f" % config.mq_broker)
-    remoteq = q
-    q.connect()
-    q.connect_worker()    
+    remoteq = setup_connection("amqp://monitor:root@%s/%%2f" % config.mq_broker)
     # data (plugin->broker). queue: m.remote.dat routing_key: rd
-    _init_queue(q, dir="remote", callback=data, key="rd")
-    return q
+    _init_queue(remoteq, dir="remote", callback=data, key="rd")
+    return remoteq
     
 # init local (agent<->plugin) control queues.
 def setup_local_control(request=None, reply=None):
@@ -280,19 +281,32 @@ def setup_remote_control(request=None, reply=None):
     _init_queue(remoteq, type="reply", key="rr", dir="remote", callback=reply, parse=False, durable=False, auto_delete=True)
 
 # connect to a control queue
-def connect_control(dir, id):
+def connect_control(id, dir="local", ip=None):
+    global remotecon
     q = localq
     if dir == "remote":
-        q=remoteq
+        q = setup_connection("amqp://monitor:root@%s/%%2f" % ip)
     else:
         dir="local"
     _init_queue(q, type=str(id), key=str(id), dir=dir, callback=None, parse=False, durable=False, auto_delete=True)
+    remotecon[id] = dict(queue=q, dir=dir)
+    return q
     
 #--------------------------
 #           data
 # plugin ---------> agent
 #--------------------------
 def local_publish(msg): _publish(localq, msg, key="ld")
+
+#--------------------------
+#           request
+# server ------------> agent
+#           host_id
+#--------------------------
+# note: also can use locally
+def request(msg, host_id):
+    global remotecon
+    _publish(remotecon[host_id]["queue"], msg, dir=remotecon[host_id]["dir"], type=str(host_id), key=str(host_id)) 
 
 #--------------------------
 #          request
@@ -312,13 +326,6 @@ def local_reply(msg): _publish(localq, msg, type="reply", key="lr")
 # agent ---------> broker
 #--------------------------
 def remote_publish(msg): _publish(remoteq, msg, dir="remote", key="rd")
-
-#--------------------------
-#           request
-# server ------------> agent
-#           host_id
-#--------------------------
-def remote_request(msg, host_id): _publish(remoteq, msg, dir="remote", type=str(host_id), key=str(host_id)) 
 
 #--------------------------
 #           reply
