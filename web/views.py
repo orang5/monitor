@@ -2,9 +2,11 @@ from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
+from django.contrib import auth
 from datetime import datetime
 from common.models import *
 from common.agent_utils import *
+from django.contrib.auth.models import User
 #from models import *
 #from agent_utils import *
 import json,random,time
@@ -232,13 +234,10 @@ def login(request):
     if request.method == 'POST':
         username = str(request.POST.get('username'))
         userpassword = str(request.POST.get('password'))
-        #new
-        try:
-            user=UserIdentityModel.objects.get(name=username.strip())
-        except:
-            user={"name":'',"password":''}
-        #new
-        if userpassword.strip() == user["password"] and user["name"] != '' and user['password']!='':
+        
+        user = auth.authenticate(username=username,password=userpassword)
+        if user and user.is_active:
+            auth.login(request,user)
             return HttpResponseRedirect('index')
         else:
             return render_to_response('login.html',{'ushow':request.GET.get('username')})
@@ -249,6 +248,12 @@ def register(request):
     if request.method == 'POST':
         username = str(request.POST.get('username'))
         userpassword = str(request.POST.get('password'))
+        email = str(request.POST.get('email'))
+        user=User.objects.create_user(username,email,userpassword)
+        #user.groups=["admin"]
+        user.save()
+        return render_to_response('login.html')
+        """
         user=UserIdentityModel(name=username.strip(),password=userpassword.strip())
         user.save()
         
@@ -261,10 +266,11 @@ def register(request):
             return render_to_response('register.html',{'ushow':request.GET.get('username')})
             #return render_to_response('register.html',{'ushow':'username'})
             #return render_to_response('login.html')
-    return render_to_response('register.html',{'ushow':'username'})   
+        """
+    return render_to_response('register.html')   
 def usersManager(request):
     return render_to_response('users.html')
-    
+   
 def management(request):
     return render_to_response('Management.html')
     
