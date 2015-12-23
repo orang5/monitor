@@ -1,6 +1,0 @@
-start.bat setenv.bat与config.bat需要以管理员身份运行
-start 为安装与环境设置总脚本
-#config用于设置数据库服务,并配置rabbitmq
-clear_document用于清空数据库
-dump_document用于下载数据库数据
-runserver用于启动服务器

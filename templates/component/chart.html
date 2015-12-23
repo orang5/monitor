@@ -14,7 +14,7 @@
 				-->
 				
 				{% for point in line.points %}
-				    <input type="checkbox" checked name={{ line.tag }}>
+				    <input type="checkbox" id={{ point.lable }} checked name={{ line.tag }}>
 				    <label> {{ point.lable }} </label>
 				{% endfor %}
 				

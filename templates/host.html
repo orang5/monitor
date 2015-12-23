@@ -20,18 +20,19 @@
         <section class="content">
           <div class="row">
            <div class="col-md-12">
-            <div class="box" id = "rtInfo">
+            <div class="box">
               <div class="box-header with-border">
                 <h3 class="box-title">实时状态</h3>
               </div>
-            <div class="box-body">
-                <div class="row">
-										{% for line in charts %}
-                     <div class="col-md-6">
-                        {% include "component\chart.html" %}
-                     </div><!-- /.col -->
-                    {% endfor %}                      
-               </div><!-- /.row -->
+              <div class="box-body">
+                 <div class="row">
+                     {%for line in charts %}
+                     <div class="col-md-6">                     
+                     {% include "component\chart.html" %}
+                     </div><!--/.col-->
+                     {% endfor %}
+                      
+                </div><!-- /.row -->
                
               </div><!-- /.box-body-->
             </div><!-- /.box -->
@@ -45,34 +46,30 @@
                   <h3 class="box-title">详细属性</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-               <!--{{ charts }} -->
+                {{vmInfo}}
                   <table id="example2" class="table table-bordered table-hover">
                     <tbody>
                     <tr>
                       <td>主机名: {{ vmInfo.host_info.hostname }} {{ vmInfo.summary_config_name }}</td>
-                      <td>操作系统: {{ vmInfo.host_info.os }} {{ vmInfo.summary_config_guestFullName }}</td>
+                      <td>操作系统: {{ vmInfo.host_info.os }} {{ vmInfo.summary_config_product_osType }}</td>
                     </tr>
                      {% if vmInfo.summary_config_name %}
                      
                      <tr>
-                        <td>Cpu型号: VCPU </td>
-                        <td>核心数:  {{ vmInfo.config_hardware_numCPU }}</td>
+                        <td>Cpu型号: {{ vmInfo.summary_hardware_cpuModel }}</td>
+                        <td>核心数:  {{ vmInfo.summary_hardware_numCpuCores }}</td>
                      </tr>
                      <tr>
                         <td>Cpu最大速度: {{ vmInfo.summary_hardware_cpuMhz }}</td>
-                        <td>CPU用量: {{ vmInfo.summary_quickStats_overallCpuUsage }} MHz</td>
+                        <td>服务器型号: {{ vmInfo.summary_hardware_model }} </td>
                      </tr>
                      <tr>
-                        <td>内存容量: {{ vmInfo.summary_config_memorySizeMB }} MB</td>
-                        <td>独占内存: {{ vmInfo.summary_quickStats_privateMemory }} MB</td>
+                        <td>内存容量: {% widthratio vmInfo.summary_hardware_memorySize 1048576 1 %} MB</td>
+                        <td>内存已分配: {{ vmInfo.summary_quickStats_overallMemoryUsage }} MB</td>
                      </tr>
                       <tr>
-                        <td>虚拟机镜像文件: {{ vmInfo.summary_config_vmPathName }}</td>
-                        <td>模板: {{ vmInfo.summary_config_template }}</td>
-                     </tr>
-                     <tr>
-                        <td>IP地址: {{ vmInfo.guest_ipAddress }}</td>
-                        <td>UUID: {{ vmInfo.summary_config_uuid }} </td>                        
+                        <td>网卡数量: {{ vmInfo.summary_hardware_numNics }}</td>
+                        <td>允许虚拟机迁移: {{ vmInfo.summary_config_vmotionEnabled }}</td>
                      </tr>
                      {% else %}
                      
@@ -124,28 +121,32 @@
                 </div><!-- /.box-body -->
               </div><!-- /.box -->
             </div><!-- /.col -->          
+
             <div class="col-xs-7">            
               <div class="box">
                 <div class="box-header">
-                  <h3 class="box-title">已安装的服务</h3>
+                  <h3 class="box-title">虚拟机列表</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
+                 {{ vmList }}
                   <table id="example2" class="table table-bordered table-hover">
                     <thead>
                       <tr>
                         <th>名称</th>
-                      <!--  <th>描述</th> -->
-                        <th>供应商</th>
-                        <th>版本号</th>
+                        <th>类型</th>                        
+                        <th>MAC / UUID</th>
                       </tr>
                     </thead>
                     <tbody>
-                    {% for process in vmInfo.installed_programs %}
+                    {% for vm in vmList %}
                       <tr>
-                          <td> {{ process.name }} </td>
-                     <!--     <td> {{ process.description }} </td> -->
-                          <td> {{ process.vendor }} </td>
-                          <td> {{ process.version }} </td>
+                          <td> <a href="/VirtualMachine_static/?uuid={{ vm.uuid}}" > {{ vm.mo }} </a> </td>
+                          <td> {% if vm.is_template %} 模板 {% else %} 虚拟机 {% endif %} </td>
+                          <td> {% if vm.is_template %}
+                                  n/a
+                               {% else %}
+                                 {{ vm.uuid }}
+                               {% endif %}</td>                          
                       </tr>
                     {%endfor%}
                     </tbody>
@@ -196,7 +197,6 @@
         
 
      </div><!-- /.content-wrapper -->
-     <!-- <script src="{% static "js/pages/virtual_machine.js" %}"></script> -->
     {% endblock %}
    {% block script %}
       <script src="{% static "plugins/flot/jquery.flot.min.js" %}"></script>
@@ -205,6 +205,4 @@
       <script src="{% static "plugins/flot/jquery.flot.categories.min.js" %}"></script>
       <script src="{% static "js/component/chart.js" %}"></script>
       <script src="{% static "js/pages/virtualmachine.js" %}"></script>
-    {% endblock %}
-    
-     
+    {% endblock %} 
