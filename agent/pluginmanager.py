@@ -7,7 +7,7 @@ import json, os, time, subprocess, shlex, threading
 log = agent_utils.getLogger()
 plugins = []
 metrics = {}
-ts = {"init" : time.time(), "heartbeat" : time.time()}
+ts = {"init" : time.time(), "heartbeat" : time.time(), "perf" : time.time()}
 heartbeat_interval = 30
 
 sending = threading.Lock()
@@ -52,6 +52,7 @@ def load_all(path):
             load_plugin("%s/%s" % (path,fname))
 
 # warning: synchronized
+@agent_utils.profiler.counter
 def send_metrics(met):
     global sending
     global ntime
@@ -92,9 +93,16 @@ def update():
                 # current: queue all
                 for m in metrics[interval]:
                     commandbroker.queue(m)
-    # update heartbeat
+    # update agent info
     if now-ts["heartbeat"] > heartbeat_interval:
         send_heartbeat_metrics()
+        ts["heartbeat"] = now
+    # update self-perf
+    if now-ts["perf"] > 1:
+        ts["perf"] = now
+        #print agent_utils.profiler.timers
+        met = build_metric("agent_perf", agent_utils.profiler.timers, type="metric")
+        send_metrics(met)
                     
 def start():
     while True:
@@ -129,8 +137,8 @@ def get_metric_info():
             mets.append(d)
     return mets
 
-def build_metric(name, v, t={}):
-    met = Metric(name, "runtime", 30, "", True)
+def build_metric(name, v, t={}, type="runtime"):
+    met = Metric(name, type, 30, "", True)
     met.tags = t
     met.value = v
     return met
@@ -139,7 +147,7 @@ def send_heartbeat_metrics():
     send_metrics(build_metric("agent_info", get_agent_info()))
     send_metrics(build_metric("agent_plugin_list", get_plugin_info()))
     send_metrics(build_metric("agent_metric_list", get_metric_info()))
-
+    
 def _test_callback(body):
     print "recv ", body
 

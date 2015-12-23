@@ -21,25 +21,32 @@ names["host_info"] = "host_info"
 
 # action methods
 # get latest item for given model and metric entry
+@agent_utils.profiler.counter
 def current_item(met, mdl):
     return mdl.__class__.objects(**met.tagdict())
 
+@agent_utils.profiler.counter
 def item_exists(met, mdl):
     return current_item(met, mdl).count() > 0
 
+@agent_utils.profiler.counter
 def save(met, mdl):
     if not debug:
         mdl.save()
     else: print "- in save"    
     
+@agent_utils.profiler.counter
 def save_one(met, mdl):
     if not debug:
         # delete then insert. it's more than just modifying items
-        current_item(met, mdl).delete()
+        try:
+            current_item(met, mdl).delete()
+        except: pass
         save(met, mdl)    
     else: print "- in save_one"
 
 # note: if value is string then do not pack 
+@agent_utils.profiler.counter
 def save_packed(met, mdl):
     if not isinstance(met.value, numbers.Number):
         save(met, mdl)
@@ -111,6 +118,7 @@ def from_metric(met):
     
 # uniform save method
 # save metric to each model defined in model_actions.py
+@agent_utils.profiler.counter
 def save_metric(met):
     for mdl in from_metric(met):
         cls = mdl.__class__.__name__
