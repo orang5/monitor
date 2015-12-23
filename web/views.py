@@ -5,6 +5,8 @@ from django.http import HttpResponse
 from datetime import datetime
 from common.models import *
 from common.agent_utils import *
+#from models import *
+#from agent_utils import *
 import json,random,time
 
 from web.conf.Vchart import vc
@@ -119,7 +121,7 @@ def query_vmlist(host_uuid=None):
 # get entity list in sidebar js
 def vm_list(request):
     return HttpResponse(json.dumps(query_vmlist())) 
-
+"""
 def Host_static(request):
     try:
         vm_id = request.GET.get('uuid')
@@ -128,8 +130,26 @@ def Host_static(request):
     ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
            'event':query_log(vm_id)}
     print ret
-    return render_to_response('Host_static.html', ret)
-    
+    return render_to_response('host.html', ret)
+"""    
+def Host(request):
+    try:
+        vm_id = request.GET.get('uuid')
+    except:
+        vm_id = request      
+    charts = vc["charts"]
+    did = query_did(vm_id)
+    for ch in charts:
+		    tag = ch["tag"]
+		    r = []
+		    for id in did:
+		        if tag in id:
+		            r.append(id)
+		    ch["did"] = r
+    ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
+           'event':query_log(vm_id),"charts":charts}
+    return render_to_response('host.html', ret)
+        
 def eventLog(request):
     try:
         id = request.GET.get('uuid')
@@ -161,7 +181,7 @@ def virtualMachine_static(request):
         vm_id = request
     vmInfo = query_vminfo(vm_id)
     return render_to_response('VirtualMachine_static.html', {'vmInfo':vmInfo})
-    
+
 def virtualMachine_update(request):
     try:
         vm_id = request.GET.get('uuid')
@@ -178,11 +198,22 @@ def virtualMachine_update(request):
         if tag == ch["tag"]:
             points = ch["points"]
     ret = []
-    for p in points:
+    #old
+    #for p in points:
+    #    for data in datasets:
+    #        if data.name in p["value"]:
+    #            ret.append(data.value)
+    #            continue
+    #new
+    #-1 represent no data
+    for i,p in enumerate(points):
+        ret.append(-1)
         for data in datasets:
             if data.name in p["value"]:
-                ret.append(data.value)
+                ret[i]=data.value
                 continue
+      
+               
     '''
     capacity = CurrentModel.objects(uuid = vm_id,DeviceID = "Physical_Memory_0")
     info = {"vmid" : vm_id, "dev" : DeviceId}
@@ -193,7 +224,9 @@ def virtualMachine_update(request):
     # print request, info
     '''
     
-    return HttpResponse(json.dumps(ret))    
+    return HttpResponse(json.dumps(ret))   
+    
+
 
 def login(request):
     if request.method == 'POST':
@@ -237,6 +270,7 @@ def management(request):
     
 if __name__ == '__main__':
     vm_id = "0050568b044b"
+    print virtualMachine_test("0050568b47dd","","net")
     #print query_vmlist()
     #print query_vmlist("00e081e21135")
     # Host_static(vm_id)

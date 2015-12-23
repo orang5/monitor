@@ -1,6 +1,6 @@
 cd ..\..\
 cd common\
 python models.py >out.csv
-打开out.csv
+echo 打开out.csv
 pause
 start out.csv
