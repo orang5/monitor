@@ -7,7 +7,7 @@ import json, os, time, subprocess, shlex, threading
 log = agent_utils.getLogger()
 plugins = []
 metrics = {}
-ts = {"init" : time.time(), "heartbeat" : time.time(), "perf" : time.time()}
+ts = {"init" : time.time(), "heartbeat" : 0, "perf" : 0}
 heartbeat_interval = 30
 
 sending = threading.Lock()
@@ -68,19 +68,28 @@ def send_metrics(met):
         sending.release()
 
 def control_callback(msg):
-    print "receive from plugin:", msg
+    print u"*** 插件返回结果:", msg
+    mq.remote_reply(msg)
 
 def control_callback_remote(msg):
-    print "receive from server:", msg
+    d = agent_utils.from_json(msg)
+    print u"*** 服务端控制请求:", d
+    # simple processing
+    if d["op"] == "plugin_info":
+        mq.remote_reply(agent_utils.to_json(get_plugin_info()))
+    else:
+        # directly send to plugin
+        mq.local_request(msg, d["pid"])
 
 def init_queue():
     mq.setup_remote_queue()
     mq.setup_local_queue(send_metrics)
     mq.setup_local_control(request=None, reply=control_callback)    
-    #try:
-    #    mq.setup_remote_control_queue(control_callback_remote)
-    #except:
-    #    print "** note: remote control disabled."
+    try:
+        mq.setup_remote_control(request=control_callback_remote)
+        print u"服务端控制已启用."
+    except:
+        print u"服务端控制未启用."
     commandbroker.metric_callback = send_metrics
    
 def update():
@@ -121,10 +130,14 @@ def get_agent_info():
     )
 
 def get_plugin_info():
-    return [p.describe() for p in plugins if p.type == "platform"]
+    ret = {}
+    for p in plugins:
+        if p.type == "platform":
+            ret[p.name] = p.describe()
+    return ret
    
 def get_metric_info():
-    mets = []
+    mets = {}
     for group in metrics.values():
         for m in group:
             d = Metric.describe(m)
@@ -134,7 +147,7 @@ def get_metric_info():
                 timestamp = m.timestamp,
                 ts = m.ts
             )
-            mets.append(d)
+            mets[m.name] = d
     return mets
 
 def build_metric(name, v, t={}, type="runtime"):
