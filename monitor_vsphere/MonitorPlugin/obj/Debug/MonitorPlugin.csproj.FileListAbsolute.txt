@@ -33,7 +33,6 @@ F:\experiment-vs\monitor_vsphere\MonitorPlugin\bin\Debug\RabbitMQ.Client.dll
 F:\experiment-vs\monitor_vsphere\MonitorPlugin\bin\Debug\Newtonsoft.Json.xml
 F:\experiment-vs\monitor_vsphere\MonitorPlugin\bin\Debug\NLog.xml
 F:\experiment-vs\monitor_vsphere\MonitorPlugin\bin\Debug\RabbitMQ.Client.xml
-F:\experiment-vs\monitor_vsphere\MonitorPlugin\obj\Debug\MonitorPlugin.csprojResolveAssemblyReference.cache
 F:\experiment-vs\monitor_vsphere\MonitorPlugin\obj\Debug\MonitorPlugin.dll
 F:\experiment-vs\monitor_vsphere\MonitorPlugin\obj\Debug\MonitorPlugin.pdb
 F:\snippets\monitor_vsphere\MonitorPlugin\bin\Debug\MonitorPlugin.dll

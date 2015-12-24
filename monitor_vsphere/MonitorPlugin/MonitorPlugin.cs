@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.IO;
+using System.Net;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 
@@ -84,20 +85,15 @@ namespace MonitorPlugin
         //        return sb.ToString();
         //    }
         //}
-
-        public string message_json
+        public Dictionary<string, dynamic> message_dict
         {
             get
             {
-//              Dictionary<string, dynamic> dict = new Dictionary<string, dynamic>()
-           //       {   { "name", name }, { "timestamp", timestamp }, { "type", type }, { "value", value } };
-       //       return Regex.Replace(JsonConvert.SerializeObject(dict), "}$", ", tags=" + JsonConvert.SerializeObject(tags) + "}");
-
-                Dictionary<string, dynamic> dict = new Dictionary<string, dynamic>()
-                {   { "name", name }, { "timestamp", timestamp }, { "type", type }, { "value", value }, { "tags", tags } };
-                return JsonConvert.SerializeObject(dict);
+                Dictionary<string, dynamic> dict = new Dictionary<string, dynamic>() { { "name", name }, { "timestamp", timestamp }, { "type", type }, { "value", value }, { "tags", tags } };
+                return dict;
             }
         }
+        public string message_json { get { return JsonConvert.SerializeObject(message_dict); } }
 
         /// <summary>
         /// name+tags (flattened)
@@ -126,12 +122,14 @@ namespace MonitorPlugin
         public static Thread th;
         public static bool restart_flag = false;
         public static string pid;
+        public delegate void control_delegate(Dictionary<string, string> args);
+        public static control_delegate control_callback = null;
 
         public static void setup_local_queue()
         {
             restart_flag = true;
             factory = new ConnectionFactory();
-            factory.Uri = @"amqp://monitor:root@localhost:5672";
+            factory.Uri = @"amqp://monitor:root@" + Helper.get_ip() + ":5672";
             conn = factory.CreateConnection();
             channel = conn.CreateModel();
             request_chn = conn.CreateModel();
@@ -172,8 +170,11 @@ namespace MonitorPlugin
                 {
                     var recv = consumer.Queue.Dequeue();
                     string msg = Encoding.UTF8.GetString(recv.Body);
-                    Debug.WriteLine("[vsphere] 控制消息: {0}", msg);
-                    publish_con("{\"reply\" : \"[vsphere] received control message.\", \"pid\" : " + pid.ToString());
+                    Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(msg);
+                    Debug.WriteLine("++++++++++++++++++　[vsphere] 控制消息: {0}", msg);
+                    //  publish_con("{\"reply\" : \"[vsphere] received control message.\", \"pid\" : " + pid.ToString() + "}");
+                    if (control_callback != null)
+                        control_callback(d);
                 }
             }
             catch (Exception e)
@@ -279,6 +280,15 @@ namespace MonitorPlugin
                 met.set(m);
                 metrics[m.interval].Add(met);
             }
+        }
+
+        public static string get_ip()
+        {
+            string hostname = Dns.GetHostName();
+            foreach (var addr in Dns.GetHostAddresses(hostname))
+                if (addr.AddressFamily.ToString() == "InterNetwork")
+                    return addr.ToString();
+            return null;
         }
 
         private static DateTime start_time = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));

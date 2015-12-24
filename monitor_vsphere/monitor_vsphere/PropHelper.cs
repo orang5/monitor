@@ -132,7 +132,9 @@ namespace monitor_vsphere
                     { "uuid", GetMac(x) },
                     { "mo", Get(x, "name") },
                     { "is_template", IsTemplate(x).ToString() },
-                    { "ip", GetIP(x) }
+                    { "ip", GetIP(x) },
+                    { "power", Get(x, "power")},
+                    { "os", Get(x, "os")}
                 }).ToList();
             }
         }
@@ -199,7 +201,9 @@ namespace monitor_vsphere
             } },
             { "VirtualMachine", new Dictionary<string, string>() {
                 {"name", "summary.config.name"},
-                {"uuid", "summary.config.uuid"}
+                {"uuid", "summary.config.uuid"},
+                {"power","runtime.powerState"},
+                {"os", "summary.config.guestFullName"}
             } }
         };
 
@@ -207,10 +211,10 @@ namespace monitor_vsphere
         {
             if (shortcut[moref.type].ContainsKey(key))
             {
-                return (string)VCenter.entity_props[moref][shortcut[moref.type][key]];
+                return VCenter.entity_props[moref][shortcut[moref.type][key]].ToString();
             }
             else
-                return (string)VCenter.entity_props[moref][key];
+                return VCenter.entity_props[moref][key].ToString();
         }
 
         /// <summary>
@@ -559,6 +563,34 @@ namespace monitor_vsphere
                     Console.WriteLine("----------------------------");
                 }
             }
+        }
+
+        // query methods
+        
+        // find moref by name
+        public static ManagedObjectReference get_moref_by_name(string name)
+        {
+            var ret = from k in VCenter.entity_props
+                      where Get(k.Key, "name") == name
+                      select k.Key;
+            return ret.First();
+        }
+
+        // find host of a vm
+        public static ManagedObjectReference get_vm_host(ManagedObjectReference vm)
+        {
+            var ret = from k in VCenter.entity_cache
+                      where k.Value.ContainsKey("vm") && ((ManagedObjectReference[])k.Value["vm"]).ToList().Contains(vm, new MorefCmp())
+                      select k.Key;
+            return ret.First();
+         //   foreach (var kv in VCenter.entity_cache)
+          //      if (kv.Value.ContainsKey("vm"))
+           //     {
+            //        var list = ((ManagedObjectReference[])kv.Value["vm"]).ToList();
+             //       if (list.Contains(vm, new MorefCmp()))
+              //          return kv.Key;
+              //  }
+            //return null;
         }
     }
 }

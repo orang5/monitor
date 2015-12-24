@@ -73,10 +73,13 @@ def control_callback(msg):
 
 def control_callback_remote(msg):
     d = agent_utils.from_json(msg)
+    jid = d["job_id"]
     print u"*** 服务端控制请求:", d
     # simple processing
     if d["op"] == "plugin_info":
-        mq.remote_reply(agent_utils.to_json(get_plugin_info()))
+        ret = get_plugin_info()
+        ret["job_id"] = jid
+        mq.remote_reply(agent_utils.to_json(ret))
     else:
         # directly send to plugin
         mq.local_request(msg, d["pid"])

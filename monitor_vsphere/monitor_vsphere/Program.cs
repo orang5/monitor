@@ -112,6 +112,7 @@ namespace monitor_vsphere
         static void Main(string[] args)
         {
             load_config();
+            MonitorPlugin.MQ.control_callback = TaskHelper.ProcessTask;
 
             VCenter.connect();
             
@@ -129,12 +130,15 @@ namespace monitor_vsphere
                 // print/send entity info
                 PropHelper.BuildPropMetric();
 
-                Console.WriteLine("------ 性能计数 ------");
-                foreach (var it in VCenter.entity_props.Keys)
+                if (false)
                 {
-                    PropHelper.UpdatePerfInfo(it);
+                    Console.WriteLine("------ 性能计数 ------");
+                    foreach (var it in VCenter.entity_props.Keys)
+                    {
+                        PropHelper.UpdatePerfInfo(it);
+                    }
+                    EventHelper.Update();
                 }
-                EventHelper.Update();
                 Thread.Sleep(20000);
 
             }

@@ -21,8 +21,9 @@ def build_metric(name, v, t={}, type="metric"):
     return met
 
 def default_request_worker(msgdict):
-    mq.local_reply(build_metric("plugin_perf", agent_utils.profiler.timers,
-                   plugin_info_tags()).message_json())
+    met = build_metric("plugin_perf", agent_utils.profiler.timers, plugin_info_tags())
+    msgdict.update(agent_utils.from_json(met.message_json()))
+    mq.local_reply(agent_utils.to_json(msgdict))
 request_worker = default_request_worker
 
 def request_callback(msg):
