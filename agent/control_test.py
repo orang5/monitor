@@ -18,7 +18,6 @@ def cb(msg):
     global reply
     d = agent_utils.from_json(msg)
     reply = d
-    print d 
     jobs[d["job_id"]] = True
     
 def blocked_request(req):
@@ -47,8 +46,13 @@ for k in plugin_info.keys():
     if k == "job_id": continue
     print "-------- %s --------" % k
     req = dict(op="test", uuid=id, pid=plugin_info[k]["pid"])
-    print blocked_request(req)
+    print "<<<", blocked_request(req)
     
 print "----------- test open vm -----------"
 req = dict(op="poweron", uuid=id, pid=plugin_info["monitor_vsphere"]["pid"], name="win7")
-print blocked_request(req)
+print "<<<", blocked_request(req)
+
+req = dict(op="reboot", uuid=id, pid=plugin_info["monitor_vsphere"]["pid"], name="master0.islab.org")
+print "<<<", blocked_request(req)
+
+q.close()

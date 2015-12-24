@@ -312,11 +312,14 @@ namespace MonitorPlugin
             try
             {
                 return !(metric_cache.ContainsKey(met.Tag) && (
-                    (metric_cache[met.Tag].value == met.value) ||
+//                    (metric_cache[met.Tag].value == met.value) ||
                     JsonConvert.SerializeObject(metric_cache[met.Tag].value) == JsonConvert.SerializeObject(met.value))
                     );
             }
-            catch { return true; }
+            catch { 
+                // return JsonConvert.SerializeObject(metric_cache[met.Tag].value) == JsonConvert.SerializeObject(met.value);
+                return true;
+            }
         }
         
         // wrapper for Helper.metric_cache[met.Tag] = met

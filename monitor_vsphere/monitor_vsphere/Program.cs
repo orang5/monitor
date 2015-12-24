@@ -130,7 +130,7 @@ namespace monitor_vsphere
                 // print/send entity info
                 PropHelper.BuildPropMetric();
 
-                if (false)
+                if (true)
                 {
                     Console.WriteLine("------ 性能计数 ------");
                     foreach (var it in VCenter.entity_props.Keys)

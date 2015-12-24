@@ -41,7 +41,7 @@ namespace monitor_vsphere
             foreach (var kv in d)
                 try
                 {
-                    ret[kv.Key] = kv.Value;
+                    ret[kv.Key] = kv.Value.ToString();
                 }
                 catch { }
             return ret;
@@ -66,30 +66,21 @@ namespace monitor_vsphere
             SendResult(ConvertResult(ret));
         }
 
-        public static void BeginPowerOn(ManagedObjectReference vm, ManagedObjectReference host, 
-            Dictionary<string, string> tags = null)
+        public static void BeginTask(ManagedObjectReference task, Dictionary<string, dynamic> tags = null)
         {
-            ManagedObjectReference task = VCenter.service.PowerOnVM_Task(vm, host);
             if (task != null)
             {
-                Console.WriteLine("***  打开 {0} 的电源 ***", vm.Value);
                 VMTask worker = WaitForTask;
-                Dictionary<string, dynamic> taskinfo = new Dictionary<string, dynamic>();
-                if (tags != null)
-                    foreach (var kv in tags) taskinfo[kv.Key] = kv.Value;
-
-                taskinfo["vm"] = vm;
-                taskinfo["host"] = host;
-                taskinfo["task"] = task;
-                taskinfo["op"] = "poweron";
-                taskinfo["delegate"] = worker;
-
-                worker.BeginInvoke(task, TaskCompleted, taskinfo);
+                tags["task"] = task;
+                tags["delegate"] = worker;
+                worker.BeginInvoke(task, TaskCompleted, tags);
             }
         }
 
         public static void ProcessTask(Dictionary<string, string> args)
         {
+            ManagedObjectReference task;
+
             if (!args.ContainsKey("op") || !args.ContainsKey("job_id")) return;
             string op = args["op"];
             if (op == "test")
@@ -106,13 +97,61 @@ namespace monitor_vsphere
             // find vm moref & host moref from vm name
             var vmref = PropHelper.get_moref_by_name(vm_name);
             var hostref = PropHelper.get_vm_host(vmref);
+            Dictionary<string, dynamic> info = new Dictionary<string, dynamic>();
+            foreach (var kv in args) info[kv.Key] = kv.Value;
+            info["vm"] = vmref;
+            info["host"] = hostref;
             Console.WriteLine("JID: {0} 操作: {1} VM: {2} 主机: {3}", job_id, op, vm_name, hostref.Value);
-            
-            switch (op)
+            try
             {
-                case "poweron": BeginPowerOn(vmref, hostref, args); break;
-            }
+                switch (op)
+                {
+                    case "poweron":
+                        task = VCenter.service.PowerOnVM_Task(vmref, hostref);
+                        BeginTask(task, info);
+                        break;
+                    case "poweroff":
+                        task = VCenter.service.PowerOffVM_Task(vmref);
+                        BeginTask(task, info);
+                        break;
+                    case "suspend":
+                        task = VCenter.service.SuspendVM_Task(vmref);
+                        BeginTask(task, info);
+                        break;
+                    case "reset":
+                        task = VCenter.service.ResetVM_Task(vmref);
+                        BeginTask(task, info);
+                        break;
+                    case "reboot":
+                        VCenter.service.RebootGuest(vmref);
+                        info["result"] = true;
+                        Console.WriteLine("*** 操作完成 *** ");
+                        SendResult(ConvertResult(info));
+                        break;
+                    case "shutdown":
+                        VCenter.service.ShutdownGuest(vmref);
+                        info["result"] = true;
+                        Console.WriteLine("*** 操作完成 *** ");
+                        SendResult(ConvertResult(info));
+                        break;
+                    case "standby":
+                        VCenter.service.StandbyGuest(vmref);
+                        info["result"] = true;
+                        Console.WriteLine("*** 操作完成 *** ");
+                        SendResult(ConvertResult(info));
+                        break;
 
+                    case "migrate":
+                        //task = VCenter.service.MigrateVM_Task(
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                info["result"] = false;
+                info["error"] = e.Message;
+                SendResult(ConvertResult(info));
+            }
         }
 
     }

@@ -46,3 +46,4 @@ F:\snippets\monitor_vsphere\MonitorPlugin\bin\Debug\RabbitMQ.Client.xml
 F:\snippets\monitor_vsphere\MonitorPlugin\obj\Debug\MonitorPlugin.csprojResolveAssemblyReference.cache
 F:\snippets\monitor_vsphere\MonitorPlugin\obj\Debug\MonitorPlugin.dll
 F:\snippets\monitor_vsphere\MonitorPlugin\obj\Debug\MonitorPlugin.pdb
+F:\experiment-vs\monitor_vsphere\MonitorPlugin\obj\Debug\MonitorPlugin.csprojResolveAssemblyReference.cache
