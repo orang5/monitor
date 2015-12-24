@@ -129,7 +129,7 @@ namespace monitor_vsphere
                 // print/send entity info
                 PropHelper.BuildPropMetric();
 
-                Console.WriteLine("------perf info------");
+                Console.WriteLine("------ 性能计数 ------");
                 foreach (var it in VCenter.entity_props.Keys)
                 {
                     PropHelper.UpdatePerfInfo(it);

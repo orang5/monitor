@@ -19,7 +19,7 @@ class Worker(threading.Thread):
         # self.retvar = 0
 
     def run(self):
-        log.info("[pool] start %s" % self.name)
+        log.info("[pool] 新线程 %s" % self.name)
         while not self.flag:
             # will wait here for work
             m = self.queue.get()        # todo: if idle for N secs, finish self

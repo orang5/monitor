@@ -7,6 +7,7 @@ from datetime import datetime
 from common.models import *
 from common.agent_utils import *
 from django.contrib.auth.models import User
+from form import RegisterForm,LoginForm
 #from models import *
 #from agent_utils import *
 import json,random,time
@@ -175,14 +176,6 @@ def virtualMachine(request):
 		            ret.append(id)
 		    ch["did"] = ret
 		return render_to_response('VirtualMachine.html' , {'vmInfo':vmInfo,'charts':charts})
-        
-def virtualMachine_static(request):
-    try:
-        vm_id = request.GET.get('uuid')
-    except:
-        vm_id = request
-    vmInfo = query_vminfo(vm_id)
-    return render_to_response('VirtualMachine_static.html', {'vmInfo':vmInfo})
 
 def virtualMachine_update(request):
     try:
@@ -231,48 +224,67 @@ def virtualMachine_update(request):
 
 
 def login(request):
+    error=''
     if request.method == 'POST':
-        username = str(request.POST.get('username'))
-        userpassword = str(request.POST.get('password'))
+        form=LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
         
-        user = auth.authenticate(username=username,password=userpassword)
-        if user and user.is_active:
-            auth.login(request,user)
-            return HttpResponseRedirect('index')
+            user = auth.authenticate(username=username,password=password)
+            if user and user.is_active:
+                auth.login(request,user)
+               
+                return HttpResponseRedirect('index')
+            else:
+                error='The username does not exist or the password is wrong '
         else:
-            return render_to_response('login.html',{'ushow':request.GET.get('username')})
-            #return render_to_response('login.html')
-    return render_to_response('login.html',{'ushow':'username'})
+            error='your input is invalid'
+               
+    return render_to_response('login.html',{'error':error})
+    
 
 def register(request):
+    error=''
     if request.method == 'POST':
-        username = str(request.POST.get('username'))
-        userpassword = str(request.POST.get('password'))
-        email = str(request.POST.get('email'))
-        user=User.objects.create_user(username,email,userpassword)
-        #user.groups=["admin"]
-        user.save()
-        return render_to_response('login.html')
-        """
-        user=UserIdentityModel(name=username.strip(),password=userpassword.strip())
-        user.save()
-        
-        #new
-        try:
-            query=UserIdentityModel.objects.get(Q(name=username)&Q(password=userpassword))
-            return render_to_response('login.html')
-            #return HttpResponseRedirect('login',{'query':query["name"]})
-        except:
-            return render_to_response('register.html',{'ushow':request.GET.get('username')})
-            #return render_to_response('register.html',{'ushow':'username'})
-            #return render_to_response('login.html')
-        """
-    return render_to_response('register.html')   
+        form=RegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email=form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            password2=form.cleaned_data['password2']
+            if not User.objects.all().filter(username=username):
+                if form.pwd_validate(password,password2):
+                    user=User.objects.create_user(username,email,password)
+                    user.save()
+                   
+                    return render_to_response('login.html')
+                else:
+                    error="Please input the same password"
+                   
+            else:
+                error="The username has existed,please change you username" 
+               
+        else:
+            error="The email is invalid,please change your email"       
+    return render_to_response('register.html',{'error':error})
+       
 def usersManager(request):
     return render_to_response('users.html')
-   
+
 def management(request):
-    return render_to_response('Management.html')
+    #query_vmlist(host_uuid=None);
+    vm_list=[{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'running'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'running'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'poweroff'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'poweroff'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'suspend'}]
+    return render_to_response('Management.html',{'vm_list':vm_list})
+    
+def management_update(request):
+    vm_list=[{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'running'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'running'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'poweroff'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'poweroff'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'suspend'}]
+    status = request.GET.get('Status')
+    ret = []
+    for v in vm_list:
+        if v['status'] == status:
+            ret.append(v)
+    return  HttpResponse(json.dumps(ret))   
     
 if __name__ == '__main__':
     vm_id = "0050568b044b"

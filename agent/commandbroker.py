@@ -11,7 +11,7 @@ class CommandWorker(threadpool.Worker):
     def work(self, m):
         m.last_value = m.value
         m.ts['execute'] = time.time()
-        log.info("[%s] %s" % (self.name, m.cmdline()))
+        log.info(u"[%s] 执行: %s" % (self.name, m.cmdline()))
         m.value = os.popen(m.cmdline()).read().rstrip("\n\r")
         m.ts['latest'] = time.time()
         if metric_callback:

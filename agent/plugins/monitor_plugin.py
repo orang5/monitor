@@ -3,7 +3,7 @@
 
 import time, json, sys
 import projectroot
-from common import mq, agent_types, agent_utils
+from common import mq, agent_types, agent_utils, agent_info
 log = agent_utils.getLogger()
 
 info = None
@@ -12,6 +12,10 @@ ts = {}
 
 def dottify(str):   return str.replace("_", ".").replace("..", "_")
 def undottify(str): return str.replace("_", "..").replace(".", "_")
+
+def request_callback(msg):
+    print "接收到控制消息: ", msg
+    mq.local_reply("[plugin] 返回: %s pid: %d" % (msg, agent_info.pid))
 
 def plugin_info(filename):
     global info
@@ -37,7 +41,8 @@ def plugin_info(filename):
         
     if info.type == "platform":
         # init local mq queue with PollController
-        mq.setup_local_queue()    
+        mq.setup_local_queue()
+        mq.setup_local_control(request=request_callback)    
 
 def plugin_info_tags():
     return dict(plugin=info.name, pid=os.getpid())

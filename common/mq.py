@@ -15,14 +15,14 @@ class MQWatchdog(threading.Thread):
         self.flag = True
         
     def run(self):
-        log.info("MQWatchdog: started for %s" % self.mq.url)
+        log.info("\t[MQWatchdog] 初始化MQ状态监测 -> %s" % self.mq.url)
         while self.flag:
             time.sleep(self.interval)
             if self.mq.worker.recover_flag:
-                log.warning("MQWatchdog: worker not running, recover...")
+                log.warning("\t[MQWatchdog] MQ连接已断开，正在恢复中...")
                 self.mq.recover_worker()
                 break
-        log.info("MQWatchdog: exit.")
+        log.info("\t[MQWatchdog] MQ状态监测已退出")
 
 # use SelectConnection to maintain loop & consumers
 # it's all async (very nasty)
@@ -42,7 +42,7 @@ class MQWorker(threading.Thread):
         self.recover_flag = False
 
     def connect(self):
-        log.info("MQWorker: SelectConnection (data thread) -> %s" % self.mq.url)
+        log.info("\t[MQWorker] 初始化接收端通道 -> %s" % self.mq.url)
         self.conn = pika.SelectConnection(pika.URLParameters(self.mq.url), self._on_connect)
 
     def _on_connect(self, conn):
@@ -56,15 +56,15 @@ class MQWorker(threading.Thread):
 #        print "in _on_channel"
         self.channel = chn
         self.ready = True
-        log.info("MQWorker: connection thread ready.")
+        log.info("[MQWorker] 接收线程已就绪.")
 
     def close(self):
         if self.conn:
             try:
                 self.conn.close()
-                log.info("MQWorker: SelectConnection closed.")
+                log.info("\t[MQWorker] 接收线程已结束.")
             except:
-                log.warning("*** MQWorker: close failed. ***")
+                log.warning("\t*** [MQWorker] 接收线程退出时引发异常 ***")
                 traceback.print_exc()
             self.conn = None
             self.channel = None
@@ -73,17 +73,17 @@ class MQWorker(threading.Thread):
     def add_consumer(self, qname, callback):
         self.consumers[qname] = self.consumers.get("qname", {})
         cid = self.channel.basic_consume(callback, qname)
-        log.info("MQWorker: queue %s callback %s cid=%s" % (qname, callback.__name__, cid))
+        # log.info("MQWorker: queue %s callback %s cid=%s" % (qname, callback.__name__, cid))
         self.consumers[qname][cid] = dict(cid=cid, queue=qname, callback=callback)
 
     def run(self):
-        log.info("MQWorker: start ioloop...")
+        log.info("\t[MQWorker] 开始接收MQ数据...")
         try:
             self.conn.ioloop.start()
         except:
             traceback.print_exc()
             self.recover_flag = True
-        log.info("MQWorker: %s is exiting..." % self.name)
+        log.info("\t[MQWorker] %s 已结束." % self.name)
 
 # basic MQ object, use BlockingConnection to set attributes
 # DO NOT set Exclusive flag for objects
@@ -103,7 +103,7 @@ class MQ(object):
         # self.exchanges.clear()
         # self.queues.clear()
         # self.consumers.clear()
-        log.info("MQ: BlockingConnection (control flow) -> %s", self.url)
+        log.info("\t[MQ] 初始化发送端通道 -> %s", self.url)
         self.conn = pika.BlockingConnection(pika.URLParameters(self.url))
         self.channel = self.conn.channel()
         return self.conn
@@ -112,7 +112,7 @@ class MQ(object):
         self.worker = MQWorker(self)
         self.worker.connect()
         self.worker.start()
-        log.info("MQ: wait for local MQWorker...")
+        log.info("[MQ] 等待接收端线程...")
         while not self.worker.ready: pass
         self.watch = MQWatchdog(self)
         self.watch.start()
@@ -121,9 +121,9 @@ class MQ(object):
         try:
             if self.conn:
                 self.conn.close()
-                log.info("MQ: BlockingConnection closed.")
+                log.info("\t[MQ] 发送端通道已关闭.")
         except:
-            log.warning("MQ: *** cannot close self.conn, Exception: ***")
+            log.warning("\t[MQ] *** 关闭连接时引发异常 ***")
             traceback.print_exc()
         self.conn = None
         self.channel = None
@@ -132,33 +132,33 @@ class MQ(object):
     
     # Sept 23: when crashed, we must recover
     def recover(self):
-        log.warning("MQ: *** recover from crash ***")
+        log.warning("[MQ] *** 开始恢复消息通道 ***")
         self.close()
-        log.warning("MQ: *** reconnect ***")
+        log.warning("[MQ] *** 尝试重新连接 ***")
         self.connect()
-        log.warning("MQ: *** re-register exchange/queues ***")
+        log.warning("[MQ] *** 重建交换队列 ***")
         for v in self.exchanges.values():
             self.exchange_declare(**v)
         for v in self.queues.values():
             self.queue_declare(**v)
             if v.has_key("bind"):
                 self.queue_bind(v["bind"]["exchange"], v["bind"]["queue"], v["bind"]["routing_key"])
-        log.warning("MQ: *** recover complete. ***")
+        log.warning("[MQ] *** 消息通道已恢复 ***")
         
     def recover_worker(self):
         if not self.worker.recover_flag: return
         self.worker.recover_flag = False
-        log.warning("MQWorker: *** recover from crash ***")
+        log.warning("[MQWorker] *** 开始恢复接收线程 ***")
         self.worker.close()
         t = self.worker.consumers
-        log.warning("MQWorker: *** reconnect ***")
+        log.warning("[MQWorker] *** 尝试重新连接 ***")
         self.connect_worker()
         while not self.worker.ready: pass
-        log.warning("MQ: *** re-register callbacks ***")
+        log.warning("[MQ] *** 注册回调函数 ***")
         for v in t.values():
             for value in v.values():
                 self.worker.add_consumer(value["queue"], value["callback"])     
-        log.warning("MQ: *** recover complete. ***")
+        log.warning("[MQ] *** 接收线程已恢复 ***")
         
     # use default channel to define exchange/queue
     def exchange_declare(self, **kwargs):
@@ -186,7 +186,7 @@ class MQ(object):
         # Sept 23 add: save bind info for recover
         self.queues[queue]["bind"] = {"exchange" : exchange, "queue" : queue, "routing_key" : routing_key}
         
-        log.info("".join(("MQ: bind: (", exchange, ",", routing_key,  ") -> queue:", queue)))
+        log.info("".join(("[MQ] E: ", exchange, " Key: ", routing_key,  " Q:", queue)))
 
     # send = publish
     def publish(self, exc, rkey, msg):
@@ -197,17 +197,17 @@ class MQ(object):
                 self.channel.basic_publish(exchange=exc, routing_key=rkey, body=msg)
                 break
             except:
-                log.warning("*** MQ: error in MQ.publish ***")
+                log.warning("*** [MQ] MQ.publish 发送出错 ***")
                 traceback.print_exc()
-                log.warning("*** MQ: start recover ***")
+                log.warning("*** [MQ] 开始恢复连接 ***")
                 self.recover()
-                log.warning("*** MQ: retry publish... ***")
+                log.warning("*** [MQ] 重试发送 ***")
 
     # recv = add consumer
     def add_consumer(self, qname, callback):
         if not self.queues.has_key(qname): self.queue_declare(queue=qname)
         self.worker.add_consumer(qname, callback)
-        log.info("MQ: consuming from queue - %s", qname)
+        log.info("[MQ] 监听 - %s", qname)
         
 # default callback wrapper, currying default args
 def queue_callback(func, parse=True):
@@ -222,7 +222,7 @@ def queue_callback(func, parse=True):
 def _init_queue(q, dir = "local", type = "dat", key = "m", callback = None, parse = True, durable = True, prefix = "m", auto_delete = False):
     ename = "%s.exc" % prefix
     qname = "%s.%s.%s" % (prefix, dir, type)
-    log.debug("exchange=%s queue=%s key=%s" % (ename, qname, key))
+   # log.debug("[MQ] 队列 E:%s Q:%s Key:%s" % (ename, qname, key))
     
     q.exchange_declare(exchange=ename, durable=True)
     q.queue_declare(queue=qname, durable=durable, auto_delete=auto_delete)
@@ -234,49 +234,104 @@ def _publish(q, msg, dir = "local", type = "dat", key = "m", prefix = "m", dry=F
     qname = "%s.%s.%s" % (prefix, dir, type)
     
     if not dry: q.publish(ename, key, msg)
-    else: log.debug("[%s] %s" % (qname, msg))
+    else: log.debug("[Q:%s] %s" % (qname, msg))
     
 localq = None
 remoteq = None
+remotecon = {}
 
-# use this library routine to init local q for monitor project
-def setup_local_queue(data=None, control=None, parse=True):
+def setup_connection(uri):
+    log.info("[MQ] 连接 %s" % uri)
+    q = MQ(uri)
+    q.connect()
+    q.connect_worker()
+    return q
+
+# use this library routine to init local (agent<-plugin) DATA queue for monitor project
+def setup_local_queue(data=None, parse=True):
+    log.info("[MQ] 初始化本地数据通道...")
     global localq
-    q = MQ(r"amqp://monitor:root@localhost:5672/%2f")
-    localq = q
+    localq = setup_connection("amqp://monitor:root@%s:5672/%%2f" % agent_info.ip)
+    # data (plugin->agent). queue: m.local.dat routing_key: ld
+    _init_queue(localq, callback=data, key="ld", parse=parse)    
+    return localq
     
-    q.connect()
-    q.connect_worker()
-    
-    _init_queue(q, callback=data, key="l", parse=parse)
-    _init_queue(q, type="con.%s" % agent_info.pid, key = str(agent_info.pid), callback=control, parse=False, durable=False, auto_delete=True)
-    return q
-
-# use this library routine to init remote q for monitor project
-# routing key is host identification.
-def setup_remote_queue(data=None, control=None):
+# use this library routine to init remote (agent->broker) DATA queue for monitor project
+def setup_remote_queue(data=None):
+    log.info("[MQ] 初始化远程数据通道...")
     global remoteq
-    q = MQ("amqp://monitor:root@%s/%%2f" % config.mq_server)
-    remoteq = q
-
-    q.connect()
-    q.connect_worker()
+    remoteq = setup_connection("amqp://monitor:root@%s/%%2f" % config.mq_broker)
+    # data (plugin->broker). queue: m.remote.dat routing_key: rd
+    _init_queue(remoteq, dir="remote", callback=data, key="rd")
+    return remoteq
     
-    _init_queue(q, dir="remote", callback=data, key="r")
-    _init_queue(q, type="con.%s" % agent_info.host_id(), key=agent_info.host_id(), callback=control, parse=False, durable=False, auto_delete=True)
+# init local (agent<->plugin) control queues.
+def setup_local_control(request=None, reply=None):
+    if request:
+        # request (agent->plugin) queue: m.local.[pid] routing_key: [pid]
+        _init_queue(localq, type=str(agent_info.pid), key=str(agent_info.pid), callback=request, parse=False, durable=False, auto_delete=True)
+    # reply (plugin->agent) queue: m.local.reply routing_key: lr
+    _init_queue(localq, type="reply", key="lr", callback=reply, parse=False, durable=False, auto_delete=True)
+
+def setup_remote_control(request=None, reply=None):
+    if request:
+        # request (server->agent) queue: m.remote.[hostid] routing_key: [hostid]
+        _init_queue(remoteq, type=str(agent_info.pid), key=str(agent_info.pid), callback=request, parse=False, durable=False, auto_delete=True)
+    # reply (agent->server) queue: m.remote.reply routing_key: rr
+    _init_queue(remoteq, type="reply", key="rr", dir="remote", callback=reply, parse=False, durable=False, auto_delete=True)
+
+# connect to a control queue
+def connect_control(id, dir="local", ip=None):
+    global remotecon
+    q = localq
+    if dir == "remote":
+        q = setup_connection("amqp://monitor:root@%s/%%2f" % ip)
+    else:
+        dir="local"
+    _init_queue(q, type=str(id), key=str(id), dir=dir, callback=None, parse=False, durable=False, auto_delete=True)
+    remotecon[id] = dict(queue=q, dir=dir)
     return q
+    
+#--------------------------
+#           data
+# plugin ---------> agent
+#--------------------------
+def local_publish(msg): _publish(localq, msg, key="ld")
 
-# local plugin uses [local_publish] to send metrics to plugin_manager
-def local_publish(msg): _publish(localq, msg, key="l")
+#--------------------------
+#           request
+# server ------------> agent
+#           host_id
+#--------------------------
+# note: also can use locally
+def request(msg, host_id):
+    global remotecon
+    _publish(remotecon[host_id]["queue"], msg, dir=remotecon[host_id]["dir"], type=str(host_id), key=str(host_id)) 
 
-# plugin_manager uses [remote_publish] to send metrics to transfer_broker (server)
-def remote_publish(msg): _publish(remoteq, msg, dir="remote", key="r")
+#--------------------------
+#          request
+# agent ------------> plugin
+#            pid
+#--------------------------
+def local_request(msg, pid): _publish(localq, msg, type=str(pid), key=str(pid))
 
-# plugin_manager uses [local_control] to send control to certain plugin (pid)
-def local_control(msg, pid): _publish(localq, msg, type="con.%s" % pid, key=str(pid))
+#--------------------------
+#           reply
+# plugin ----------> agent
+#--------------------------
+def local_reply(msg): _publish(localq, msg, type="reply", key="lr")
 
-# server uses [remote_control] to send control to certain host (plugin_manager)
-def remote_control(msg, host_id): _publish(remoteq, msg, type="con.%s" % host_id, key=str(host_id)) 
+#--------------------------
+#          data
+# agent ---------> broker
+#--------------------------
+def remote_publish(msg): _publish(remoteq, msg, dir="remote", key="rd")
+
+#--------------------------
+#           reply
+# plugin ----------> agent
+#--------------------------
+def remote_reply(msg): _publish(remoteq, msg, dir="remote", type="reply", key="rr")
 
 g = False
 def _callback(body):
@@ -290,30 +345,6 @@ def _con_callback(body):
     print "Receive control msg: ", body
 
 def _test():
-#    m = MQ(r'amqp://guest:guest@localhost:5672/')
-#    m.connect()
-#    m.queue_bind("myexc", "myqueue", "test")
-#    m.add_consumer("myqueue", _callback)
-#    m.publish("myexc", "test", "11111111111111")
-#    m.publish("myexc", "test", "22222222222222")
-#    m.publish("myexc", "test", "33333333333333")
-#    m.publish("myexc", "test", "44444444444444")
-#    m.close()
-    setup_local_queue(_callback, _con_callback, parse=False)
-    
-    time.sleep(1)
-    
-    local_publish("1111111111111")
-    local_publish("222222222222222")
-    local_publish("3333333")
-    local_publish("444444444444444")
-    
-    local_control("1111111", agent_info.pid)
-    local_control("22222222222", agent_info.pid)
-    
-    time.sleep(10)
-
-    localq.close()
-    localq.worker.close()
+    pass
 
 if __name__ == "__main__" : _test()

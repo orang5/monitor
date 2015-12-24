@@ -121,7 +121,7 @@ namespace MonitorPlugin
     {
         public static ConnectionFactory factory;
         public static IConnection conn;
-        public static IModel channel, consumer_chn;
+        public static IModel channel, request_chn, reply_chn;
         public static QueueingBasicConsumer consumer;
         public static Thread th;
         public static bool restart_flag = false;
@@ -134,37 +134,46 @@ namespace MonitorPlugin
             factory.Uri = @"amqp://monitor:root@localhost:5672";
             conn = factory.CreateConnection();
             channel = conn.CreateModel();
-            consumer_chn = conn.CreateModel();
+            request_chn = conn.CreateModel();
+            reply_chn = conn.CreateModel();
 
+            // data channel. exchange: m.exc, queue: m.local.dat, routing key: ld
             channel.ExchangeDeclare("m.exc", "direct", true);
             channel.QueueDeclare("m.local.dat", true, false, false, null);
-            channel.QueueBind("m.local.dat", "m.exc", "l");
+            channel.QueueBind("m.local.dat", "m.exc", "ld");
 
             pid = Process.GetCurrentProcess().Id.ToString();
-            string consumer_queue = "m.local.con." + pid;
-            consumer_chn.QueueDeclare(consumer_queue, false, false, true, null);
-            consumer_chn.QueueBind(consumer_queue, "m.exc", pid);
+            string request_queue = "m.local." + pid;
+            string reply_queue = "m.local.reply";
+            
+            // request ( agent -> here ) channel. queue: m.local.[pid], routing_key: pid
+            request_chn.QueueDeclare(request_queue, false, false, true, null);
+            request_chn.QueueBind(request_queue, "m.exc", pid);
+            // reply (here -> agent) channel. queue: m.local.reply, routing_key: lr
+            reply_chn.QueueDeclare(reply_queue, false, false, true, null);
+            reply_chn.QueueBind(reply_queue, "m.exc", "lr");
 
-            consumer = new QueueingBasicConsumer(consumer_chn);
-            consumer_chn.BasicConsume(consumer_queue, false, consumer);
+            consumer = new QueueingBasicConsumer(request_chn);
+            request_chn.BasicConsume(request_queue, false, consumer);
 
             // start consumer
             th = new Thread(new ThreadStart(consumer_thread));
             th.Start();
             restart_flag = false;
-            Console.WriteLine("[MonitorPlugin] MQ is ready.");
+            Console.WriteLine("[MonitorPlugin] MQ 连接就绪.");
         }
 
         public static void consumer_thread()
         {
             try
             {
-                Console.WriteLine("[MonitorPlugin] control thread started.");
+                Console.WriteLine("[MonitorPlugin] 控制线程已启动.");
                 while (!restart_flag)
                 {
                     var recv = consumer.Queue.Dequeue();
                     string msg = Encoding.UTF8.GetString(recv.Body);
-                    Debug.WriteLine(msg);
+                    Debug.WriteLine("[vsphere] 控制消息: {0}", msg);
+                    publish_con("{\"reply\" : \"[vsphere] received control message.\", \"pid\" : " + pid.ToString());
                 }
             }
             catch (Exception e)
@@ -179,7 +188,7 @@ namespace MonitorPlugin
             check_conn();
             try {
                 if (!debug)
-                    channel.BasicPublish("m.exc", "l", null, Encoding.UTF8.GetBytes(msg));
+                    channel.BasicPublish("m.exc", "ld", null, Encoding.UTF8.GetBytes(msg));
                 else
                 {
                     Console.WriteLine("[publish] {0}", msg);
@@ -209,7 +218,7 @@ namespace MonitorPlugin
         public static void publish_con(string msg, bool debug = false)
         {
             if (!debug)
-                consumer_chn.BasicPublish("m.exc", pid, null, Encoding.UTF8.GetBytes(msg));
+                reply_chn.BasicPublish("m.exc", "lr", null, Encoding.UTF8.GetBytes(msg));
             else
                 Console.WriteLine("[control] {0}", msg);
         }
@@ -220,7 +229,7 @@ namespace MonitorPlugin
         {
             if (restart_flag)
             {
-                Console.WriteLine("*** MonitorPlugin MQ Failed ***");
+                Console.WriteLine("*** MonitorPlugin MQ 连接异常 ***");
                 try
                 {
                     th.Abort();
@@ -232,10 +241,10 @@ namespace MonitorPlugin
                 factory = null;
                 GC.Collect();
 
-                Console.WriteLine("*** wait 3 secs ***");
+                Console.WriteLine("*** 等待3秒 ***");
                 Thread.Sleep(3000);
 
-                Console.WriteLine("*** MonitorPlugin: try to restart MQ ***");
+                Console.WriteLine("*** MonitorPlugin: 尝试恢复MQ ***");
                 setup_local_queue();
             }
         }

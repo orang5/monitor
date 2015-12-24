@@ -4,7 +4,7 @@
   "type" : "shell",
   "metrics" : [
     {
-      "name" : "host.arpinfo",
+      "name" : "host_arpinfo",
       "type" : "config",
       "interval" : 30,
       "cmd" : "python arp.py"

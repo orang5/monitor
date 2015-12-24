@@ -38,7 +38,19 @@ class Metric(MetricDesc):
         m.value = d["value"]
         m.tags = d["tags"]
         return m
-   
+    
+    # returns a dict, containing readable info for this object
+    @classmethod
+    def describe(cls, m):
+        # "name, type, interval, cmd, enabled"
+        return dict(
+            name = m.name,
+            type = m.type,
+            interval = m.interval,
+            cmd = m.cmd, 
+            args = getattr(m, "args", {})
+        )
+        
     @property
     def timestamp(self):
         # to be modified in future
@@ -89,7 +101,22 @@ class Plugin(PluginDesc):
     def pid(self):
         if self.handle:
             return self.handle.pid
-        else: return None        
+        else: return None
+    
+    # returns a dict, containing readable info for this object
+    def describe(self):
+        # "name, description, type, enabled, cmd_list, platform_data, metrics"
+        return dict(
+            name = self.name,
+            description = self.description,
+            type = self.type,
+            enabled = self.enabled,
+            cmd_list = self.cmd_list,
+            platform_data = self.platform_data, 
+            metrics = [Metric.describe(m) for m in self.metrics], 
+            uptime = self.uptime,
+            pid = self.pid
+        )
 
 def _test():
     m1 = MetricDesc("test.dir", "config", 30, "dir")
