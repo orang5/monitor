@@ -204,6 +204,9 @@ namespace monitor_vsphere
                 {"uuid", "summary.config.uuid"},
                 {"power","runtime.powerState"},
                 {"os", "summary.config.guestFullName"}
+            } },
+            { "ResourcePool", new Dictionary<string, string>() {
+                {"name", "summary.name"}                
             } }
         };
 

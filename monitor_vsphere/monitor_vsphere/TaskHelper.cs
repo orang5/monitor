@@ -142,7 +142,17 @@ namespace monitor_vsphere
                         break;
 
                     case "migrate":
-                        //task = VCenter.service.MigrateVM_Task(
+                        string pool_name = args["pool"];
+                        string target_name = args["target"];
+                        var poolref = PropHelper.get_moref_by_name(pool_name);
+                        var targetref = PropHelper.get_moref_by_name(target_name);
+                        info["pool"] = poolref;
+                        info["target"] = targetref;
+                        VirtualMachinePowerState st = VirtualMachinePowerState.poweredOn;
+                        VirtualMachineMovePriority pr = VirtualMachineMovePriority.defaultPriority;
+
+                        task = VCenter.service.MigrateVM_Task(vmref, poolref, targetref, pr, st, true);
+                        BeginTask(task, info);
                         break;
                 }
             }

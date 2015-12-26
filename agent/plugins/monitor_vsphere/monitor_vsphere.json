@@ -61,5 +61,16 @@
     { "name" : "runtime_powerState", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
     { "name" : "runtime_connectionState", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
 	{ "name" : "guest_ipAddress", "type" : "inventory", "interval" : 300, "args" : {"entity" : "VirtualMachine"} },
+	
+	{ "name" : "runtime_cpu", "type" : "metric", "interval" : 20, "args" : {"entity" : "ResourcePool"} },
+	{ "name" : "runtime_memory", "type" : "metric", "interval" : 20, "args" : {"entity" : "ResourcePool"} },
+	{ "name" : "summary_name", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} },
+	{ "name" : "summary_quickStats_guestMemoryUsage", "type" : "metric", "interval" : 20, "args" : {"entity" : "ResourcePool"} },
+	{ "name" : "summary_quickStats_hostMemoryUsage", "type" : "metric", "interval" : 20, "args" : {"entity" : "ResourcePool"} },
+	{ "name" : "summary_quickStats_overallCpuUsage", "type" : "metric", "interval" : 20, "args" : {"entity" : "ResourcePool"} },
+	{ "name" : "config_cpuAllocation_limit", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} },
+	{ "name" : "config_cpuAllocation_reservation", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} },
+	{ "name" : "config_memoryAllocation_limit", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} },
+	{ "name" : "config_memoryAllocation_reservation", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} }
   ]
 }
