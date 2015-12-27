@@ -263,10 +263,10 @@ def metric_worker(met):
 @with_wmi
 def do_work():
     global win
-    log.info("[WinWatcher] init WMI...")
+    log.info("[WinWatcher] 连接 WMI...")
     win = WinWatcher()
     win.init_wmi()
-    log.info("[WinWatcher] start main loop...")
+    log.info("[WinWatcher] 开始收集数据...")
     while flag:
         update_metrics(metric_worker, publish=False)
         time.sleep(0.3)
