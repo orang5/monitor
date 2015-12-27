@@ -3,19 +3,17 @@
   "description" : "monitor plugin for VMware Workstation, use vSphere WebService API to gather information",
   "type" : "platform",
   "cmd_list" : {
-    "start" : "monitor_vsphere.exe"
+    "start" : "monitor_vsphere/monitor_vsphere.exe"
   },
   "platform_data" : {
-    "username" : "root", 
-    "ipaddr" : "192.168.11.229",
-    "host" : "192.168.19.248",
+    "username" : "administrator@vsphere.local", 
+    "ipaddr" : "192.168.19.49",
     "instance_filter" : [
       "host$", "host/system$", "host/user$", "host/vim$", "host/vim/vimuser$", "host/vim/vmvisor$", "vmnic*"
     ]
   },
   "metrics" : [
     { "name" : "platform_info", "type" : "inventory", "interval" : 300 }, 
-
     { "name" : "name", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
     { "name" : "config_product_productLineId", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 
     { "name" : "summary_hardware_cpuMhz", "type" : "inventory", "interval" : 300, "args" : {"entity" : "HostSystem"} }, 

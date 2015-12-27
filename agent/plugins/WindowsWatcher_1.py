@@ -69,7 +69,7 @@ def metric_worker(met):
                 raw = snap_perf[i]
                 count = int(raw.PercentIdleTime)
                 ts = int(raw.TimeStamp_Sys100NS)
-                print count, ts
+                # print count, ts
                 if ts > perf["cpu"][i]["ts"]:
                     met.value = 100 - 100 * (count - perf["cpu"][i]["count"]) / (ts - perf["cpu"][i]["ts"])
                     perf["cpu"][i]["count"] = count
@@ -263,10 +263,10 @@ def metric_worker(met):
 @with_wmi
 def do_work():
     global win
-    log.info("[WinWatcher] init WMI...")
+    log.info("[WinWatcher] 连接 WMI...")
     win = WinWatcher()
     win.init_wmi()
-    log.info("[WinWatcher] start main loop...")
+    log.info("[WinWatcher] 开始收集数据...")
     while flag:
         update_metrics(metric_worker, publish=False)
         time.sleep(0.3)

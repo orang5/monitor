@@ -135,7 +135,8 @@ namespace monitor_vsphere
                     Console.WriteLine("------ 性能计数 ------");
                     foreach (var it in VCenter.entity_props.Keys)
                     {
-                        PropHelper.UpdatePerfInfo(it);
+                        if (it.type == "HostSystem" || it.type == "VirtualMachine")
+                            PropHelper.UpdatePerfInfo(it);
                     }
                     EventHelper.Update();
                 }

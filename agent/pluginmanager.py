@@ -57,7 +57,7 @@ def send_metrics(met):
     global sending
     global ntime
     # log.debug("%s %s len=%d time=%d", met.name, str(met.tags), len(met.message_json()), met.timestamp)
-    log.debug("%s" % met.name)
+    # log.debug("%s" % met.name)
         
     # add tags
     met.update_tags(uuid=agent_info.host_id(), host=agent_info.hostname)
@@ -70,6 +70,13 @@ def send_metrics(met):
 def control_callback(msg):
     print u"*** 插件返回结果:", msg
     mq.remote_reply(msg)
+    d = agent_utils.from_json(msg)
+    if d.has_key("timestamp"): d["job_timestamp"] = d.pop("timestamp")
+    if d.has_key("name"): d["job_name"] = d.pop("name")
+    if d.has_key("type"): d["job_type"] = d.pop("type")
+    ret = d.pop("result", "")
+    ret = d.pop("value", ret)
+    send_metrics(build_metric("job_result", ret, d, "metric"))
 
 def control_callback_remote(msg):
     d = agent_utils.from_json(msg)

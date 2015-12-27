@@ -355,7 +355,7 @@ namespace monitor_vsphere
                         ts = new Dictionary<string, long>() { { "latest", Helper.now() } },
                         tags = new Dictionary<string, string>()
                         {
-                            { "mo", (string)it.Value["summary.config.name"] },
+                            { "mo", (string)Get(it.Key, "name") },
                             { "mo_type", it.Key.type },
                             { "uuid", GetMac(it.Key) }
                         }
@@ -370,7 +370,7 @@ namespace monitor_vsphere
                 else if (it.Key.type == "VirtualMachine")
                     BuildVMArrays(it.Key);
 
-                Console.WriteLine("-------------------------");
+              //  Console.WriteLine("-------------------------");
             }
         }
 
@@ -546,7 +546,7 @@ namespace monitor_vsphere
                 {
                     PerfMetricSeries[] vs = ((PerfEntityMetric)v).value;
                     PerfSampleInfo[] info = ((PerfEntityMetric)v).sampleInfo;
-                    Console.WriteLine("MOREF: {0} Timespan: {1} -> {2}", Get(moref, "name"), info[0].timestamp, info[info.Length - 1].timestamp);
+                    Console.WriteLine("虚拟机: {0} 性能计数时间: {1}", Get(moref, "name"), info[0].timestamp.ToLocalTime());
                     for (int i=0; i<vs.Length; ++i)
                     {
                         if (vs[i].GetType().Name == "PerfMetricIntSeries")
@@ -555,7 +555,7 @@ namespace monitor_vsphere
                             PerfCounterInfo pci = counters[series.id.counterId];
                             if (pci != null)
                             {
-                                Metric met = BuildPerfMetric(moref, pci, ((PerfMetricIntSeries)series).value[0], info[0].timestamp, spec.metricId[i].instance);
+                                Metric met = BuildPerfMetric(moref, pci, ((PerfMetricIntSeries)series).value[0], info[0].timestamp.ToLocalTime(), spec.metricId[i].instance);
                                 MQ.publish(met);
 //                                Console.WriteLine("{0}\t{1}\t{2}\t{3} = \t{4}",
   //                                                  met.tags["mo_type"], met.tags["mo"], met.tags["inst"], met.name, met.value);
@@ -563,7 +563,7 @@ namespace monitor_vsphere
                                 
                         }
                     }
-                    Console.WriteLine("----------------------------");
+               //     Console.WriteLine("----------------------------");
                 }
             }
         }
