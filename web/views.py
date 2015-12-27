@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -6,12 +8,14 @@ from django.contrib import auth
 from datetime import datetime
 from common.models import *
 from common.agent_utils import *
+from common import agent_utils, agent_info, mq, config
+from common.agent_types import *
 from django.contrib.auth.models import User
 from form import RegisterForm,LoginForm
-#from models import *
-#from agent_utils import *
+from models import *
+from agent_utils import *
 import json,random,time
-
+import commandbroker, projectroot
 from web.conf.Vchart import vc
 
 def index(request):
@@ -271,24 +275,78 @@ def register(request):
        
 def usersManager(request):
     return render_to_response('users.html')
-
+    
 def management(request):
-    #query_vmlist(host_uuid=None);
-    vm_list=[{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'running'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'running'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'poweroff'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'poweroff'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'suspend'}]
-    return render_to_response('Management.html',{'vm_list':vm_list})
+    return render_to_response('Management.html')
     
 def management_update(request):
-    vm_list=[{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'running'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'running'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'poweroff'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'poweroff'},{'uuid':'0050568b47dd','name':'whu-wm','os':'windows7','status':'suspend'}]
     status = request.GET.get('Status')
     ret = []
-    for v in vm_list:
-        if v['status'] == status:
-            ret.append(v)
-    return  HttpResponse(json.dumps(ret))   
+    vm_list = query_vmlist();
+    for host in vm_list:
+        vl = host["vm"]
+        for vm in vl:
+            if (vm['is_template'] == 'False' and vm['power'] == status):
+                vm["host"] = host["mo"]
+                ret.append(vm)
+    return  HttpResponse(json.dumps(ret))
+
+#tofix    
+def vmControl(request):
+    
+    try:
+        operation = request.GET.get("op")
+        vm_uuid = request.GET.get("vm_uuid")
+        vm_name = request.GET.get("vmName")
+    except:
+        operation = request["op"]
+        vm_uuid = request["vm_uuid"]
+        vm_name = request["vmName"]            
+    id = config.vsphere_id
+    ip = config.vsphere_agent
+    '''
+    q = mq.connect_control(id, "remote", ip, lambda:"do not block")
+    time.sleep(1)
+    req = dict(op="plugin_info",uuid=id)
+    
+    plugin_info = blocked_request(agent_utils.to_json(req), id)
+    
+    req = dict(op=operation, uuid=id, pid=plugin_info["monitor_vsphere"]["pid"],jid=time.time(), name=vm_name, vmid=vm_uuid)
+    mq.request(agent_utils.to_json(req), id)
+    perf = dict(name=vm_name)
+    q.close();
+    '''
+    perf = dict(name=vm_name)
+    return HttpResponse(json.dumps(perf))
+#tofix    
+def fetch_perf(request):
+    '''   
+    try:
+        vm_name = request.GET.get("vmName")
+    except:
+        vm_name = request["vmname"]
+    objs = CurrentModel.objects(name=vm_name)
+    perf = dict()
+    for obj in objs:
+        perf["is_co"] = 1
+        perf["status"] = "poweredOn"
+    return HttpResponse(json.dumps(perf))
+    '''
+    perf["is_co"] = 1;
+    perf["status"] = "poweredOn"
+    return HttpResponse(json.dumps(perf))
+    
     
 if __name__ == '__main__':
     vm_id = "0050568b044b"
-    print virtualMachine_test("0050568b47dd","","net")
+    #print virtualMachine_test("0050568b47dd","","net")
+    vmlist = query_vmlist()
+    for vms in vmlist:
+        for k,v in vms.items():
+            print k,v
+            print "======================"
+        print "--------------------------"    
+            
     #print query_vmlist()
     #print query_vmlist("00e081e21135")
     # Host_static(vm_id)

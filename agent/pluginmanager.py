@@ -7,7 +7,7 @@ import json, os, time, subprocess, shlex, threading
 log = agent_utils.getLogger()
 plugins = []
 metrics = {}
-ts = {"init" : time.time(), "heartbeat" : time.time()}
+ts = {"init" : time.time(), "heartbeat" : 0, "perf" : 0}
 heartbeat_interval = 30
 
 sending = threading.Lock()
@@ -52,11 +52,12 @@ def load_all(path):
             load_plugin("%s/%s" % (path,fname))
 
 # warning: synchronized
+@agent_utils.profiler.counter
 def send_metrics(met):
     global sending
     global ntime
     # log.debug("%s %s len=%d time=%d", met.name, str(met.tags), len(met.message_json()), met.timestamp)
-    log.debug("%s" % met.name)
+    # log.debug("%s" % met.name)
         
     # add tags
     met.update_tags(uuid=agent_info.host_id(), host=agent_info.hostname)
@@ -67,19 +68,35 @@ def send_metrics(met):
         sending.release()
 
 def control_callback(msg):
-    print "receive from plugin:", msg
+    print u"*** 插件返回结果:", msg
+    mq.remote_reply(msg)
+    d = agent_utils.from_json(msg)
+    ret = d.pop("result", "")
+    ret = d.pop("value", ret)
+    send_metrics(build_metric("job_result", ret, d, "metric"))
 
 def control_callback_remote(msg):
-    print "receive from server:", msg
+    d = agent_utils.from_json(msg)
+    jid = d["job_id"]
+    print u"*** 服务端控制请求:", d
+    # simple processing
+    if d["op"] == "plugin_info":
+        ret = get_plugin_info()
+        ret["job_id"] = jid
+        mq.remote_reply(agent_utils.to_json(ret))
+    else:
+        # directly send to plugin
+        mq.local_request(msg, d["pid"])
 
 def init_queue():
     mq.setup_remote_queue()
     mq.setup_local_queue(send_metrics)
     mq.setup_local_control(request=None, reply=control_callback)    
-    #try:
-    #    mq.setup_remote_control_queue(control_callback_remote)
-    #except:
-    #    print "** note: remote control disabled."
+    try:
+        mq.setup_remote_control(request=control_callback_remote)
+        print u"服务端控制已启用."
+    except:
+        print u"服务端控制未启用."
     commandbroker.metric_callback = send_metrics
    
 def update():
@@ -92,9 +109,16 @@ def update():
                 # current: queue all
                 for m in metrics[interval]:
                     commandbroker.queue(m)
-    # update heartbeat
+    # update agent info
     if now-ts["heartbeat"] > heartbeat_interval:
         send_heartbeat_metrics()
+        ts["heartbeat"] = now
+    # update self-perf
+    if now-ts["perf"] > 1:
+        ts["perf"] = now
+        #print agent_utils.profiler.timers
+        met = build_metric("agent_perf", agent_utils.profiler.timers, type="metric")
+        send_metrics(met)
                     
 def start():
     while True:
@@ -113,10 +137,14 @@ def get_agent_info():
     )
 
 def get_plugin_info():
-    return [p.describe() for p in plugins if p.type == "platform"]
+    ret = {}
+    for p in plugins:
+        if p.type == "platform":
+            ret[p.name] = p.describe()
+    return ret
    
 def get_metric_info():
-    mets = []
+    mets = {}
     for group in metrics.values():
         for m in group:
             d = Metric.describe(m)
@@ -126,11 +154,11 @@ def get_metric_info():
                 timestamp = m.timestamp,
                 ts = m.ts
             )
-            mets.append(d)
+            mets[m.name] = d
     return mets
 
-def build_metric(name, v, t={}):
-    met = Metric(name, "runtime", 30, "", True)
+def build_metric(name, v, t={}, type="runtime"):
+    met = Metric(name, type, 30, "", True)
     met.tags = t
     met.value = v
     return met
@@ -139,7 +167,7 @@ def send_heartbeat_metrics():
     send_metrics(build_metric("agent_info", get_agent_info()))
     send_metrics(build_metric("agent_plugin_list", get_plugin_info()))
     send_metrics(build_metric("agent_metric_list", get_metric_info()))
-
+    
 def _test_callback(body):
     print "recv ", body
 

@@ -6,6 +6,12 @@ import analyzer, models_action
 
 log = agent_utils.getLogger()
 
+def build_metric(name, v, t={}):
+    met = agent_types.Metric(name, "metric", 30, "", True)
+    met.tags = t
+    met.value = v
+    return met
+
 def do_work(met):
     # in-line analyze routine, now too simple to become a method
     # def do_analyze(met):
@@ -29,4 +35,11 @@ pool = threadpool.ThreadPool(MetricWorker)
 def callback(met): pool.add_job(met)
 
 queue = mq.setup_remote_queue(callback)
-queue.worker.join()
+
+while True:
+    time.sleep(1)
+    m = build_metric("broker_perf", agent_utils.profiler.timers)
+    pool.add_job(m)
+  #  for k in agent_utils.profiler.timers.keys():
+  #      print k, agent_utils.profiler.timers[k]["sec"]
+    

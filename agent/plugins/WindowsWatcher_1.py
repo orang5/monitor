@@ -69,7 +69,7 @@ def metric_worker(met):
                 raw = snap_perf[i]
                 count = int(raw.PercentIdleTime)
                 ts = int(raw.TimeStamp_Sys100NS)
-                print count, ts
+                # print count, ts
                 if ts > perf["cpu"][i]["ts"]:
                     met.value = 100 - 100 * (count - perf["cpu"][i]["count"]) / (ts - perf["cpu"][i]["ts"])
                     perf["cpu"][i]["count"] = count

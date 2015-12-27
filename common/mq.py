@@ -273,22 +273,26 @@ def setup_local_control(request=None, reply=None):
     # reply (plugin->agent) queue: m.local.reply routing_key: lr
     _init_queue(localq, type="reply", key="lr", callback=reply, parse=False, durable=False, auto_delete=True)
 
+# used by pluginmanager. create local queues for server to connect
 def setup_remote_control(request=None, reply=None):
     if request:
         # request (server->agent) queue: m.remote.[hostid] routing_key: [hostid]
-        _init_queue(remoteq, type=str(agent_info.pid), key=str(agent_info.pid), callback=request, parse=False, durable=False, auto_delete=True)
+        _init_queue(localq, dir="remote", type=str(agent_info.host_id()), key=str(agent_info.host_id()), callback=request, parse=False, durable=False, auto_delete=True)
     # reply (agent->server) queue: m.remote.reply routing_key: rr
-    _init_queue(remoteq, type="reply", key="rr", dir="remote", callback=reply, parse=False, durable=False, auto_delete=True)
+    _init_queue(localq, type="reply", key="rr", dir="remote", callback=reply, parse=False, durable=False, auto_delete=True)
 
 # connect to a control queue
-def connect_control(id, dir="local", ip=None):
+def connect_control(id, dir="local", ip=None, reply=None):
     global remotecon
     q = localq
+    k = "lr"
     if dir == "remote":
         q = setup_connection("amqp://monitor:root@%s/%%2f" % ip)
+        k = "rr"
     else:
         dir="local"
     _init_queue(q, type=str(id), key=str(id), dir=dir, callback=None, parse=False, durable=False, auto_delete=True)
+    _init_queue(q, type="reply", key=k, dir=dir, callback=reply, parse=False, durable=False, auto_delete=True)
     remotecon[id] = dict(queue=q, dir=dir)
     return q
     

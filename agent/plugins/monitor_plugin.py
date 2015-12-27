@@ -13,9 +13,25 @@ ts = {}
 def dottify(str):   return str.replace("_", ".").replace("..", "_")
 def undottify(str): return str.replace("_", "..").replace(".", "_")
 
+# todo: move this into agent_utils
+def build_metric(name, v, t={}, type="metric"):
+    met = agent_types.Metric(name, type, 30, "", True)
+    met.tags = t
+    met.value = v
+    return met
+
+def default_request_worker(msgdict):
+    met = build_metric("plugin_perf", agent_utils.profiler.timers, plugin_info_tags())
+    msgdict.update(agent_utils.from_json(met.message_json()))
+    mq.local_reply(agent_utils.to_json(msgdict))
+request_worker = default_request_worker
+
 def request_callback(msg):
-    print "接收到控制消息: ", msg
-    mq.local_reply("[plugin] 返回: %s pid: %d" % (msg, agent_info.pid))
+    d = agent_utils.from_json(msg)
+    print u"[plugin] 接收到控制消息: ", d
+    # mq.local_reply("[plugin] 返回: %s pid: %d" % (msg, agent_info.pid))
+    # send to worker directly
+    if request_worker: request_worker(d)
 
 def plugin_info(filename):
     global info
@@ -45,8 +61,9 @@ def plugin_info(filename):
         mq.setup_local_control(request=request_callback)    
 
 def plugin_info_tags():
-    return dict(plugin=info.name, pid=os.getpid())
+    return dict(plugin=info.name, pid=agent_info.pid)
     
+@agent_utils.profiler.counter
 def publish(met, debug=False):
     met.ts["latest"] = time.time()
    # met.update_tags(**plugin_info_tags())
