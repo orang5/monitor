@@ -137,6 +137,26 @@ namespace monitor_vsphere
                     { "os", Get(x, "os")}
                 }).ToList();
             }
+
+            // ClusterComputeResource arrays
+            var cl_arrays = VCenter.su.getEntitiesByType("ClusterComputeResource", new string[] {
+                "datastore", "host", "network", "resourcePool"
+            });
+
+            foreach (var item in cl_arrays)
+            {
+                // define type info
+                Dictionary<string, dynamic> dict = new Dictionary<string, dynamic>() {
+                    { "datastore", ((ManagedObjectReference[])item.Value["datastore"]).ToList() },
+                    { "host", ((ManagedObjectReference[])item.Value["host"]).ToList() },
+                    { "net", ((ManagedObjectReference[])item.Value["network"]).ToList() },
+                    { "pool", (ManagedObjectReference)item.Value["resourcePool"] },
+                };
+                dict["pool_props"] = VCenter.entity_props[dict["pool"]];
+
+                VCenter.entity_cache[item.Key] = dict;
+            }
+
         }
 
         // get info of perf monitors for given moref
