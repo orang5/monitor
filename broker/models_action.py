@@ -39,15 +39,16 @@ def save(met, mdl):
 def save_one(met, mdl):
     if not debug:
         # delete then insert. it's more than just modifying items
-        #try:
-        #    current_item(met, mdl).delete()
-        #except: pass
-        #save(met, mdl)
-        item = current_item(met, mdl)
-        if item:
-            item.update(value=met.value, timestamp=mdl.timestamp)
-        else:
-            save(met, mdl)
+        try:
+            current_item(met, mdl).delete()
+        except: pass
+        save(met, mdl)
+        # only modify items.?
+        #item = current_item(met, mdl)
+        #if item:
+        #    item.update(value=met.value, timestamp=mdl.timestamp)
+        #else:
+        #    save(met, mdl)
     else: print "- in save_one"
 
 # note: if value is string then do not pack 

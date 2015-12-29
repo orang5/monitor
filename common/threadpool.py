@@ -33,7 +33,7 @@ class Worker(threading.Thread):
     def work(self, met): pass
 
 # encap of original pooling routine.
-max_worker = 5
+max_worker = 2
 class ThreadPool(object):
     def __init__(self, cls):
         self.workers = []

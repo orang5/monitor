@@ -291,9 +291,41 @@ def management_update(request):
                 ret.append(vm)
     return  HttpResponse(json.dumps(ret))
 
-#tofix    
-def vmControl(request):
+def init_jid():
+    jobs = CurrentModel.objects(name="job_result")
+    m = 0
+    if jobs:
+        for job in jobs:
+            id = int(job.job_id)
+            if m < id:
+                m = id
+    return m 
+
+jid_impl = init_jid()
+
+def retrieval_jid():
+    global jid_impl
+    jid_impl = jid_impl + 1
+    return str(jid_impl)
+
+def _control(**args):
+    id = config.vsphere_id
+    ip = config.vsphere_agent
+    q = mq.connect_control(id, "remote", ip, lambda x:"do not block")
+    time.sleep(1)
+    req = dict(op="plugin_info",uuid=id)
+    datasets = CurrentModel.objects(name="agent_plugin_list",uuid=id)
+    plugin_info = dict()
+    for d in datasets:
+        plugin_info = d.value
+    req = dict(**args)
+    req["uuid"] = id
+    req["pid"] = plugin_info["monitor_vsphere"]["pid"]
+    mq.request(agent_utils.to_json(req), id)
+    q.close();
+
     
+def vmControl(request):
     try:
         operation = request.GET.get("op")
         vm_uuid = request.GET.get("vm_uuid")
@@ -301,43 +333,43 @@ def vmControl(request):
     except:
         operation = request["op"]
         vm_uuid = request["vm_uuid"]
-        vm_name = request["vmName"]            
-    id = config.vsphere_id
-    ip = config.vsphere_agent
-    '''
-    q = mq.connect_control(id, "remote", ip, lambda:"do not block")
-    time.sleep(1)
-    req = dict(op="plugin_info",uuid=id)
-    
-    plugin_info = blocked_request(agent_utils.to_json(req), id)
-    
-    req = dict(op=operation, uuid=id, pid=plugin_info["monitor_vsphere"]["pid"],jid=time.time(), name=vm_name, vmid=vm_uuid)
-    mq.request(agent_utils.to_json(req), id)
-    perf = dict(name=vm_name)
-    q.close();
-    '''
-    perf = dict(name=vm_name)
+        vm_name = request["vmName"]          
+    jid = retrieval_jid()
+    req = dict(op=operation,job_id=jid, name=vm_name, vmid=vm_uuid) 
+    _control(**req)
+    perf = dict(name=vm_name,job_id=jid)
     return HttpResponse(json.dumps(perf))
-#tofix    
+    
+#tofix
+Status = dict(poweron="poweredOn", poweroff="poweredOff", suspend="suspended", reboot="poweredOn")
+    
 def fetch_perf(request):
-    '''   
+      
     try:
         vm_name = request.GET.get("vmName")
+        jid = request.GET.get("jid")
     except:
-        vm_name = request["vmname"]
-    objs = CurrentModel.objects(name=vm_name)
+        vm_name = request["vmName"]
+        jid = request["jid"]
+    objs = CurrentModel.objects(name="job_result",job_id=jid)
     perf = dict()
-    for obj in objs:
-        perf["is_co"] = 1
-        perf["status"] = "poweredOn"
-    return HttpResponse(json.dumps(perf))
-    '''
-    perf["is_co"] = 1;
-    perf["status"] = "poweredOn"
+    if objs:
+        for obj in objs:
+            if obj.value["result"]:
+                perf = dict(is_co=1, status=Status[obj.value["op"]])
+    else:
+         perf = dict(is_co=0, status="error")  
     return HttpResponse(json.dumps(perf))
     
     
 if __name__ == '__main__':
+    #req = dict(op="poweroff",jod_id=0, name="master0.islab.org", vmid='0050568b6c03') 
+    #_control(**req)
+    print jid_impl
+    for i in range(10):
+        id = retrieval_jid()
+        print id
+    '''
     vm_id = "0050568b044b"
     #print virtualMachine_test("0050568b47dd","","net")
     vmlist = query_vmlist()
@@ -359,4 +391,12 @@ if __name__ == '__main__':
     #print query_log()
     #print query_did(vm_id, 'disk')
     #print vc
-    
+    objs = CurrentModel.objects(name="job_result",job_id=1)
+    perf = dict()
+    if not objs:
+        print "nothing"
+    for obj in objs:
+        print obj
+        perf = dict(is_co=1, status=obj.value["name"])
+    print perf
+    '''
