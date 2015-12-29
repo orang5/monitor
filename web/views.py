@@ -22,7 +22,7 @@ from web.conf.Vchart import vc
 
 @login_required(login_url='/accounts/login')
 def index(request):
-    return render_to_response('index.html')
+    return render_to_response('index.html',RequestContext(request))
     
 @login_required(login_url='/accounts/login')
 def index_update(request):
@@ -34,11 +34,11 @@ def index_update(request):
     
 @login_required(login_url='/accounts/login')
 def vplatform(request):
-    return render_to_response('Vplatform.html')
+    return render_to_response('Vplatform.html',RequestContext(request))
     
 @login_required(login_url='/accounts/login')
 def network(request):
-    return render_to_response('Network.html')
+    return render_to_response('Network.html',RequestContext(request))
     
 @login_required(login_url='/accounts/login')
 def query_did(vmid):
@@ -167,7 +167,7 @@ def Host(request):
 		    ch["did"] = r
     ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
            'event':query_log(vm_id),"charts":charts}
-    return render_to_response('host.html', ret)
+    return render_to_response('host.html', ret,RequestContext(request))
 
 @login_required(login_url='/accounts/login')        
 def eventLog(request):
@@ -193,7 +193,7 @@ def virtualMachine(request):
 		        if tag in id:
 		            ret.append(id)
 		    ch["did"] = ret
-		return render_to_response('VirtualMachine.html' , {'vmInfo':vmInfo,'charts':charts})
+		return render_to_response('VirtualMachine.html' , {'vmInfo':vmInfo,'charts':charts},RequestContext(request))
 
 @login_required(login_url='/accounts/login')
 def virtualMachine_update(request):
@@ -244,6 +244,7 @@ def virtualMachine_update(request):
 
 def login(request):
     error=''
+    p=[]
     if request.method == 'POST':
         form=LoginForm(request.POST)
         if form.is_valid():
@@ -253,8 +254,8 @@ def login(request):
             user = auth.authenticate(username=username,password=password)
             if user and user.is_active:
                 auth.login(request,user)
-               
-                return HttpResponseRedirect('index')
+                return render_to_response('index.html',RequestContext(request))
+                
             else:
                 error='The username does not exist or the password is wrong '
         else:
@@ -272,9 +273,11 @@ def register(request):
             email=form.cleaned_data['email']
             password = form.cleaned_data['password']
             password2=form.cleaned_data['password2']
+            
             if not User.objects.all().filter(username=username):
                 if form.pwd_validate(password,password2):
                     user=User.objects.create_user(username,email,password)
+                    user.is_staff=True
                     user.save()
                    
                     return render_to_response('login.html')
@@ -298,12 +301,12 @@ def logout(request):
 #    return render_to_response('users.html')
 
 @login_required(login_url='/accounts/login')  
-@permission_required('auth.manage')  
+#@permission_required('auth.manage')  
 def management(request):
-    return render_to_response('Management.html')
+    return render_to_response('Management.html',RequestContext(request))
 
 @login_required(login_url='/accounts/login')  
-@permission_required('auth.manage')  
+#@permission_required('auth.manage')  
 def management_update(request):
     status = request.GET.get('Status')
     ret = []
@@ -317,7 +320,7 @@ def management_update(request):
     return  HttpResponse(json.dumps(ret))
 
 @login_required(login_url='/accounts/login')
-@permission_required('auth.manage')
+#@permission_required('auth.manage')
 def init_jid():
     jobs = CurrentModel.objects(name="job_result")
     m = 0
@@ -328,17 +331,17 @@ def init_jid():
                 m = id
     return m 
 
-jid_impl = init_jid()
+#jid_impl = init_jid()
 
 @login_required(login_url='/accounts/login')
-@permission_required('auth.manage')
+#@permission_required('auth.manage')
 def retrieval_jid():
     global jid_impl
     jid_impl = jid_impl + 1
     return str(jid_impl)
 
 @login_required(login_url='/accounts/login')
-@permission_required('auth.manage')
+#@permission_required('auth.manage')
 def _control(**args):
     id = config.vsphere_id
     ip = config.vsphere_agent
@@ -356,7 +359,7 @@ def _control(**args):
     q.close();
 
 @login_required(login_url='/accounts/login')    
-@permission_required('auth.manage')
+#@permission_required('auth.manage')
 def vmControl(request):
     try:
         operation = request.GET.get("op")
@@ -376,7 +379,7 @@ def vmControl(request):
 Status = dict(poweron="poweredOn", poweroff="poweredOff", suspend="suspended", reboot="poweredOn")
 
 @login_required(login_url='/accounts/login')    
-@permission_required('auth.manage')
+#@permission_required('auth.manage')
 def fetch_perf(request):
       
     try:
