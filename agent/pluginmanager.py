@@ -41,7 +41,7 @@ def load_plugin(fname):
     elif p.type == "platform":
         p.handle = subprocess.Popen(shlex.split(p.cmd_list["start"]))
         log.info(u"加载平台插件 %s, pid = %d" % (p.cmd_list["start"], p.pid))
-        mq.connect_control(p.pid)
+        # mq.connect_control(p.pid)
         # debug
         # mq.local_request(agent_utils.to_json(dict(op="open", vm="66ccff66ccff", host="a9b8c7d6e5f4")), p.pid)
     return p
@@ -71,8 +71,14 @@ def control_callback(msg):
     print u"*** 插件返回结果:", msg
     mq.remote_reply(msg)
     d = agent_utils.from_json(msg)
-    send_metrics(build_metric("job_result", d, dict(job_id=d["job_id"]), "metric"))
-
+    print u"*** 保存job结果到数据库"
+    try:
+        send_metrics(build_metric("job_result", d, dict(job_id=d["job_id"]), "metric"))
+    except:
+        print "-------------- no jobid"
+        print d
+        raise
+        
 def control_callback_remote(msg):
     d = agent_utils.from_json(msg)
     jid = d["job_id"]
@@ -84,7 +90,10 @@ def control_callback_remote(msg):
         control_callback(agent_utils.to_json(ret))
     else:
         # directly send to plugin
-        mq.local_request(msg, d["pid"])
+        q = mq.connect_control(d["pid"])
+        # mq.local_request(msg, d["pid"])
+        mq.request(msg, d["pid"])
+        q.close()
 
 def init_queue():
     mq.setup_remote_queue()

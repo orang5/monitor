@@ -1,5 +1,3 @@
-
-
 function interactive_chart(pltg, devtg, rttg, tag) {
     /*
      * Flot Interactive Chart
@@ -15,21 +13,26 @@ function interactive_chart(pltg, devtg, rttg, tag) {
 					},
 					series: {
 						shadowSize: 0, // Drawing is faster without shadows
-						color: "#3c8dbc"
+						//color: "#3c8dbc"
+						
 					},
+					
 					lines: {
-						fill: true, //Converts the line chart to area chart
-						color: "#3c8dbc"
+						fill: true//Converts the line chart to area chart
+						//color:{colors:["#90EE90","#FF0000","#3c8dbc","#3b8bba"]}
 					},
+					
+					
 					yaxis: {
 						min: 0,
-						max: 100,
+						//max: 100,
 						show: true
 					},
 					xaxis: {
 						min: 0,
 						max: 60
-					}
+					},
+										
 		});
 
     var uuid = window.location.search;
@@ -38,6 +41,7 @@ function interactive_chart(pltg, devtg, rttg, tag) {
     var realtime = "on"; //If == to on then fetch data every x seconds. else stop fetching
     var points = [];
     var mask = [];
+    var lable=[];
     for(var i=0; i<10; i++) {
         points[i] = new Array();
         mask[i] = 1;
@@ -70,7 +74,9 @@ function interactive_chart(pltg, devtg, rttg, tag) {
 			   $(sct).each(function(i,element){
 					   if(element.checked) mask[i]=1;
 					   else mask[i]=0;
-			   });			       
+					   lable[i]=$(element).attr("id");//new
+			   });	
+			        
 			   for(var i=0; i<point.length; i++){
 			       while(points[i].unshift(-1) < totalPoints);
 			   }
@@ -92,7 +98,18 @@ function interactive_chart(pltg, devtg, rttg, tag) {
 			           value[i].push([j,temp]);
 			       }
 			   }
-				 interactive_plot.setData(value);
+			   //new
+			   //add the label
+			   var data=[];
+			   //var colors=["#FF0000","#3c8dbc","#3b8bba","#90EE90"];//ÑÕÉ«²»·û£¿£¿
+			   for(var i=0;i<point.length;i++){
+            data[i]={};
+            data[i].label=lable[i];
+            data[i].data=value[i];
+           // data[i].lines={};
+           // data[i].lines.color=colors[i];
+            }
+         interactive_plot.setData(data);
 				 interactive_plot.draw();
 				 interactive_plot.setupGrid();
 			 }

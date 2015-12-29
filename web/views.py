@@ -1,12 +1,21 @@
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
+from django.contrib import auth
 from datetime import datetime
 from common.models import *
 from common.agent_utils import *
+from common import agent_utils, agent_info, mq, config
+from common.agent_types import *
+from django.contrib.auth.models import User
+from form import RegisterForm,LoginForm
+from models import *
+from agent_utils import *
 import json,random,time
-
+import commandbroker, projectroot
 from web.conf.Vchart import vc
 
 def index(request):
@@ -119,7 +128,7 @@ def query_vmlist(host_uuid=None):
 # get entity list in sidebar js
 def vm_list(request):
     return HttpResponse(json.dumps(query_vmlist())) 
-
+"""
 def Host_static(request):
     try:
         vm_id = request.GET.get('uuid')
@@ -128,8 +137,26 @@ def Host_static(request):
     ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
            'event':query_log(vm_id)}
     print ret
-    return render_to_response('Host_static.html', ret)
-    
+    return render_to_response('host.html', ret)
+"""    
+def Host(request):
+    try:
+        vm_id = request.GET.get('uuid')
+    except:
+        vm_id = request      
+    charts = vc["charts"]
+    did = query_did(vm_id)
+    for ch in charts:
+		    tag = ch["tag"]
+		    r = []
+		    for id in did:
+		        if tag in id:
+		            r.append(id)
+		    ch["did"] = r
+    ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
+           'event':query_log(vm_id),"charts":charts}
+    return render_to_response('host.html', ret)
+        
 def eventLog(request):
     try:
         id = request.GET.get('uuid')
@@ -153,15 +180,7 @@ def virtualMachine(request):
 		            ret.append(id)
 		    ch["did"] = ret
 		return render_to_response('VirtualMachine.html' , {'vmInfo':vmInfo,'charts':charts})
-        
-def virtualMachine_static(request):
-    try:
-        vm_id = request.GET.get('uuid')
-    except:
-        vm_id = request
-    vmInfo = query_vminfo(vm_id)
-    return render_to_response('VirtualMachine_static.html', {'vmInfo':vmInfo})
-    
+
 def virtualMachine_update(request):
     try:
         vm_id = request.GET.get('uuid')
@@ -178,11 +197,22 @@ def virtualMachine_update(request):
         if tag == ch["tag"]:
             points = ch["points"]
     ret = []
-    for p in points:
+    #old
+    #for p in points:
+    #    for data in datasets:
+    #        if data.name in p["value"]:
+    #            ret.append(data.value)
+    #            continue
+    #new
+    #-1 represent no data
+    for i,p in enumerate(points):
+        ret.append(-1)
         for data in datasets:
             if data.name in p["value"]:
-                ret.append(data.value)
+                ret[i]=data.value
                 continue
+      
+               
     '''
     capacity = CurrentModel.objects(uuid = vm_id,DeviceID = "Physical_Memory_0")
     info = {"vmid" : vm_id, "dev" : DeviceId}
@@ -193,27 +223,162 @@ def virtualMachine_update(request):
     # print request, info
     '''
     
-    return HttpResponse(json.dumps(ret))    
+    return HttpResponse(json.dumps(ret))   
+    
+
 
 def login(request):
+    error=''
     if request.method == 'POST':
-        username = str(request.POST.get('username'))
-        password = str(request.POST.get('password'))
-        if (username.strip() == "islab@whu.edu") & (password.strip() == "whu"):
-            return HttpResponseRedirect('index')
+        form=LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+        
+            user = auth.authenticate(username=username,password=password)
+            if user and user.is_active:
+                auth.login(request,user)
+               
+                return HttpResponseRedirect('index')
+            else:
+                error='The username does not exist or the password is wrong '
         else:
-            return render_to_response('login.html',{'ushow':request.GET.get('username')})
-            #return render_to_response('login.html')
-    return render_to_response('login.html',{'ushow':'username'})
+            error='your input is invalid'
+               
+    return render_to_response('login.html',{'error':error})
+    
 
+def register(request):
+    error=''
+    if request.method == 'POST':
+        form=RegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email=form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            password2=form.cleaned_data['password2']
+            if not User.objects.all().filter(username=username):
+                if form.pwd_validate(password,password2):
+                    user=User.objects.create_user(username,email,password)
+                    user.save()
+                   
+                    return render_to_response('login.html')
+                else:
+                    error="Please input the same password"
+                   
+            else:
+                error="The username has existed,please change you username" 
+               
+        else:
+            error="The email is invalid,please change your email"       
+    return render_to_response('register.html',{'error':error})
+       
 def usersManager(request):
     return render_to_response('users.html')
     
 def management(request):
     return render_to_response('Management.html')
     
+def management_update(request):
+    status = request.GET.get('Status')
+    ret = []
+    vm_list = query_vmlist();
+    for host in vm_list:
+        vl = host["vm"]
+        for vm in vl:
+            if (vm['is_template'] == 'False' and vm['power'] == status):
+                vm["host"] = host["mo"]
+                ret.append(vm)
+    return  HttpResponse(json.dumps(ret))
+
+def init_jid():
+    jobs = CurrentModel.objects(name="job_result")
+    m = 0
+    if jobs:
+        for job in jobs:
+            id = int(job.job_id)
+            if m < id:
+                m = id
+    return m 
+
+jid_impl = init_jid()
+
+def retrieval_jid():
+    global jid_impl
+    jid_impl = jid_impl + 1
+    return str(jid_impl)
+
+def _control(**args):
+    id = config.vsphere_id
+    ip = config.vsphere_agent
+    q = mq.connect_control(id, "remote", ip, lambda x:"do not block")
+    time.sleep(1)
+    req = dict(op="plugin_info",uuid=id)
+    datasets = CurrentModel.objects(name="agent_plugin_list",uuid=id)
+    plugin_info = dict()
+    for d in datasets:
+        plugin_info = d.value
+    req = dict(**args)
+    req["uuid"] = id
+    req["pid"] = plugin_info["monitor_vsphere"]["pid"]
+    mq.request(agent_utils.to_json(req), id)
+    q.close();
+
+    
+def vmControl(request):
+    try:
+        operation = request.GET.get("op")
+        vm_uuid = request.GET.get("vm_uuid")
+        vm_name = request.GET.get("vmName")
+    except:
+        operation = request["op"]
+        vm_uuid = request["vm_uuid"]
+        vm_name = request["vmName"]          
+    jid = retrieval_jid()
+    req = dict(op=operation,job_id=jid, name=vm_name, vmid=vm_uuid) 
+    _control(**req)
+    perf = dict(name=vm_name,job_id=jid)
+    return HttpResponse(json.dumps(perf))
+    
+#tofix
+Status = dict(poweron="poweredOn", poweroff="poweredOff", suspend="suspended", reboot="poweredOn")
+    
+def fetch_perf(request):
+      
+    try:
+        vm_name = request.GET.get("vmName")
+        jid = request.GET.get("jid")
+    except:
+        vm_name = request["vmName"]
+        jid = request["jid"]
+    objs = CurrentModel.objects(name="job_result",job_id=jid)
+    perf = dict()
+    if objs:
+        for obj in objs:
+            if obj.value["result"]:
+                perf = dict(is_co=1, status=Status[obj.value["op"]])
+    else:
+         perf = dict(is_co=0, status="error")  
+    return HttpResponse(json.dumps(perf))
+    
+    
 if __name__ == '__main__':
+    #req = dict(op="poweroff",jod_id=0, name="master0.islab.org", vmid='0050568b6c03') 
+    #_control(**req)
+    print jid_impl
+    for i in range(10):
+        id = retrieval_jid()
+        print id
+    '''
     vm_id = "0050568b044b"
+    #print virtualMachine_test("0050568b47dd","","net")
+    vmlist = query_vmlist()
+    for vms in vmlist:
+        for k,v in vms.items():
+            print k,v
+            print "======================"
+        print "--------------------------"    
+            
     #print query_vmlist()
     #print query_vmlist("00e081e21135")
     # Host_static(vm_id)
@@ -226,4 +391,12 @@ if __name__ == '__main__':
     #print query_log()
     #print query_did(vm_id, 'disk')
     #print vc
-    
+    objs = CurrentModel.objects(name="job_result",job_id=1)
+    perf = dict()
+    if not objs:
+        print "nothing"
+    for obj in objs:
+        print obj
+        perf = dict(is_co=1, status=obj.value["name"])
+    print perf
+    '''
