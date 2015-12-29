@@ -4,7 +4,7 @@ var sidebar = [{"name":"host1","uuid":"host_uuid1","vm_list":[{"name":"vm1","uui
 */
 function callback(sidebar){
     for(var item in sidebar){
-        var hn = "<a href='/Host_static/?uuid=" + sidebar[item].uuid + "'><i class='fa fa-laptop' />" + sidebar[item].mo +"</a><a href='#'><i class='fa fa-angle-right pull-right' /></a>";
+        var hn = "<a href='/Host/?uuid=" + sidebar[item].uuid + "'><i class='fa fa-laptop' />" + sidebar[item].mo +"</a><a href='#'><i class='fa fa-angle-right pull-right' /></a>";
         var l1 = "<li class='treeview active'>" + hn +"</li>";
         $("#platform").append(l1);
 

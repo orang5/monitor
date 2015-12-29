@@ -34,7 +34,6 @@ vc = {
 				            {"lable" : "down", "value" : ["net_bytes_in_cur"]},
 				            {"lable" : "droppedR", "value" : ["net_droppedRx"]},
 				            {"lable" : "droppedT", "value" : ["net_droppedTx"]},
-				 
 				]
 			},
 			{

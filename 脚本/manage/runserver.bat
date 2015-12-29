@@ -1,5 +1,4 @@
-@echo off
-cd ..
+cd ..\..\
 cd broker
 echo "启动传输代理"
 start "传输代理" python listener.py
@@ -13,9 +12,5 @@ ping 127.0.0.1>nul
 ping 127.0.0.1>nul
 cd ..
 echo "启动服务器"
-start "服务器" python manage.py runserver 0.0.0.0:80
-ping 127.0.0.1>nul
-ping 127.0.0.1>nul
-ping 127.0.0.1>nul
-start http://localhost/
+start "服务器" python manage.py runserver
 

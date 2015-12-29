@@ -100,9 +100,8 @@ class MQ(object):
         self.mainloop = None
 
     def connect(self):
-        # self.exchanges.clear()
-        # self.queues.clear()
-        # self.consumers.clear()
+        self.exchanges.clear()
+        self.queues.clear()
         log.info("\t[MQ] 初始化发送端通道 -> %s", self.url)
         self.conn = pika.BlockingConnection(pika.URLParameters(self.url))
         self.channel = self.conn.channel()
@@ -194,7 +193,7 @@ class MQ(object):
         # retry until success
         while True:
             try:
-                self.channel.basic_publish(exchange=exc, routing_key=rkey, body=msg)
+                self.channel.basic_publish(exchange=exc, routing_key=rkey, body=msg.encode("utf-8"))
                 break
             except:
                 log.warning("*** [MQ] MQ.publish 发送出错 ***")
@@ -284,13 +283,15 @@ def setup_remote_control(request=None, reply=None):
 # connect to a control queue
 def connect_control(id, dir="local", ip=None, reply=None):
     global remotecon
-    q = localq
+    q = None
     k = "lr"
     if dir == "remote":
-        q = setup_connection("amqp://monitor:root@%s/%%2f" % ip)
+        q = setup_connection("amqp://monitor:root@%s:5672/%%2f" % ip)
         k = "rr"
     else:
-        dir="local"
+		    q = setup_connection("amqp://monitor:root@%s:5672/%%2f" % agent_info.ip)
+		    dir="local"
+      
     _init_queue(q, type=str(id), key=str(id), dir=dir, callback=None, parse=False, durable=False, auto_delete=True)
     _init_queue(q, type="reply", key=k, dir=dir, callback=reply, parse=False, durable=False, auto_delete=True)
     remotecon[id] = dict(queue=q, dir=dir)

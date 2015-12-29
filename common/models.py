@@ -7,6 +7,9 @@ from agent_types import *
 connect("MoniterDB")
 log = agent_utils.getLogger()
 
+class UserIdentityModel(DynamicDocument):
+    name = StringField(max_length=300,min_length=3)
+    password = StringField(max_length=100,min_length=3)
 # 0. METRIC models
 class MetricModel(DynamicDocument):
     name = StringField(max_length=300)

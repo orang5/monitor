@@ -18,341 +18,63 @@
         <!-- Main content -->
         <section class="content">
            <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-12">
 <div class="box box-info">
                 <div class="box-header with-border">
-                  <h3 class="box-title">在线虚拟机列表</h3>
-                  <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  <h3 class="box-title">虚拟机列表</h3>
+                  <div class="pull-right">
+                  <input id="status_vm" type="checkbox" checked class="poweredOn">
+                  <label> 在线 </label>
+                  <input id="status_vm" type="checkbox" class="poweredOff">
+                  <label> 关闭 </label>
+                  <input id="status_vm" type="checkbox" class="suspended">
+                  <label> 挂起 </label>
                   </div>
                 </div><!-- /.box-header -->
-                <div class="box-body">
-                  <div class="table-responsive">
-                    <table class="table no-margin">
-                      <thead>
-                        <tr>
-                          <th>编号</th>
-                          <th>操作系统</th>
-                          <th>管理</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                          <td>Windows xp</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                          <td>Windows 8</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR1849</a></td>
-                          <td>Windows 8</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                          <td>Windows 8</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                          <td>Ubuntu 14.10 </td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                          <td>CentOS 7.1 </td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                          <td>Debian 7.0.0</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div><!-- /.table-responsive -->
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
- 
-                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">查看全部</a>
-                </div><!-- /.box-footer -->
-              </div><!-- /.box --> 
-              
-                <div class="box box-info">
-                <div class="box-header with-border">
-                  <h3 class="box-title">挂起虚拟机列表</h3>
-                  <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                  </div>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                  <div class="table-responsive">
-                    <table class="table no-margin">
-                      <thead>
-                        <tr>
-                          <th>编号</th>
-                          <th>操作系统</th>
-                          <th>管理</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                          <td>Windows xp</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                          <td>Windows 8</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR1849</a></td>
-                          <td>Windows 8</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                          <td>Windows 8</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                          <td>Ubuntu 14.10 </td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                          <td>CentOS 7.1 </td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                          <td>Debian 7.0.0</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div><!-- /.table-responsive -->
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
- 
-                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">查看全部</a>
-                </div><!-- /.box-footer -->
-              </div><!-- /.box --> 
-              
-               <div class="box box-info">
-                <div class="box-header with-border">
-                  <h3 class="box-title">关闭虚拟机列表</h3>
-                  <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                  </div>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                  <div class="table-responsive">
-                    <table class="table no-margin">
-                      <thead>
-                        <tr>
-                          <th>编号</th>
-                          <th>操作系统</th>
-                          <th>管理</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                          <td>Windows xp</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                          <td>Windows 8</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR1849</a></td>
-                          <td>Windows 8</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                          <td>Windows 8</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                          <td>Ubuntu 14.10 </td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                          <td>CentOS 7.1 </td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                        <tr>
-                          <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                          <td>Debian 7.0.0</td>
-                          <td><span class="label label-success">开启</span><span class="label label-warning">关闭</span><span class="label label-info">暂停</span><span class="label label-danger">迁移</span></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div><!-- /.table-responsive -->
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
- 
-                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">查看全部</a>
-                </div><!-- /.box-footer -->
-              </div><!-- /.box -->                                             
-                </div><!--/.col-->
-              
-              <div class="col-md-4">
-              <div class="box box-primary">
-                <div class="box-header with-border">
-                  <h3 class="box-title">资源索引</h3>
-                  <div class="box-tools pull-right">
-                    <div class="has-feedback">
-                      <input type="text" class="form-control input-sm" placeholder="Search"/>
-                      <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                    </div>
-                  </div><!-- /.box-tools -->
-                </div><!-- /.box-header -->
-                <div class="box-body no-padding">
-                  <div class="mailbox-controls">
-                    <!-- Check all button -->
-                    <button class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
-                    <div class="pull-right">
-                      1-50/200
-                      <div class="btn-group">
-                        <button class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></button>
-                        <button class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></button>
-                      </div><!-- /.btn-group -->
-                    </div><!-- /.pull-right -->
-                  </div>
-                  <div class="table-responsive mailbox-messages">
-                    <table class="table table-hover table-striped">
-                      <tbody>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star-o text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star-o text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star-o text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star-o text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star-o text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star-o text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>
-                        <tr>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">OR9842</a></td>
-                          <td class="mailbox-subject"><b>主机名</b></td>
-                          <td >操作系统</td>
-                        </tr>                                                                                                                                              
-                      </tbody>
-                    </table><!-- /.table -->
-                  </div><!-- /.mail-box-messages -->
-                </div><!-- /.box-body -->
-                <div class="box-footer no-padding">
-                  <div class="mailbox-controls">
-                    <!-- Check all button -->
-                    <button class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
-                    <div class="pull-right">
-                      1-50/200
-                      <div class="btn-group">
-                        <button class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></button>
-                        <button class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></button>
-                      </div><!-- /.btn-group -->
-                    </div><!-- /.pull-right -->
-                  </div>
+                <div style="text-align:right">
+                
                 </div>
-              </div><!-- /. box -->
-            </div><!-- /.col -->
+                <div class="box-body on_line">
+                  <div class="table-responsive">
+                    <table id="vmlist" class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>uuid</th>
+                          <th>名称</th>
+                          <th>操作系统</th>
+                          <th>状态</th>
+                          <th>主机</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <!--
+                      {% for line in vm_list %}
+                        <tr>
+                          
+                          <td ><input id="id_on_line" type="checkbox"/>  <a href="pages/examples/invoice.html">{{line.uuid}}</a></td>
+                          <td>{{line.name}}</td>
+                          <td>{{line.os}}</td>
+                          <td>{{line.status}}</td>
+                        </tr>
+                      {% endfor %}
+                      -->
+                      </tbody>
+                    </table>
+                  </div><!-- /.table-responsive -->
+                 
+                </div><!-- /.box-body -->
+                <div class="box-footer clearfix">
+                  <div id="manage1" style="display:none" >
+                   <button id="control_vm" name="poweron" class="btn btn-sm btn-default btn-flat pull-left">开启</button>
+                   <button id="control_vm" name="poweroff" class="btn btn-sm btn-default btn-flat pull-left">关闭</button>
+                   <button id="control_vm" name="suspend" class="btn btn-sm btn-default btn-flat pull-left">挂起</button>
+                   <button id="control_vm" name="reboot" class="btn btn-sm btn-default btn-flat pull-left">重启</button>
+                  </div>
+                  <button id="bt_on_line" class="btn btn-sm btn-default btn-flat pull-right">编辑</button>
+                  <a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">查看全部</a>
+                </div><!-- /.box-footer -->
+              </div><!-- /.box --> 
+             </div><!-- /.col -->
             </div><!--row-->
         </section><!-- /.content -->
         
@@ -360,4 +82,8 @@
 
      </div><!-- /.content-wrapper -->
       {% endblock %}
+      {% block script %}
+      <script src="{% static "js/pages/manage.js" %}"></script>
+      
+			{% endblock %}
  

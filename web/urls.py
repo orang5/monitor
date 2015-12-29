@@ -7,12 +7,16 @@ urlpatterns = patterns('',
     url(r'^index/$',index),
     url(r'^index_update/$',index_update),
     url(r'^Vplatform/$', vplatform),
-    url(r'^Host_static/$', Host_static),
+    url(r'^Host/$', Host),
     url(r'^VirtualMachine/$', virtualMachine),
     url(r'^VirtualMachineUpdate/$', virtualMachine_update),
     url(r'^Network/$', network),
     url(r'^Management/$', management),
+    url(r'^ManagementUpdate/$', management_update),
+    url(r'^VmControl/$', vmControl),
+    url(r'^fetchPerf/$', fetch_perf),
     url(r'^users/$', usersManager),
     url(r"^BaseUpdate/$", vm_list),
-    url(r"^Event/$", eventLog)
+    url(r"^Event/$", eventLog),
+    url(r"^register$",register)
 )
