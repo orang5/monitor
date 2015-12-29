@@ -71,12 +71,7 @@ def control_callback(msg):
     print u"*** 插件返回结果:", msg
     mq.remote_reply(msg)
     d = agent_utils.from_json(msg)
-    if d.has_key("timestamp"): d["job_timestamp"] = d.pop("timestamp")
-    if d.has_key("name"): d["job_name"] = d.pop("name")
-    if d.has_key("type"): d["job_type"] = d.pop("type")
-    ret = d.pop("result", "")
-    ret = d.pop("value", ret)
-    send_metrics(build_metric("job_result", ret, d, "metric"))
+    send_metrics(build_metric("job_result", d, dict(job_id=d["job_id"]), "metric"))
 
 def control_callback_remote(msg):
     d = agent_utils.from_json(msg)
@@ -86,7 +81,7 @@ def control_callback_remote(msg):
     if d["op"] == "plugin_info":
         ret = get_plugin_info()
         ret["job_id"] = jid
-        mq.remote_reply(agent_utils.to_json(ret))
+        control_callback(agent_utils.to_json(ret))
     else:
         # directly send to plugin
         mq.local_request(msg, d["pid"])

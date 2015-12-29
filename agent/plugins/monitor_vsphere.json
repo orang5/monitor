@@ -69,6 +69,23 @@
 	{ "name" : "config_cpuAllocation_limit", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} },
 	{ "name" : "config_cpuAllocation_reservation", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} },
 	{ "name" : "config_memoryAllocation_limit", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} },
-	{ "name" : "config_memoryAllocation_reservation", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} }
+	{ "name" : "config_memoryAllocation_reservation", "type" : "config", "interval" : 60, "args" : {"entity" : "ResourcePool"} },
+	
+	{ "name" : "summary_name", "type" : "config", "interval" : 60, "args" : {"entity" : "Datastore"} },
+	{ "name" : "summary_accessible", "type" : "metric", "interval" : 60, "args" : {"entity" : "Datastore"} },
+	{ "name" : "summary_type", "type" : "config", "interval" : 60, "args" : {"entity" : "Datastore"} },
+    { "name" : "summary_url", "type" : "config", "interval" : 60, "args" : {"entity" : "Datastore"} },
+
+	{ "name" : "name", "type" : "config", "interval" : 60, "args" : {"entity" : "Datacenter"} },
+
+	{ "name" : "summary_effectiveCpu", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
+	{ "name" : "summary_effectiveMemory", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
+	{ "name" : "summary_numCpuCores", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
+	{ "name" : "summary_numEffectiveHosts", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
+	{ "name" : "summary_numHosts", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
+	{ "name" : "summary_totalCpu", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
+	{ "name" : "summary_totalMemory", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
+	{ "name" : "name", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
+
   ]
 }
