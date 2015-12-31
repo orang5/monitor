@@ -349,6 +349,7 @@ namespace monitor_vsphere
                 tags = new Dictionary<string, string>()
                 {
                     { "mo_type", moref.type },
+                    { "ref", moref.Value },
                     { "mo", Get(moref, "name") },
                     { "inst", instance.Replace('/', '_') },
                     { "uuid", GetMac(moref) },
@@ -373,6 +374,7 @@ namespace monitor_vsphere
                 value = VCenter.entity_props.Keys.Select(x => new Dictionary<string, string>() {
                     { "uuid", GetMac(x) },
                     { "mo", Get(x, "name") },
+                    { "ref", x.Value },
                     { "mo_type", x.type },
                     { "is_template", IsTemplate(x).ToString() }
                     }).ToArray(),
@@ -395,6 +397,7 @@ namespace monitor_vsphere
                         {
                             { "mo", (string)Get(it.Key, "name") },
                             { "mo_type", it.Key.type },
+                            { "ref", it.Key.Value },
                             { "uuid", GetMac(it.Key) }
                         }
                     };
@@ -426,6 +429,7 @@ namespace monitor_vsphere
                 {
                     { "mo", Get(moref, "name") },
                     { "mo_type", moref.type },
+                    { "ref", moref.type },
                     { "uuid", GetMac(moref) }
                 }
             };
@@ -486,6 +490,7 @@ namespace monitor_vsphere
                 {
                     { "mo", Get(moref, "name") },
                     { "mo_type", moref.type },
+                    { "ref", moref.Value },
                     { "uuid", GetMac(moref) }
                 }
             };

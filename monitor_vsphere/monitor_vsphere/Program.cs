@@ -43,7 +43,7 @@ namespace monitor_vsphere
         public static ManagedObjectReference evtCollector;
         public static List<string> instance_filters = new List<string>();
 
-        // peoperty cache, retrieve by getEntitiesByType
+        // property cache, retrieve by getEntitiesByType
         public static Dictionary<ManagedObjectReference, Dictionary<string, object>> entity_props =
             new Dictionary<ManagedObjectReference, Dictionary<string, object>>(new MorefCmp());
 
