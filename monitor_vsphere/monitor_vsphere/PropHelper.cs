@@ -324,14 +324,16 @@ namespace monitor_vsphere
         public static Metric BuildPlatformInfo()
         {
             AboutInfo ai = VCenter.sic.about;
-            Console.WriteLine("虚拟化平台: {0}", ai.fullName);
+            Console.WriteLine("虚拟化平台: {0} IP {1}", ai.fullName, VCenter.ip);
             Console.WriteLine("API版本: {0} {1}", ai.apiType, ai.version);
             return new Metric() {
                 name = "platform_info",
                 type = "inventory",
-                ts = new Dictionary<string, long>() { { "latest", Helper.now() } },
-                value = ai.fullName,
+                ts = MonitorPlugin.Helper.default_timestamp(), 
+                value = "vcenter" + "@" + VCenter.ip,
                 tags = new Dictionary<string, string>() {
+                    { "fullName", ai.fullName },
+                    { "ip", VCenter.ip },
                     { "apiType", ai.apiType },
                     { "version", ai.version }
                 }
@@ -380,7 +382,7 @@ namespace monitor_vsphere
                     }).ToArray(),
                 ts = new Dictionary<string, long>() { { "latest", Helper.now() } }
             };
-            MQ.publish(met);
+            VCenter.publish(met);
 
             foreach (var it in VCenter.entity_props)
             {
@@ -403,7 +405,7 @@ namespace monitor_vsphere
                     };
                     // print/send metric
                     //Console.WriteLine(met.message_json);
-                    MQ.publish(met);
+                    VCenter.publish(met);
                 }
 
                 if (it.Key.type == "HostSystem")
@@ -433,7 +435,7 @@ namespace monitor_vsphere
                     { "uuid", GetMac(moref) }
                 }
             };
-            MQ.publish(met);
+            VCenter.publish(met);
 
             // host ip summary
             met.name = "host_ip";
@@ -444,7 +446,7 @@ namespace monitor_vsphere
                 { "mask", hip[0].subnetMask },
            //     { "gateway", cache["nsi.ipRouteConfig.defaultGateway"][0] }
             };
-            MQ.publish(met);
+            VCenter.publish(met);
 
             // host ip list
             met.name = "host_ipConfig";
@@ -472,7 +474,7 @@ namespace monitor_vsphere
                 }
                 catch { }
             }
-            MQ.publish(met);
+            VCenter.publish(met);
 
         }
 
@@ -494,7 +496,7 @@ namespace monitor_vsphere
                     { "uuid", GetMac(moref) }
                 }
             };
-            MQ.publish(met);
+            VCenter.publish(met);
 
             // ip summary
             if (!IsTemplate(moref) && GetMac(moref) != "no_data")
@@ -508,7 +510,7 @@ namespace monitor_vsphere
                         { "ip", (string)VCenter.entity_props[moref]["guest.ipAddress"] },
                         { "mac", cache["guest.net.mac"][0].Replace(":", "") }
                     };
-                    MQ.publish(met);
+                    VCenter.publish(met);
                 }
                 catch { }
 
@@ -550,7 +552,7 @@ namespace monitor_vsphere
                     };
                     met.value.Add(f);
                 }
-                MQ.publish(met);
+                VCenter.publish(met);
             }
 
             // file list
@@ -565,7 +567,7 @@ namespace monitor_vsphere
                     };
                 met.value.Add(f);
             }
-            MQ.publish(met);
+            VCenter.publish(met);
         }
 
         // update methods.
@@ -601,7 +603,7 @@ namespace monitor_vsphere
                             if (pci != null)
                             {
                                 Metric met = BuildPerfMetric(moref, pci, ((PerfMetricIntSeries)series).value[0], info[0].timestamp.ToLocalTime(), spec.metricId[i].instance);
-                                MQ.publish(met);
+                                VCenter.publish(met);
 //                                Console.WriteLine("{0}\t{1}\t{2}\t{3} = \t{4}",
   //                                                  met.tags["mo_type"], met.tags["mo"], met.tags["inst"], met.name, met.value);
                             }

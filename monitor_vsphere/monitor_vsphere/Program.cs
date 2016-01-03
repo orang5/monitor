@@ -42,6 +42,7 @@ namespace monitor_vsphere
         public static ManagedObjectReference perfMgr { get { return sic.perfManager; } }
         public static ManagedObjectReference evtCollector;
         public static List<string> instance_filters = new List<string>();
+        public static string ip { get { return MonitorPlugin.Helper.info.platform_data["ipaddr"]; } }
 
         // property cache, retrieve by getEntitiesByType
         public static Dictionary<ManagedObjectReference, Dictionary<string, object>> entity_props =
@@ -82,13 +83,12 @@ namespace monitor_vsphere
             cb.disConnect();
         }
 
-        // original getEntitiesByType api call returns [a new moref] each call, which is undesirable
-        // make the returned dict use MorefCmp
-        //public static Dictionary<ManagedObjectReference, Dictionary<string, object>>
-        //    getEntitiesByType_single(string type, string[] props)
-        //{
-        //    return new Dictionary<ManagedObjectReference, Dictionary<string, object>>(su.getEntitiesByType(type, props), new MorefCmp());
-        //}
+        public static void publish(Metric met)
+        {
+            met.tags["platform"] = "vcenter";
+            met.tags["platform_ip"] = VCenter.ip;
+            MQ.publish(met);
+        }
     }
 
     class Program
@@ -119,7 +119,7 @@ namespace monitor_vsphere
             MQ.setup_local_queue();
            
             // print/send platform info
-            MQ.publish(PropHelper.BuildPlatformInfo());
+            VCenter.publish(PropHelper.BuildPlatformInfo());
             
             // for each entity, print/send perf items
             while (true)

@@ -299,6 +299,8 @@ namespace MonitorPlugin
         }
 
         public static long now() { return to_timestamp(DateTime.Now); }
+        public static Dictionary<string, long> default_timestamp()
+        { return new Dictionary<string, long>() { { "latest", now() } };  }
 
         public delegate void MetricWorker(Metric met);
 
