@@ -296,7 +296,7 @@ def logout(request):
     auth.logout(request)
     return render_to_response('login.html')
 
-@login_required(login_url='/accounts/login')       
+#@login_required(login_url='/accounts/login')       
 #def usersManager(request):
 #    return render_to_response('users.html')
 
@@ -305,8 +305,7 @@ def logout(request):
 def management(request):
     return render_to_response('Management.html',RequestContext(request))
 
-@login_required(login_url='/accounts/login')  
-#@permission_required('auth.manage')  
+@login_required(login_url='/accounts/login')   
 def management_update(request):
     status = request.GET.get('Status')
     ret = []
@@ -320,7 +319,6 @@ def management_update(request):
     return  HttpResponse(json.dumps(ret))
 
 @login_required(login_url='/accounts/login')
-#@permission_required('auth.manage')
 def init_jid():
     jobs = CurrentModel.objects(name="job_result")
     m = 0
@@ -334,14 +332,12 @@ def init_jid():
 #jid_impl = init_jid()
 
 @login_required(login_url='/accounts/login')
-#@permission_required('auth.manage')
 def retrieval_jid():
     global jid_impl
     jid_impl = jid_impl + 1
     return str(jid_impl)
 
 @login_required(login_url='/accounts/login')
-#@permission_required('auth.manage')
 def _control(**args):
     id = config.vsphere_id
     ip = config.vsphere_agent
@@ -359,7 +355,6 @@ def _control(**args):
     q.close();
 
 @login_required(login_url='/accounts/login')    
-#@permission_required('auth.manage')
 def vmControl(request):
     try:
         operation = request.GET.get("op")
@@ -379,7 +374,6 @@ def vmControl(request):
 Status = dict(poweron="poweredOn", poweroff="poweredOff", suspend="suspended", reboot="poweredOn")
 
 @login_required(login_url='/accounts/login')    
-#@permission_required('auth.manage')
 def fetch_perf(request):
       
     try:

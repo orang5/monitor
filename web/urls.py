@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from web.views import *
-#from django.contrib.auth.views import login,logout
+
 
 urlpatterns = patterns('',
     url(r'^$', login),
@@ -16,11 +16,10 @@ urlpatterns = patterns('',
     url(r'^ManagementUpdate/$', management_update),
     url(r'^VmControl/$', vmControl),
     url(r'^fetchPerf/$', fetch_perf),
-    url(r'^users/', include(admin.site.urls)),
+    url(r'^users/',include(admin.site.urls)),
     url(r"^BaseUpdate/$", vm_list),
     url(r"^Event/$", eventLog),
     url(r"^register$",register),
     url(r'^accounts/login/$',login),
-    url(r'^admin/',include(admin.site.urls)),
     url(r'^logout',logout),
 )

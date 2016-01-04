@@ -33,9 +33,9 @@
                 <strong>{% firstof user.get_short_name user.get_username %}</strong>.
             {% endblock %}
             {% block userlinks %}
-                {% if site_url %}
-                    <a href="{{ site_url }}">{% trans 'View site' %}</a> /
-                {% endif %}
+                <!--{% if site_url %}
+                    <a href="/index/">{% trans 'View site' %}</a> /
+                {% endif %}-->
                 {% if user.is_active and user.is_staff %}
                     {% url 'django-admindocs-docroot' as docsroot %}
                     {% if docsroot %}
@@ -46,6 +46,7 @@
                 <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
                 {% endif %}
                 <a href="/">{% trans 'Log out' %}</a>
+                <a href="/" onClick="javascript:history.back(-1);" >/ 返回</a>
                 <!--<a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>-->
             {% endblock %}
         </div>
