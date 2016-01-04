@@ -10,30 +10,37 @@ from common.models import *
 from common.agent_utils import *
 from common import agent_utils, agent_info, mq, config
 from common.agent_types import *
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Permission
 from form import RegisterForm,LoginForm
+from django.contrib.auth.decorators import login_required,permission_required
+from django.template.context import RequestContext
 from models import *
 from agent_utils import *
 import json,random,time
 import commandbroker, projectroot
 from web.conf.Vchart import vc
 
+@login_required(login_url='/accounts/login')
 def index(request):
-    return render_to_response('index.html')
-
+    return render_to_response('index.html',RequestContext(request))
+    
+@login_required(login_url='/accounts/login')
 def index_update(request):
     
     d1 = [58, 28, 30, 69, 16, 37, 40]
     d2 = [28, 48, 40, 19, 86, 27, 90]
     data = dict(data1=d1, data2=d2)
     return HttpResponse(json.dumps(data))
-
+    
+@login_required(login_url='/accounts/login')
 def vplatform(request):
-    return render_to_response('Vplatform.html')
-
+    return render_to_response('Vplatform.html',RequestContext(request))
+    
+@login_required(login_url='/accounts/login')
 def network(request):
-    return render_to_response('Network.html')
-
+    return render_to_response('Network.html',RequestContext(request))
+    
+@login_required(login_url='/accounts/login')
 def query_did(vmid):
     qc = CurrentModel.objects(uuid=vmid)
     devid = []        
@@ -54,6 +61,7 @@ def query_did(vmid):
     devid = list(set(devid))                    
     return devid
 
+@login_required(login_url='/accounts/login')
 def query_vminfo(vmid):
     query = CurrentInfoModel.objects(uuid=vmid)
     cap = CurrentModel.objects(uuid=vmid, name="mem_Capacity")
@@ -83,7 +91,8 @@ def query_vminfo(vmid):
         else:
             vmInfo[key] = vmInfo.get(key,q.value)
     return vmInfo
-    
+
+@login_required(login_url='/accounts/login')    
 def query_log(uuid=None):
     collection = None
     if uuid:
@@ -94,7 +103,8 @@ def query_log(uuid=None):
     for evt in collection:
         ret[evt.key] = json.loads(evt.to_json())
     return ret.values()
-    
+
+@login_required(login_url='/accounts/login')    
 def query_vmlist(host_uuid=None):
     if not host_uuid:
     # all
@@ -126,6 +136,7 @@ def query_vmlist(host_uuid=None):
           return q.value    
           
 # get entity list in sidebar js
+@login_required(login_url='/accounts/login')
 def vm_list(request):
     return HttpResponse(json.dumps(query_vmlist())) 
 """
@@ -139,6 +150,7 @@ def Host_static(request):
     print ret
     return render_to_response('host.html', ret)
 """    
+@login_required(login_url='/accounts/login')
 def Host(request):
     try:
         vm_id = request.GET.get('uuid')
@@ -155,15 +167,17 @@ def Host(request):
 		    ch["did"] = r
     ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
            'event':query_log(vm_id),"charts":charts}
-    return render_to_response('host.html', ret)
-        
+    return render_to_response('host.html', ret,RequestContext(request))
+
+@login_required(login_url='/accounts/login')        
 def eventLog(request):
     try:
         id = request.GET.get('uuid')
     except:
         id = None
     return HttpResponse(json.dumps(query_log(id)))    
-    
+
+@login_required(login_url='/accounts/login')    
 def virtualMachine(request):
 		try:
 				vm_id = request.GET.get('uuid')
@@ -179,8 +193,9 @@ def virtualMachine(request):
 		        if tag in id:
 		            ret.append(id)
 		    ch["did"] = ret
-		return render_to_response('VirtualMachine.html' , {'vmInfo':vmInfo,'charts':charts})
+		return render_to_response('VirtualMachine.html' , {'vmInfo':vmInfo,'charts':charts},RequestContext(request))
 
+@login_required(login_url='/accounts/login')
 def virtualMachine_update(request):
     try:
         vm_id = request.GET.get('uuid')
@@ -229,6 +244,7 @@ def virtualMachine_update(request):
 
 def login(request):
     error=''
+    p=[]
     if request.method == 'POST':
         form=LoginForm(request.POST)
         if form.is_valid():
@@ -238,8 +254,8 @@ def login(request):
             user = auth.authenticate(username=username,password=password)
             if user and user.is_active:
                 auth.login(request,user)
-               
-                return HttpResponseRedirect('index')
+                return render_to_response('index.html',RequestContext(request))
+                
             else:
                 error='The username does not exist or the password is wrong '
         else:
@@ -257,9 +273,11 @@ def register(request):
             email=form.cleaned_data['email']
             password = form.cleaned_data['password']
             password2=form.cleaned_data['password2']
+            
             if not User.objects.all().filter(username=username):
                 if form.pwd_validate(password,password2):
                     user=User.objects.create_user(username,email,password)
+                    user.is_staff=True
                     user.save()
                    
                     return render_to_response('login.html')
@@ -272,13 +290,22 @@ def register(request):
         else:
             error="The email is invalid,please change your email"       
     return render_to_response('register.html',{'error':error})
-       
-def usersManager(request):
-    return render_to_response('users.html')
-    
+
+@login_required(login_url='/accounts/login')
+def logout(request):
+    auth.logout(request)
+    return render_to_response('login.html')
+
+#@login_required(login_url='/accounts/login')       
+#def usersManager(request):
+#    return render_to_response('users.html')
+
+@login_required(login_url='/accounts/login')  
+#@permission_required('auth.manage')  
 def management(request):
-    return render_to_response('Management.html')
-    
+    return render_to_response('Management.html',RequestContext(request))
+
+@login_required(login_url='/accounts/login')   
 def management_update(request):
     status = request.GET.get('Status')
     ret = []
@@ -291,6 +318,7 @@ def management_update(request):
                 ret.append(vm)
     return  HttpResponse(json.dumps(ret))
 
+@login_required(login_url='/accounts/login')
 def init_jid():
     jobs = CurrentModel.objects(name="job_result")
     m = 0
@@ -301,13 +329,15 @@ def init_jid():
                 m = id
     return m 
 
-jid_impl = init_jid()
+#jid_impl = init_jid()
 
+@login_required(login_url='/accounts/login')
 def retrieval_jid():
     global jid_impl
     jid_impl = jid_impl + 1
     return str(jid_impl)
 
+@login_required(login_url='/accounts/login')
 def _control(**args):
     id = config.vsphere_id
     ip = config.vsphere_agent
@@ -324,7 +354,7 @@ def _control(**args):
     mq.request(agent_utils.to_json(req), id)
     q.close();
 
-    
+@login_required(login_url='/accounts/login')    
 def vmControl(request):
     try:
         operation = request.GET.get("op")
@@ -342,7 +372,8 @@ def vmControl(request):
     
 #tofix
 Status = dict(poweron="poweredOn", poweroff="poweredOff", suspend="suspended", reboot="poweredOn")
-    
+
+@login_required(login_url='/accounts/login')    
 def fetch_perf(request):
       
     try:
