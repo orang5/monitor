@@ -54,7 +54,17 @@ namespace monitor_vsphere
             foreach (var item in entity_result)
             {
                 foreach (var k in item.Keys)
+                {
+                    // special judge for Datastore
+                    if (k.type == "Datastore" && item[k]["summary.accessible"].Equals(true))
+                    {
+                        string[] ds_props = new string[] {"summary.freeSpace", "summary.capacity", "summary.uncommitted"};
+                        foreach (string s in ds_props)
+                            item[k][s] = VCenter.su.getProp(k, s);                           
+                    }
+
                     VCenter.entity_props[k] = item[k];
+                }
             }
         }
 
@@ -143,6 +153,11 @@ namespace monitor_vsphere
                 "datastore", "host", "network", "resourcePool"
             });
 
+            // specify comparator!
+            var pool_arrays = new Dictionary<ManagedObjectReference, Dictionary<string, object>>(VCenter.su.getEntitiesByType("ResourcePool", new string[] {
+                    "resourcePool", "vm"
+                }), new MorefCmp());
+
             foreach (var item in cl_arrays)
             {
                 // define type info
@@ -153,7 +168,35 @@ namespace monitor_vsphere
                     { "pool", (ManagedObjectReference)item.Value["resourcePool"] },
                 };
                 dict["pool_props"] = VCenter.entity_props[dict["pool"]];
+                dict["pool_arrays"] = pool_arrays[dict["pool"]];
+                dict["vm"] = (ManagedObjectReference[])dict["pool_arrays"]["vm"];
 
+                VCenter.entity_cache[item.Key] = dict;
+            }
+
+            var dvs_arrays = VCenter.su.getEntitiesByType("DistributedVirtualSwitch", new string[] {
+                "summary.host", "summary.vm"
+            });
+
+            foreach (var item in dvs_arrays)
+            {
+                Dictionary<string, dynamic> dict = new Dictionary<string, dynamic>() {
+                    { "host", ((ManagedObjectReference[])item.Value["summary.host"]).ToList() }, 
+                    { "vm", ((ManagedObjectReference[])item.Value["summary.vm"]).ToList() }
+                };
+                VCenter.entity_cache[item.Key] = dict;
+            }
+
+            var net_arrays = VCenter.su.getEntitiesByType("Network", new string[] {
+                "host", "vm"
+            });
+
+            foreach (var item in dvs_arrays)
+            {
+                Dictionary<string, dynamic> dict = new Dictionary<string, dynamic>() {
+                    { "host", ((ManagedObjectReference[])item.Value["host"]).ToList() }, 
+                    { "vm", ((ManagedObjectReference[])item.Value["vm"]).ToList() }
+                };
                 VCenter.entity_cache[item.Key] = dict;
             }
 
@@ -242,10 +285,12 @@ namespace monitor_vsphere
             { "Datastore", new Dictionary<string, string>() {
                 {"name", "summary.name"}                
             } },
-            { "Datacenter", new Dictionary<string, string>() },
-            { "ClusterComputeResource", new Dictionary<string, string>() {
-                {"name", "name"}                
-            } }
+            { "DistributedVirtualSwitch", new Dictionary<string, string>() {
+                {"name", "summary.name"}
+            } },
+            { "Network", new Dictionary<string, string>() },
+            { "ClusterComputeResource", new Dictionary<string, string>() },
+            { "Datacenter", new Dictionary<string, string>() }
         };
 
         public static string Get(ManagedObjectReference moref, string key)
@@ -321,22 +366,47 @@ namespace monitor_vsphere
         // Metric object builders
         // --------------------------
         // build the platform_info metric
-        public static Metric BuildPlatformInfo()
+        // send basic platform info when first connect to vcenter
+        public static Metric BuildBasicInfo()
         {
             AboutInfo ai = VCenter.sic.about;
             Console.WriteLine("虚拟化平台: {0} IP {1}", ai.fullName, VCenter.ip);
             Console.WriteLine("API版本: {0} {1}", ai.apiType, ai.version);
             return new Metric() {
-                name = "platform_info",
+                name = "platform_info_basic",
                 type = "inventory",
                 ts = MonitorPlugin.Helper.default_timestamp(), 
-                value = "vcenter" + "@" + VCenter.ip,
-                tags = new Dictionary<string, string>() {
-                    { "fullName", ai.fullName },
+                value = new Dictionary<string, string>() {
+                    { "full_name", ai.fullName },
                     { "ip", VCenter.ip },
-                    { "apiType", ai.apiType },
+                    { "api_type", ai.apiType },
                     { "version", ai.version }
-                }
+                }, 
+                tags = new Dictionary<string, string>()
+            };
+        }
+
+        // build summary metric for platform dashboard view.
+        // difference from BuildPlatformInfo: can only call this after all Retrieve() methods
+        public static Metric BuildPlatformInfo()
+        {
+            AboutInfo ai = VCenter.sic.about;
+            Dictionary<string, dynamic> v = new Dictionary<string, dynamic>();
+
+            // basic info
+            v["full_name"] = ai.fullName;
+            v["ip"] = VCenter.ip;
+            v["api_type"] = ai.apiType;
+            v["version"] = ai.version;
+
+            //TODO:
+            return new Metric()
+            {
+                name = "platform_info",
+                type = "inventory",
+                ts = MonitorPlugin.Helper.default_timestamp(),
+                value = v,
+                tags = new Dictionary<string, string>() {}
             };
         }
 
@@ -366,9 +436,11 @@ namespace monitor_vsphere
             return met;
         }
 
-        // build/send prop(type:inventory) metrics
+        // build/send config (type:inventory) metrics
+        // and build lists for each main morefs
         public static void BuildPropMetric()
         {
+            // entity_list: all morefs, basic information
             Metric met = new Metric()
             {
                 name = "entity_list",
@@ -378,7 +450,6 @@ namespace monitor_vsphere
                     { "mo", Get(x, "name") },
                     { "ref", x.Value },
                     { "mo_type", x.type },
-                    { "is_template", IsTemplate(x).ToString() }
                     }).ToArray(),
                 ts = new Dictionary<string, long>() { { "latest", Helper.now() } }
             };
@@ -408,15 +479,26 @@ namespace monitor_vsphere
                     VCenter.publish(met);
                 }
 
-                if (it.Key.type == "HostSystem")
-                    BuildHostArrays(it.Key);
-                else if (it.Key.type == "VirtualMachine")
-                    BuildVMArrays(it.Key);
+                switch (it.Key.type)
+                {
+                    case "HostSystem":
+                        BuildHostArrays(it.Key); break;
+                    case "VirtualMachine":
+                        BuildVMArrays(it.Key); break;
+                    case "ClusterComputeResource":
+                        BuildClusterInfo(it.Key); break;
+                    case "DistributedVirtualSwitch":
+                        BuildNetArrays(it.Key); break;
+                    case "Network":
+                        BuildNetArrays(it.Key); break;
+                }
 
               //  Console.WriteLine("-------------------------");
             }
         }
 
+        // build list metrics for HostSystem.
+        // vm_list, 
         public static void BuildHostArrays(ManagedObjectReference moref)
         {
             var cache = VCenter.entity_cache[moref];
@@ -446,7 +528,7 @@ namespace monitor_vsphere
                 { "mask", hip[0].subnetMask },
            //     { "gateway", cache["nsi.ipRouteConfig.defaultGateway"][0] }
             };
-            VCenter.publish(met);
+           // VCenter.publish(met);
 
             // host ip list
             met.name = "host_ipConfig";
@@ -474,7 +556,7 @@ namespace monitor_vsphere
                 }
                 catch { }
             }
-            VCenter.publish(met);
+           // VCenter.publish(met);
 
         }
 
@@ -496,7 +578,7 @@ namespace monitor_vsphere
                     { "uuid", GetMac(moref) }
                 }
             };
-            VCenter.publish(met);
+            //VCenter.publish(met);
 
             // ip summary
             if (!IsTemplate(moref) && GetMac(moref) != "no_data")
@@ -510,35 +592,9 @@ namespace monitor_vsphere
                         { "ip", (string)VCenter.entity_props[moref]["guest.ipAddress"] },
                         { "mac", cache["guest.net.mac"][0].Replace(":", "") }
                     };
-                    VCenter.publish(met);
+                    //VCenter.publish(met);
                 }
                 catch { }
-
-                //// nic info
-                //met.name = "vm_ipConfig";
-                //met.value = new List<Dictionary<string, string>>();
-                //for (int i = 0; i < ip.Count; ++i)
-                //{
-                //    if (ip[i] != null)
-                //    {
-                //        Dictionary<string, string> v = new Dictionary<string, string>() {
-                //       //     { "dhcp", ip[i].dhcp.ipv4.enable.ToString() },        //poison!
-                //            { "ip", ip[i].ipAddress[0].ipAddress },  // todo: multiple addresses
-                //            { "prefix", ip[i].ipAddress[0].prefixLength.ToString() },
-                //            { "mac", cache["guest.net.mac"][0] }
-                //        };
-                //        try
-                //        {
-                //            v["dhcp"] = ip[i].dhcp.ipv4.enable.ToString();
-                //        }
-                //        catch (NullReferenceException e)
-                //        {
-                //            v["dhcp"] = "false";
-                //        }
-                //        met.value.Add(v);
-                //    }
-                //}
-                //MQ.publish(met.message_json);
 
                 // disk info
                 met.name = "vm_disk";
@@ -567,6 +623,133 @@ namespace monitor_vsphere
                     };
                 met.value.Add(f);
             }
+            VCenter.publish(met);
+        }
+
+        // build cluster list
+        public static void BuildClusterInfo(ManagedObjectReference moref)
+        {
+            var cache = VCenter.entity_cache[moref];
+            Dictionary<string, dynamic> v = new Dictionary<string, dynamic>();
+
+            // combine CpmputeResource and ResourcePool info into one metric
+            // add ComputeResource info
+            foreach (var kv in VCenter.entity_props[moref])
+                v[kv.Key] = kv.Value;
+
+            // add ResourcePool info
+            foreach (var kv in VCenter.entity_props[(ManagedObjectReference)cache["pool"]])
+                v[kv.Key] = kv.Value;
+
+            Metric met = new Metric()
+            {
+                name = "cluster_info",
+                type = "inventory",
+                ts = MonitorPlugin.Helper.default_timestamp(),
+                value = v,
+                tags = new Dictionary<string, string>()
+                {
+                    { "mo", Get(moref, "name") },
+                    { "mo_type", moref.type },
+                    { "ref", moref.Value },
+                }
+            };
+            VCenter.publish(met);
+
+            var host_list = new List<Dictionary<string, string>>();
+            var ds_list = new List<Dictionary<string, string>>();
+            var vm_list = new List<Dictionary<string, string>>();
+
+            // host_list
+            foreach (var hostmor in cache["host"])
+                host_list.Add(new Dictionary<string, string>() {
+                    { "uuid", GetMac(hostmor) },
+                    { "mo", Get(hostmor, "name") },
+                    { "ref", hostmor.Value },
+                    { "ip", GetIP(hostmor) },
+                });
+            met.name = "host_list";
+            met.value = host_list;
+            VCenter.publish(met);
+
+            foreach (var vmmor in cache["vm"])
+                vm_list.Add(new Dictionary<string, string>() {
+                    { "uuid", GetMac(vmmor) },
+                    { "mo", Get(vmmor, "name") },
+                    { "ref", vmmor.Value },
+                    { "is_template", IsTemplate(vmmor).ToString() },
+                    { "ip", GetIP(vmmor) },
+                    { "power", Get(vmmor, "power")},
+                    { "os", Get(vmmor, "os")}
+                });
+            met.name = "vm_list";
+            met.value = vm_list;
+            VCenter.publish(met);
+
+            foreach (var dsmor in cache["datastore"])
+            {
+                var ds_props = new Dictionary<string, string>() {
+                    { "mo", Get(dsmor, "name") },
+                    { "ref", dsmor.Value },
+                    { "url", Get(dsmor, "summary.url") },
+                    { "accessible", Get(dsmor, "summary.accessible") }
+                };
+                if (ds_props["accessible"].Equals(true))
+                {
+                    ds_props["freeSpace"] = Get(dsmor, "summary.freeSpace");
+                    ds_props["capacity"] = Get(dsmor, "summary.capacity");
+                    ds_props["uncommitted"] = Get(dsmor, "summary.uncommitted");
+                }
+                ds_list.Add(ds_props);
+            }
+            met.name = "ds_list";
+            met.value = ds_list;
+            VCenter.publish(met);
+
+        }
+
+        public static void BuildNetArrays(ManagedObjectReference moref)
+        {
+            var cache = VCenter.entity_cache[moref];
+            var host_list = new List<Dictionary<string, string>>();
+            var vm_list = new List<Dictionary<string, string>>();
+
+            // host_list
+            foreach (var hostmor in cache["host"])
+                host_list.Add(new Dictionary<string, string>() {
+                    { "uuid", GetMac(hostmor) },
+                    { "mo", Get(hostmor, "name") },
+                    { "ref", hostmor.Value },
+                    { "ip", GetIP(hostmor) },
+                });
+            foreach (var vmmor in cache["vm"])
+                vm_list.Add(new Dictionary<string, string>() {
+                    { "uuid", GetMac(vmmor) },
+                    { "mo", Get(vmmor, "name") },
+                    { "ref", vmmor.Value },
+                    { "is_template", IsTemplate(vmmor).ToString() },
+                    { "ip", GetIP(vmmor) },
+                    { "power", Get(vmmor, "power")},
+                    { "os", Get(vmmor, "os")}
+                });
+
+            Metric met = new Metric()
+            {
+                name = "host_list",
+                type = "inventory",
+                ts = MonitorPlugin.Helper.default_timestamp(),
+                value = host_list,
+                tags = new Dictionary<string, string>()
+                {
+                    { "mo", Get(moref, "name") },
+                    { "mo_type", moref.type },
+                    { "ref", moref.Value },
+                }
+            };
+            VCenter.publish(met);
+
+            met.name = "vm_list";
+            met.value = vm_list;
             VCenter.publish(met);
         }
 

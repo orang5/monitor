@@ -32,7 +32,9 @@ class MetricWorker(threadpool.Worker):
 # simply add metric to thread pool
 # so that original callback will return immediately
 pool = threadpool.ThreadPool(MetricWorker)
-def callback(met): pool.add_job(met)
+def callback(met): 
+    # pool.add_job(met)
+    do_work(met)
 
 queue = mq.setup_remote_queue(callback)
 

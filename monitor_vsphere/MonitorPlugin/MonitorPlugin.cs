@@ -186,6 +186,7 @@ namespace MonitorPlugin
 
         public static void publish(string msg, bool debug=false)
         {
+            Perf.inc("publish");
             check_conn();
             try {
                 if (!debug)
@@ -214,6 +215,7 @@ namespace MonitorPlugin
                 Helper.save_metric(met);        //add to cache
                 publish(met.message_json, debug);
             }
+            else { Perf.inc("unchanged"); }
         }
 
         public static void publish_con(string msg, bool debug = false)
@@ -315,9 +317,10 @@ namespace MonitorPlugin
             {
                 //return true;
                 return !(metric_cache.ContainsKey(met.Tag) && (
-//                    (metric_cache[met.Tag].value == met.value) ||
+                    (metric_cache[met.Tag].value == met.value) ||
                     JsonConvert.SerializeObject(metric_cache[met.Tag].value) == JsonConvert.SerializeObject(met.value))
                     );
+
             }
             catch { 
                 return JsonConvert.SerializeObject(metric_cache[met.Tag].value) == JsonConvert.SerializeObject(met.value);
@@ -357,5 +360,19 @@ namespace MonitorPlugin
             }
         }
 
+    }
+
+    public class Perf
+    {
+        public static Dictionary<string, int> counters = new Dictionary<string, int>();
+        public static Dictionary<string, int> totals = new Dictionary<string, int>();
+
+        public static void reset() { counters.Clear(); totals.Clear(); }
+        public static void reset(string name) { counters[name] = 0; }
+        public static void inc(string name, int value = 1)
+        {
+            try { counters[name] += 1; totals[name] += 1; }
+            catch { counters[name] = totals[name] = 1; }
+        }
     }
 }

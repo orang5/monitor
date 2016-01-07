@@ -91,7 +91,7 @@ namespace monitor_vsphere
             string op = args["op"];
             if (op == "test")
             {
-                Metric met = PropHelper.BuildPlatformInfo();
+                Metric met = PropHelper.BuildBasicInfo();
                 Dictionary<string, dynamic> d = met.message_dict;
                 d["job_id"] = args["job_id"];
                 SendResult(d);

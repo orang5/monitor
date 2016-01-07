@@ -119,7 +119,7 @@ namespace monitor_vsphere
             MQ.setup_local_queue();
            
             // print/send platform info
-            VCenter.publish(PropHelper.BuildPlatformInfo());
+            VCenter.publish(PropHelper.BuildBasicInfo());
             
             // for each entity, print/send perf items
             while (true)
@@ -140,6 +140,12 @@ namespace monitor_vsphere
                     EventHelper.Update();
 
                 }
+
+                Console.WriteLine("--------------");
+                Console.WriteLine("发送: {0}, 缓存: {1}", Perf.counters["publish"], Perf.counters["unchanged"]);
+                Perf.reset("publish");
+                Perf.reset("unchanged");
+                Console.WriteLine("--------------");
                 Thread.Sleep(20000);
 
             }

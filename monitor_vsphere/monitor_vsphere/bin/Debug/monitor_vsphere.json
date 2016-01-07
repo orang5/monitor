@@ -87,5 +87,13 @@
 	{ "name" : "summary_totalMemory", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
 	{ "name" : "name", "type" : "config", "interval" : 60, "args" : {"entity" : "ClusterComputeResource"} },
 
+	{ "name" : "summary_name", "type" : "config", "interval" : 60, "args" : {"entity" : "DistributedVirtualSwitch"} },
+	{ "name" : "summary_numHosts", "type" : "config", "interval" : 60, "args" : {"entity" : "DistributedVirtualSwitch"} },
+	{ "name" : "summary_numPorts", "type" : "config", "interval" : 60, "args" : {"entity" : "DistributedVirtualSwitch"} },
+	{ "name" : "summary_description", "type" : "config", "interval" : 60, "args" : {"entity" : "DistributedVirtualSwitch"} },
+
+	{ "name" : "name", "type" : "config", "interval" : 60, "args" : {"entity" : "Network"} },
+	{ "name" : "summary_ipPoolName", "type" : "config", "interval" : 60, "args" : {"entity" : "Network"} },
+
   ]
 }
