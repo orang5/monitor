@@ -206,7 +206,7 @@ namespace MonitorPlugin
             }
         }
 
-        public static void publish(Metric met, bool check=true, bool debug=false)
+        public static void publish(Metric met, bool check=true, bool debug=true)
         {
             if (!check)
                 publish(met.message_json, debug);

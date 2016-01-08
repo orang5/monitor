@@ -191,7 +191,7 @@ namespace monitor_vsphere
                 "host", "vm"
             });
 
-            foreach (var item in dvs_arrays)
+            foreach (var item in net_arrays)
             {
                 Dictionary<string, dynamic> dict = new Dictionary<string, dynamic>() {
                     { "host", ((ManagedObjectReference[])item.Value["host"]).ToList() }, 
@@ -761,7 +761,12 @@ namespace monitor_vsphere
             // exclude unsupported types
             if (!(new List<string>() { "HostSystem", "VirtualMachine", "ResourcePool" }.Contains(moref.type))) return;
             if (!VCenter.entity_cache.ContainsKey(moref) || !VCenter.entity_cache[moref].ContainsKey("pspec"))
+            {
                 RetrievePerfInfo(moref);
+                // init perf metric cache
+                VCenter.entity_cache[moref]["perf"] = new Dictionary<string, Metric>();
+            }
+            Dictionary<string, Metric> perf_cache = (Dictionary<string, Metric>)VCenter.entity_cache[moref]["perf"];
 
             //invoke qp
             PerfQuerySpec spec = VCenter.entity_cache[moref]["pspec"];
@@ -786,6 +791,7 @@ namespace monitor_vsphere
                             if (pci != null)
                             {
                                 Metric met = BuildPerfMetric(moref, pci, ((PerfMetricIntSeries)series).value[0], info[0].timestamp.ToLocalTime(), spec.metricId[i].instance);
+                                perf_cache[met.name] = met;
                                 VCenter.publish(met);
 //                                Console.WriteLine("{0}\t{1}\t{2}\t{3} = \t{4}",
   //                                                  met.tags["mo_type"], met.tags["mo"], met.tags["inst"], met.name, met.value);
