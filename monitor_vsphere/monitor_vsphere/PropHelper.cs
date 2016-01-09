@@ -410,7 +410,16 @@ namespace monitor_vsphere
             };
         }
 
+        // get cached full name of perf metric
+        // id_[inst]_[group]_[name]
+        public static string PerfMetricFullName(string instance, string group, string name)
+        {
+            return "id_" + instance + "_" + group + "_" + name;
+        }
+
         // build perf(type:metric) metrics
+        // name = [group]_[name]
+        // DeviceID = id_[inst]_[group]
         static Metric BuildPerfMetric(ManagedObjectReference moref, PerfCounterInfo pci, long v, DateTime ts, string instance)
         {
             Metric met = new Metric()
@@ -791,7 +800,8 @@ namespace monitor_vsphere
                             if (pci != null)
                             {
                                 Metric met = BuildPerfMetric(moref, pci, ((PerfMetricIntSeries)series).value[0], info[0].timestamp.ToLocalTime(), spec.metricId[i].instance);
-                                perf_cache[met.name] = met;
+                                string cache_name = PerfMetricFullName(spec.metricId[i].instance.Replace('/', '_'), pci.groupInfo.key, pci.nameInfo.key);
+                                perf_cache[cache_name] = met;
                                 VCenter.publish(met);
 //                                Console.WriteLine("{0}\t{1}\t{2}\t{3} = \t{4}",
   //                                                  met.tags["mo_type"], met.tags["mo"], met.tags["inst"], met.name, met.value);
