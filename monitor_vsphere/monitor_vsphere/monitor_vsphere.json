@@ -10,7 +10,18 @@
     "ipaddr" : "192.168.19.49",
     "instance_filter" : [
       "host$", "host/system$", "host/user$", "host/vim$", "host/vim/vimuser$", "host/vim/vmvisor$", "vmnic*"
-    ]
+    ],
+	"summary_metric" : {
+		"s_host_cpu_usage_avg" : { "entity" : "ClusterComputeResource", "key" : "host", "metric_fullname" : "id__cpu_usage", "method" : "average" },
+		"s_host_cpu_usagemhz_sum" : { "entity" : "ClusterComputeResource", "key" : "host", "metric_fullname" : "id__cpu_usagemhz", "method" : "sum" },
+		"s_host_mem_consumed_sum" : { "entity" : "ClusterComputeResource", "key" : "host", "metric_fullname" : "id__mem_consumed", "method" : "sum" },
+		"s_host_net_usage_sum" : { "entity" : "ClusterComputeResource", "key" : "host", "metric_fullname" : "id__net_usage", "method" : "sum" },
+		"s_vm_cpu_usage_avg" : { "entity" : "ClusterComputeResource", "key" : "vm", "metric_fullname" : "id__cpu_usage", "method" : "average" },
+		"s_vm_cpu_usagemhz_sum" : { "entity" : "ClusterComputeResource", "key" : "vm", "metric_fullname" : "id__cpu_usagemhz", "method" : "sum" },
+		"s_vm_mem_consumed_sum" : { "entity" : "ClusterComputeResource", "key" : "vm", "metric_fullname" : "id__mem_consumed", "method" : "sum" },
+		"s_vm_net_usage_sum" : { "entity" : "ClusterComputeResource", "key" : "vm", "metric_fullname" : "id__net_usage", "method" : "sum" },
+	}
+
   },
   "metrics" : [
     { "name" : "platform_info", "type" : "inventory", "interval" : 300 }, 

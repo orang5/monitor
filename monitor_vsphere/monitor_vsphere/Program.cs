@@ -137,6 +137,7 @@ namespace monitor_vsphere
                     {
                         PropHelper.UpdatePerfInfo(it);
                     }
+                    PropHelper.UpdatePerfStat();
                     EventHelper.Update();
 
                 }

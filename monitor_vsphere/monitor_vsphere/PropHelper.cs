@@ -775,6 +775,8 @@ namespace monitor_vsphere
                 // init perf metric cache
                 VCenter.entity_cache[moref]["perf"] = new Dictionary<string, Metric>();
             }
+            if (!VCenter.entity_cache[moref].ContainsKey("perf"))
+                VCenter.entity_cache[moref]["perf"] = new Dictionary<string, Metric>();
             Dictionary<string, Metric> perf_cache = (Dictionary<string, Metric>)VCenter.entity_cache[moref]["perf"];
 
             //invoke qp
@@ -814,6 +816,50 @@ namespace monitor_vsphere
             }
         }
 
+        // aggregated perf statistics
+        public static int CountPerfStat(IEnumerable<ManagedObjectReference> mo_list, string fullname, string method = "sum")
+        {
+            var items = from x in mo_list
+                        where VCenter.entity_cache[x]["perf"].ContainsKey(fullname)
+                        select VCenter.entity_cache[x]["perf"][fullname].value;
+
+            int ret = 0;
+            switch (method)
+            {
+                case "sum": ret = (int)items.Sum(x => (decimal)x); break;
+                case "average": ret = (int)items.Average(x => (decimal)x); break;
+                case "max": ret = items.Max(); break;
+            }
+
+            return ret;
+        }
+
+        public static void UpdatePerfStat()
+        {
+            var summary = MonitorPlugin.Helper.info.platform_data["summary_metric"];
+            foreach (var item in summary)
+            {
+                foreach (var kv in VCenter.entity_cache) if (kv.Key.type == item.Value["entity"].ToString())
+                {
+                    decimal value = CountPerfStat(kv.Value[item.Value["key"].ToString()], item.Value["metric_fullname"].ToString(), item.Value["method"].ToString());
+                    Metric met = new Metric()
+                    {
+                        name = item.Name,
+                        type = "metric",
+                        ts = MonitorPlugin.Helper.default_timestamp(),
+                        value = value,
+                        tags = new Dictionary<string, string>()
+                        {
+                            { "mo", Get(kv.Key, "name") },
+                            { "mo_type", kv.Key.type },
+                            { "ref", kv.Key.Value },
+                        }
+                    };
+                    VCenter.publish(met);
+                }
+                    
+            }
+        }
         // query methods
         
         // find moref by name
