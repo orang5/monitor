@@ -33,15 +33,29 @@ class MetricWorker(threadpool.Worker):
 # so that original callback will return immediately
 pool = threadpool.ThreadPool(MetricWorker)
 def callback(met): 
-    # pool.add_job(met)
-    do_work(met)
+    pool.add_job(met)
+    # do_work(met)
+    # do_test(met)
 
+n=20
+def profiler_callback():
+    global n
+    counter = agent_utils.profiler.timers["save"]
+    n=n+1
+    if n>20:
+        n=0
+        print "消息数量 当前\t总计"
+        print "--------------------------"
+    print "\t %d" % counter["sec"], "\t", counter["total"]
+
+agent_utils.profiler.callback = profiler_callback
 queue = mq.setup_remote_queue(callback)
 
 while True:
-    time.sleep(1)
+    time.sleep(3)
     m = build_metric("broker_perf", agent_utils.profiler.timers)
-    pool.add_job(m)
+    #pool.add_job(m)
+    do_work(m)
   #  for k in agent_utils.profiler.timers.keys():
   #      print k, agent_utils.profiler.timers[k]["sec"]
     

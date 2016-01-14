@@ -326,9 +326,13 @@ namespace monitor_vsphere
                 }
                 catch (Exception e)
                 {
-                    return "n/a";
+                    try
+                    {
+                        return (string)VCenter.entity_props[moref]["summary.config.uuid"];
+                    }
+                    catch { return moref.type + "_" + moref.Value; }
                 }
-            else return "empty/" + moref.type;
+            else return moref.type + "/" + moref.Value;
         }
 
         /// <summary>
@@ -644,11 +648,11 @@ namespace monitor_vsphere
             // combine CpmputeResource and ResourcePool info into one metric
             // add ComputeResource info
             foreach (var kv in VCenter.entity_props[moref])
-                v[kv.Key] = kv.Value;
+                v[undottify(kv.Key)] = kv.Value;
 
             // add ResourcePool info
             foreach (var kv in VCenter.entity_props[(ManagedObjectReference)cache["pool"]])
-                v[kv.Key] = kv.Value;
+                v[undottify(kv.Key)] = kv.Value;
 
             Metric met = new Metric()
             {
@@ -664,6 +668,7 @@ namespace monitor_vsphere
                 }
             };
             VCenter.publish(met);
+           // Console.WriteLine(met.message_json);
 
             var host_list = new List<Dictionary<string, string>>();
             var ds_list = new List<Dictionary<string, string>>();

@@ -190,12 +190,15 @@ namespace MonitorPlugin
             check_conn();
             try {
                 if (!debug)
+                {
                     channel.BasicPublish("m.exc", "ld", null, Encoding.UTF8.GetBytes(msg));
+                //    Thread.Sleep(15);
+                }
                 else
                 {
                     Console.WriteLine("[publish] {0}", msg);
-                //    Exception e = new Exception("test");
-                 //   throw e;
+                    //    Exception e = new Exception("test");
+                    //   throw e;
                 }
             }
             catch (Exception e)

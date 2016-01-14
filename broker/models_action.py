@@ -32,7 +32,11 @@ def item_exists(met, mdl):
 @agent_utils.profiler.counter
 def save(met, mdl):
     if not debug:
-        mdl.save()
+        try:
+            mdl.save()
+        except:
+            print met.message_json()
+            raise
     else: print "- in save"    
     
 @agent_utils.profiler.counter
@@ -99,6 +103,9 @@ actions = dict(
     CurrentInfoModel    = save_one
 )
 
+def undottify(s):
+    return s.replace("_", "..").replace(".", "_")
+
 # factory method
 # get specific metric model object from Metric object
 def from_metric(met):
@@ -109,10 +116,10 @@ def from_metric(met):
             obj = globals()[mdl]()
             if met.type == "inventory":
                 obj.host = met.tags["uuid"]
-                obj.display_name = names.get(met.name, met.name)
+                obj.display_name = names.get(met.name, undottify(met.name))
         else:
             log.warning("unknown metric: %s", met.message_json())
-        obj.name = met.name
+        obj.name = met.name.replace(".", "_")
         obj.timestamp = datetime.fromtimestamp(met.timestamp)
         obj.value = met.value
         obj.packed = False
@@ -129,7 +136,7 @@ def save_metric(met):
     for mdl in from_metric(met):
         cls = mdl.__class__.__name__
         act = actions[cls]
-        print "%s %s -> %s" % (act.__name__, cls, met.name)
+       # print "%s %s -> %s" % (act.__name__, cls, met.name)
         act(met, mdl)
 
 if __name__ == "__main__":

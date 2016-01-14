@@ -147,7 +147,7 @@ namespace monitor_vsphere
                 Perf.reset("publish");
                 Perf.reset("unchanged");
                 Console.WriteLine("--------------");
-                Thread.Sleep(20000);
+                Thread.Sleep(10000);
 
             }
 

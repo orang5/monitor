@@ -47,6 +47,7 @@ def update_timer():
         for it in timers.values():
             it["sec"] = it["count"]
             it["count"] = 0
+        if callback: callback()
 
 # decorator
 def counter(func):
@@ -72,6 +73,11 @@ def init_timer():
     init = True
     
 def stop_timer(): running = False
+
+def print_timer():
+    for k in timers.keys():
+        print k, timers[k]
+    print "------------------------"
 
 init_timer()
 

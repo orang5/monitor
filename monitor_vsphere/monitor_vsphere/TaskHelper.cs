@@ -231,8 +231,8 @@ namespace monitor_vsphere
                         SendResult(ConvertResult(info));
                         break;
                     case "reconf_disk":
-                        vd_spec = GetVDiskSpec();
-                        info["result"] = WaitForTask(VCenter.service.);
+                        var vd_spec = GetVDiskSpec(vmref);
+                        //info["result"] = WaitForTask(VCenter.service.);
                         Console.WriteLine("*** 操作完成 *** ");
                         SendResult(ConvertResult(info));
                         break;
@@ -282,6 +282,7 @@ namespace monitor_vsphere
         {
             VirtualDiskConfigSpec ret = new VirtualDiskConfigSpec();
             VirtualMachineConfigInfo conf = (VirtualMachineConfigInfo)VCenter.su.GetDynamicProperty(vmref, "config");
+            return ret;
         }
 
     }
