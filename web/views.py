@@ -40,7 +40,7 @@ def vplatform(request):
 def network(request):
     return render_to_response('Network.html',RequestContext(request))
     
-@login_required(login_url='/accounts/login')
+#@login_required(login_url='/accounts/login')
 def query_did(vmid):
     qc = CurrentModel.objects(uuid=vmid)
     devid = []        
@@ -61,7 +61,7 @@ def query_did(vmid):
     devid = list(set(devid))                    
     return devid
 
-@login_required(login_url='/accounts/login')
+#@login_required(login_url='/accounts/login')
 def query_vminfo(vmid):
     query = CurrentInfoModel.objects(uuid=vmid)
     cap = CurrentModel.objects(uuid=vmid, name="mem_Capacity")
@@ -92,7 +92,7 @@ def query_vminfo(vmid):
             vmInfo[key] = vmInfo.get(key,q.value)
     return vmInfo
 
-@login_required(login_url='/accounts/login')    
+#@login_required(login_url='/accounts/login')    
 def query_log(uuid=None):
     collection = None
     if uuid:
@@ -104,7 +104,7 @@ def query_log(uuid=None):
         ret[evt.key] = json.loads(evt.to_json())
     return ret.values()
 
-@login_required(login_url='/accounts/login')    
+#@login_required(login_url='/accounts/login')    
 def query_vmlist(host_uuid=None):
     if not host_uuid:
     # all
@@ -318,7 +318,7 @@ def management_update(request):
                 ret.append(vm)
     return  HttpResponse(json.dumps(ret))
 
-@login_required(login_url='/accounts/login')
+#@login_required(login_url='/accounts/login')
 def init_jid():
     jobs = CurrentModel.objects(name="job_result")
     m = 0
@@ -329,15 +329,15 @@ def init_jid():
                 m = id
     return m 
 
-#jid_impl = init_jid()
+jid_impl = init_jid()
 
-@login_required(login_url='/accounts/login')
+#@login_required(login_url='/accounts/login')
 def retrieval_jid():
     global jid_impl
     jid_impl = jid_impl + 1
     return str(jid_impl)
 
-@login_required(login_url='/accounts/login')
+#@login_required(login_url='/accounts/login')
 def _control(**args):
     id = config.vsphere_id
     ip = config.vsphere_agent
