@@ -38,27 +38,33 @@ callback = None
 running = False
 th = None
 
+def add_counter(name):
+    if not timers.has_key(name): timers[name] = dict(count=0, sec=0, total=0)
+    
+def inc_counter(name):
+    timers[name]["count"] = timers[name]["count"] + 1
+    timers[name]["total"] = timers[name]["total"] + 1
+    
+def refresh_counter(name):
+    timers[name]["sec"] = timers[name]["count"]
+    timers[name]["count"] = 0
+    
 def update_timer():
     global running
     global timers
     running = True
     while running:
         time.sleep(1)
-        for it in timers.values():
-            it["sec"] = it["count"]
-            it["count"] = 0
+        for k in timers.keys(): refresh_counter(k)            
         if callback: callback()
 
 # decorator
 def counter(func):
     def counted_func(*args):
-        if not timers.has_key(func.__name__):
-            timers[func.__name__] = dict(count=0, sec=0, total=0)
+        add_counter(func.__name__)
         #t = time.clock()
-        tm = timers[func.__name__]
         func(*args)
-        tm["count"] = tm["count"] + 1
-        tm["total"] = tm["total"] + 1
+        inc_counter(func.__name__)
         #tm["execute"] = time.clock() - t
     counted_func.__name__ = func.__name__
     return counted_func
