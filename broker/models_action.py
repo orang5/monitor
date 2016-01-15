@@ -55,6 +55,8 @@ def save_one(met, mdl):
         #    save(met, mdl)
     else: print "- in save_one"
 
+def packtag(x): return "a%d" % x
+
 # note: if value is string then do not pack 
 @agent_utils.profiler.counter
 def save_packed(met, mdl):
@@ -70,15 +72,23 @@ def save_packed(met, mdl):
         items = mdl.__class__.objects(**search_keys)
         if items.count() == 0:
             # no such entry, create it
-            newlist = [""] * timespan
-            newlist[offset] = met.value
+           # newlist = [""] * timespan
+           # newlist[offset] = met.value
+           
+           # Jan 15: use sparse(dict) instead of array
+           # use padding space when init
+            newdict = dict(padding="a"*4000)
+            newdict[packtag(offset)] = met.value
             mdl.packed = True
-            mdl.value = newlist
+            mdl.value = newdict
             mdl.timestamp = time_min
             mdl.save()
+            # remove padding
+            it = mdl.__class__.objects(**search_keys)
+            it.update(unset__value__padding=1)
         else:
             # magic
-            items.update(**{"set__value__%d" % offset : met.value})
+            items.update(**{"set__value__%s" % packtag(offset) : met.value})
 
 # metric type routes: describes how to deal with certain metric type
 # to which model this metric is saved
