@@ -53,9 +53,12 @@ queue = mq.setup_remote_queue(callback)
 
 while True:
     time.sleep(3)
-    m = build_metric("broker_perf", agent_utils.profiler.timers)
-    #pool.add_job(m)
-    do_work(m)
+    ts = agent_utils.profiler.timers
+    for k in ts.keys():
+        met_total = build_metric("broker_perf", ts[k]["total"], dict(func=k, stat="total"))
+        met_sec   = build_metric("broker_perf", ts[k]["sec"], dict(func=k, stat="sec"))
+        do_work(met_total)
+        do_work(met_sec)
   #  for k in agent_utils.profiler.timers.keys():
   #      print k, agent_utils.profiler.timers[k]["sec"]
     

@@ -185,11 +185,7 @@ def _test():
         print ",".join([r for r in rows])
         for x in cls.objects():
             try:
-                if (not packed_model) or (not x.packed):
-                    print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
-                else:
-                    x.value = agent_utils.packed_to_dict(x.value)
-                    print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])                    
+                print ",".join(['"' + getattr(x, r, "").__str__().replace('"', '""') + '"'  for r in rows])
             except: pass
 
 if __name__ == "__main__":_test()

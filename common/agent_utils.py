@@ -76,12 +76,12 @@ def getLogger():
     return logging.getLogger("file")    
 
 # parse packed list to dict
-def packed_to_dict(l, empty=""):
-    return dict((x, l[x]) for x in xrange(0, len(l)) if l[x] != empty)
+#def packed_to_dict(l, empty=""):
+#    return dict((x, l[x]) for x in xrange(0, len(l)) if l[x] != empty)
 
 # parse last value before given time offset from packed list
-def packed_current(l, offset=60, empty=""):
-    return next(x for x in l[offset::-1] if x != empty)
+#def packed_current(l, offset=60, empty=""):
+#    return next(x for x in l[offset::-1] if x != empty)
     
 def _test():
     log = getLogger()

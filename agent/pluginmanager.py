@@ -121,11 +121,15 @@ def update():
         send_heartbeat_metrics()
         ts["heartbeat"] = now
     # update self-perf
-    if now-ts["perf"] > 1:
+    if now-ts["perf"] > 3:
         ts["perf"] = now
         #print agent_utils.profiler.timers
-        met = build_metric("agent_perf", agent_utils.profiler.timers, type="metric")
-        send_metrics(met)
+        t = agent_utils.profiler.timers
+        for k in t.keys():
+            met_total = build_metric("agent_perf", t[k]["total"], dict(func=k, stat="total"))
+            met_sec   = build_metric("agent_perf", t[k]["sec"], dict(func=k, stat="sec"))
+            send_metrics(met_total)
+            send_metrics(met_sec)
                     
 def start():
     while True:
@@ -164,7 +168,7 @@ def get_metric_info():
             mets[m.name] = d
     return mets
 
-def build_metric(name, v, t={}, type="runtime"):
+def build_metric(name, v, t={}, type="metric"):
     met = Metric(name, type, 30, "", True)
     met.tags = t
     met.value = v
