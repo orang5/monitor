@@ -116,7 +116,7 @@ def from_metric(met):
             obj = globals()[mdl]()
             if met.type == "inventory":
                 obj.host = met.tags["uuid"]
-                obj.display_name = names.get(met.name, undottify(met.name))
+                obj.display_name = names.get(met.name, met.name.replace(".", "_"))
         else:
             log.warning("unknown metric: %s", met.message_json())
         obj.name = met.name.replace(".", "_")

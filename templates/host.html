@@ -1,18 +1,22 @@
 {% extends '__base__.html' %}
 {% load staticfiles %}
+<!-- data content note:
+    {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
+     'event':query_log(vm_id),"charts":charts }
+-->
 {% block content-wrapper %}
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            主机
-            <small>version1.0</small>
+            物理服务器 - {{vmInfo.summary_hardware_vendor}} {{vmInfo.summary_hardware_model}}
+            <small>{{ vmInfo.summary_config_name }}</small>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
             <li class="active">虚拟化平台</li>
-            <li class="active">主机1</li>
+            <li class="active">{{ vmInfo.summary_config_name }}</li>
           </ol>
         </section>
 
@@ -46,30 +50,30 @@
                   <h3 class="box-title">详细属性</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                {{vmInfo}}
+                 <!-- {{vmInfo}} -->
                   <table id="example2" class="table table-bordered table-hover">
                     <tbody>
                     <tr>
                       <td>主机名: {{ vmInfo.host_info.hostname }} {{ vmInfo.summary_config_name }}</td>
-                      <td>操作系统: {{ vmInfo.host_info.os }} {{ vmInfo.summary_config_product_osType }}</td>
-                    </tr>
-                     {% if vmInfo.summary_config_name %}
-                     
+                      <td>服务器型号: {{vmInfo.summary_hardware_vendor}} {{ vmInfo.summary_hardware_model }} </td>
+                       </tr>
+                     {% if vmInfo.summary_config_name %}                     
                      <tr>
                         <td>Cpu型号: {{ vmInfo.summary_hardware_cpuModel }}</td>
-                        <td>核心数:  {{ vmInfo.summary_hardware_numCpuCores }}</td>
+                        <td>物理核心数量:  {{ vmInfo.summary_hardware_numCpuCores }}</td>
                      </tr>
                      <tr>
-                        <td>Cpu最大速度: {{ vmInfo.summary_hardware_cpuMhz }}</td>
-                        <td>服务器型号: {{ vmInfo.summary_hardware_model }} </td>
+                        <td>内存容量: {% widthratio vmInfo.summary_hardware_memorySize 1073741824 1 %} GB</td>
+                        <td>操作系统: {{ vmInfo.host_info.os }} {{ vmInfo.summary_config_product_osType }}</td>                        
                      </tr>
                      <tr>
-                        <td>内存容量: {% widthratio vmInfo.summary_hardware_memorySize 1048576 1 %} MB</td>
+                        <td>Cpu最大速度: {{ vmInfo.summary_hardware_cpuMhz }} MHz</td>
                         <td>内存已分配: {{ vmInfo.summary_quickStats_overallMemoryUsage }} MB</td>
+                        
                      </tr>
                       <tr>
                         <td>网卡数量: {{ vmInfo.summary_hardware_numNics }}</td>
-                        <td>允许虚拟机迁移: {{ vmInfo.summary_config_vmotionEnabled }}</td>
+                        <td>虚拟机迁移: {% if vmInfo.summary_config_vmotionEnabled %} 支持 {% else %} 不支持 {% endif %}</td>
                      </tr>
                      {% else %}
                      
@@ -128,12 +132,14 @@
                   <h3 class="box-title">虚拟机列表</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                 {{ vmList }}
+<!--                 {{ vmList }}  -->
                   <table id="example2" class="table table-bordered table-hover">
                     <thead>
                       <tr>
                         <th>名称</th>
-                        <th>类型</th>                        
+                        <th>IP地址</th>   
+                        <th>操作系统</th>
+                        <th>当前状态</th>                        
                         <th>MAC / UUID</th>
                       </tr>
                     </thead>
@@ -141,12 +147,15 @@
                     {% for vm in vmList %}
                       <tr>
                           <td> <a href="/VirtualMachine_static/?uuid={{ vm.uuid}}" > {{ vm.mo }} </a> </td>
-                          <td> {% if vm.is_template %} 模板 {% else %} 虚拟机 {% endif %} </td>
-                          <td> {% if vm.is_template %}
-                                  n/a
-                               {% else %}
-                                 {{ vm.uuid }}
-                               {% endif %}</td>                          
+                          <td> {{ vm.ip }} </td>
+                          <td> {{ vm.os }} </td>
+                          <td> {% if vm.is_template == "True" %} 模板 {% else %}
+                          {% if vm.power == "poweredOn" %} 开启
+                          {% elif vm.power == "poweredOff" %} 关闭
+                          {% elif vm.power == "suspended" %} 挂起
+                          {% endif %}
+                          {% endif %} </td>
+                          <td> {{ vm.uuid }}</td>                          
                       </tr>
                     {%endfor%}
                     </tbody>
@@ -183,7 +192,7 @@
                         <td> {{ evt.timestamp}} </td>
                         <td> {{ evt.name}} </td>
                         <td> {{ evt.value}} </td>
-                        <td> <a href='/Host_static/?uuid={{ evt.uuid }}'>{{ evt.uuid}} </a> </td>
+                        <td> <a href='/Host_static/?uuid={{ evt.uuid }}'>{{ evt.name}} </a> </td>
                       </tr>  
                     {%endfor%} 
                     </tbody>

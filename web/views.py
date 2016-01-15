@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 from form import RegisterForm,LoginForm
 from models import *
 from agent_utils import *
-import json,random,time
+import json,random,time,datetime
 import commandbroker, projectroot
 from web.conf.Vchart import vc
 
@@ -91,8 +91,16 @@ def query_log(uuid=None):
     else:
         collection = MetricModel.objects(name__startswith="Vim25Api")
     ret = {}
+    
+    entity_list = CurrentInfoModel.objects(name="entity_list").first().value
     for evt in collection:
         ret[evt.key] = json.loads(evt.to_json())
+        evt_time = datetime.datetime.fromtimestamp(ret[evt.key]["timestamp"]["$date"]/1000)
+        ret[evt.key]["timestamp"] = evt_time.strftime("%b %d %I:%M:%S %p")
+        for item in entity_list:
+            if item["uuid"] == ret[evt.key]["uuid"]:
+                ret[evt.key]["name"] = item["mo"]
+       
     return ret.values()
     
 def query_vmlist(host_uuid=None):
@@ -153,8 +161,13 @@ def Host(request):
 		        if tag in id:
 		            r.append(id)
 		    ch["did"] = r
-    ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
-           'event':query_log(vm_id),"charts":charts}
+		    
+    vm_list = query_vmlist(vm_id)
+    events = query_log(vm_id)
+    for vm in vm_list:
+        events.extend(query_log(vm["uuid"]))
+    ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : vm_list,
+           'event':events,"charts":charts}
     return render_to_response('host.html', ret)
         
 def eventLog(request):
