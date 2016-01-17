@@ -21,5 +21,5 @@ urlpatterns = patterns('',
     url(r"^Event/$", eventLog),
     url(r"^register$",register),
     url(r'^accounts/login/$',login),
-    url(r'^logout',logout),
+    #url(r'^logout',logout),
 )
