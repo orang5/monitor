@@ -2,12 +2,15 @@
 from mongoengine import *
 from datetime import datetime
 import json, time, numbers
+import projectroot
 from common import agent_utils
 from common.agent_types import *
 from common.models import *
 
 debug = False
-timespan = 300
+timespan = 3600
+
+agent_utils.profiler.add_counter("update")
 
 # display_name: alias for metric.name
 names = dict(
@@ -21,39 +24,41 @@ names["host_info"] = "host_info"
 
 # action methods
 # get latest item for given model and metric entry
-@agent_utils.profiler.counter
+#@agent_utils.profiler.counter
 def current_item(met, mdl):
-    return mdl.__class__.objects(**met.tagdict())
+    return mdl.__class__.objects(__raw__=met.tagdict())
 
-@agent_utils.profiler.counter
+#@agent_utils.profiler.counter
 def item_exists(met, mdl):
     return current_item(met, mdl).count() > 0
 
 @agent_utils.profiler.counter
 def save(met, mdl):
-    if not debug:
-        try:
-            mdl.save()
-        except:
-            print met.message_json()
-            raise
-    else: print "- in save"    
+    if debug: print "- in save"    
+    try:
+        mdl.save()
+    except:
+        print met.message_json()
+        raise
     
 @agent_utils.profiler.counter
 def save_one(met, mdl):
     if not debug:
-        # delete then insert. it's more than just modifying items
-        try:
-            current_item(met, mdl).delete()
-        except: pass
+        item = current_item(met, mdl)
+       # print met.tagdict(), item.count()
+        if item and item.count()>0:
+            item.update(value=met.value, timestamp=mdl.timestamp)
+            agent_utils.profiler.inc_counter("update")
+        else:
+            save(met, mdl)
+         #   time.sleep(1)
+    else:
+        print "- in save_one"
         save(met, mdl)
-        # only modify items.?
-        #item = current_item(met, mdl)
-        #if item:
-        #    item.update(value=met.value, timestamp=mdl.timestamp)
-        #else:
-        #    save(met, mdl)
-    else: print "- in save_one"
+        item = current_item(met, mdl)
+        print met, mdl, item, item.count()
+        print met.tagdict(), CurrentModel.objects(name="test_username")
+
 
 def packtag(x): return "a%d" % x
 
@@ -152,10 +157,12 @@ def save_metric(met):
 if __name__ == "__main__":
     debug = True
     
-    mm = Metric("test.username", "config", 30, r'echo %USERNAME%', True)
+    mm = Metric("test_username", "metric", 30, r'echo %USERNAME%', True)
     mm.value = 1
     mm.tags = {"hostname" : "host1", "cluster" : "cl01"}
     
     print "Metric: %s" % mm.message_json()
-    save_metric(mm)    
+    save_metric(mm)
+    
+    
     

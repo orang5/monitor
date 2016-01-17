@@ -38,15 +38,18 @@ def callback(met):
     # do_test(met)
 
 n=20
+agent_utils.profiler.add_counter("save")
+agent_utils.profiler.add_counter("update")
 def profiler_callback():
     global n
     counter = agent_utils.profiler.timers["save"]
+    upd = agent_utils.profiler.timers["update"]
     n=n+1
     if n>20:
         n=0
-        print "消息数量 当前\t总计"
-        print "--------------------------"
-    print "\t %d" % counter["sec"], "\t", counter["total"]
+        print "消息数量 当前\t更新\t总计\t总计更新"
+        print "-------------------------------------"
+    print "\t %d" % counter["sec"], "\t", upd["sec"], "\t", counter["total"], "\t", upd["total"]
 
 agent_utils.profiler.callback = profiler_callback
 queue = mq.setup_remote_queue(callback)
