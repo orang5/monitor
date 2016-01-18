@@ -25,10 +25,16 @@ def index(request):
 
 def index_update(request):
     
-    d1 = [58, 28, 30, 69, 16, 37, 40]
-    d2 = [28, 48, 40, 19, 86, 27, 90]
-    data = dict(data1=d1, data2=d2)
-    return HttpResponse(json.dumps(data))
+    queryMetric.set(name = 's_vm_mem_consumed_sum', mo='dev')
+    memSets = queryMetric.byHours(2)
+    queryMetric.set(name = 's_host_cpu_usage_avg', mo='dev')
+    cpuSets = queryMetric.byDays(2)
+    (labels, s_cpu) = metric_filter(cpuSets, 60, formate['minute'])
+    (labels, s_mem) = metric_filter(memSets, 60, formate['minute'])
+
+    ret = dict(labels=labels, s_cpu=s_cpu, s_mem=s_mem)
+    log.debug("response from index_update: %s" % ret)
+    return HttpResponse(json.dumps(ret))
 
 def vplatform(request):
     return render_to_response('Vplatform.html')

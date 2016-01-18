@@ -1,33 +1,35 @@
 'use strict';
 
-function sales_chart(d) {
+function sales_chart(ret) {
   var salesChartCanvas = $("#salesChart").get(0).getContext("2d");
   // This will get the first returned node in the jQuery collection.
   var salesChart = new Chart(salesChartCanvas);
 
   var salesChartData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: ret.labels,
     datasets: [
       {
         label: "Electronics",
-        fillColor: "rgb(210, 214, 222)",
+        fillColor: "rgba(60,141,188,0.9)",
         strokeColor: "rgb(210, 214, 222)",
         pointColor: "rgb(210, 214, 222)",
         pointStrokeColor: "#c1c7d1",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgb(220,220,220)",
-        data: d.data1
+        data: ret.s_cpu
       },
+      /*
       {
         label: "Digital Goods",
-        fillColor: "rgba(60,141,188,0.9)",
+        fillColor: "rgb(210, 214, 222)",
         strokeColor: "rgba(60,141,188,0.8)",
         pointColor: "#3b8bba",
         pointStrokeColor: "rgba(60,141,188,1)",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(60,141,188,1)",
-        data: d.data2
+        data: ret.s_mem
       }
+      */
     ]
   };
 

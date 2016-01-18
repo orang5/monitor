@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from common.models import *
-import datetime
+import datetime, time, collections
 
 class _query(object):
 	def __init__(self, model):
@@ -24,13 +24,96 @@ class _query(object):
 		try:
 			ret = self.query(**kargs).first().value
 		except:
-			print "except"
 			ret = None
 		return ret
 			
+class _queryMetric(_query):
+    def __init__(self, last=None, span=None):
+        super(_queryMetric, self).__init__(MetricModel)
+        self.last = last
+        self.span = span
+    
+    def set(self, last=None, span=None, **kargs):
+        if kargs: self.kargs = kargs
+        if last: self.last = last
+        if span: self.span = span
+
+    def query(self, **kargs):
+        conds = dict()
+        conds.update(self.kargs, **kargs)
+        if self.last and self.span:
+            conds["timestamp__gte"] = self.last-self.span
+        return super(_queryMetric, self).query(**conds)
+
+
+    def byMinutes(self, delta=1):
+        self.set(last=datetime.datetime.now(),span=datetime.timedelta(minutes=delta))
+        return self.query(**self.kargs)
+
+    def byHours(self, delta=1):
+        self.set(last=datetime.datetime.now(),span=datetime.timedelta(hours=delta))
+        return self.query(**self.kargs)
+
+    def byDays(self, delta=1):
+        self.set(last=datetime.datetime.now(),span=datetime.timedelta(days=delta))
+        return self.query(**self.kargs)
+
+    def clean(self):
+        self.kargs = None
+        self.last = None
+        self.span = None
+
+def metric_filter(qsets, unit, format):
+    label = []
+    value = []
+    for q in qsets:
+        ticks = sorted(q.value.keys())
+        mark = 0
+        offset = int(ticks[0][1:])
+        while(offset<=int(ticks[-1][1:])):
+            delta = datetime.timedelta(seconds = offset)
+            label.append((q.timestamp + delta).strftime(format))
+            pre = ticks[mark]
+            if mark < len(ticks)-1:
+                next = ticks[mark+1]
+            else:
+                next = 'a3601'
+            if offset < int(next[1:]):
+                value.append(int(q.value[pre]))
+            else:
+                total = 0
+                num = 0
+                low = offset - unit
+                high = int(next[1:])
+                while(int(next[1:])<=offset):
+                    n = high - low
+                    total += q.value[pre]*n
+                    num += n
+                    mark += 1
+                    pre = ticks[mark]
+                    if mark < len(ticks)-1:
+                        next = ticks[mark+1]
+                    else:
+                        next = 'a3601'
+                    low = int(pre[1:])
+                    high = int(next[1:])
+                n = offset - int(pre[1:])
+                total += q.value[pre]*n
+                num += n
+                value.append(int(total/num))
+            offset += unit
+    return (label,value)
+
+formate = {
+    'day': "%b-%d-%y",
+    'hour': "%b-%d %H",
+    'minute': "%H:%M",
+    'seconds': "%H:%M:%S"
+}
+
 queryCur = _query(CurrentModel)
 queryCurInfo = _query(CurrentInfoModel)
-queryMetric = _query(MetricModel)
+queryMetric = _queryMetric()
 
 
 def query_did(uuid=None):
@@ -147,9 +230,25 @@ def query_points(uuid, DeviceID, tag, vc):
                 continue
     return ret
 
-if "__main__" == __name__:
+def test_query():
     uuid = u"0050568b044b"
     print query_did(uuid)
     print query_vminfo(uuid)   
     print query_log()
     print query_vmlist()
+
+def test_qm():
+    q = _queryMetric()
+    q.set(name = 's_host_cpu_usage_avg', mo='dev')
+    sets = q.byDays()
+    (label, value) = metric_filter(sets, 10, "%b-%d-%y %H:%M:%S")
+
+    for i in range(len(label)):
+        print "%s: %s" % (label[i], value[i])
+
+
+if "__main__" == __name__:test_qm()
+    
+
+
+
