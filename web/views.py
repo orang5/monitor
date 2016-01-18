@@ -5,152 +5,50 @@ from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 from django.contrib import auth
-from datetime import datetime
-from common.models import *
+from django.contrib.auth.models import User,Permission
+from django.contrib.auth.decorators import login_required,permission_required
+from django.template.context import RequestContext
+from form import RegisterForm,LoginForm
 from common.agent_utils import *
 from common import agent_utils, agent_info, mq, config
 from common.agent_types import *
-from django.contrib.auth.models import User,Permission
-from form import RegisterForm,LoginForm
-from django.contrib.auth.decorators import login_required,permission_required
-from django.template.context import RequestContext
-from models import *
-from agent_utils import *
-import json,random,time
 import commandbroker, projectroot
-from web.conf.Vchart import vc
+from views_query import *
+from web.conf.vChart import vc
+import json,random,time,datetime
+
+log = agent_utils.getLogger()
 
 @login_required(login_url='/accounts/login')
 def index(request):
     return render_to_response('index.html',RequestContext(request))
-    
-@login_required(login_url='/accounts/login')
+
 def index_update(request):
     
-    d1 = [58, 28, 30, 69, 16, 37, 40]
-    d2 = [28, 48, 40, 19, 86, 27, 90]
-    data = dict(data1=d1, data2=d2)
-    return HttpResponse(json.dumps(data))
-    
+    queryMetric.set(name = 's_vm_mem_consumed_sum', mo='dev')
+    memSets = queryMetric.byHours(2)
+    queryMetric.set(name = 's_host_cpu_usage_avg', mo='dev')
+    cpuSets = queryMetric.byDays(2)
+    (labels, s_cpu) = metric_filter(cpuSets, 60, formate['minute'])
+    (labels, s_mem) = metric_filter(memSets, 60, formate['minute'])
+
+
+    ret = dict(labels=labels, s_cpu=s_cpu, s_mem=s_mem)
+    log.debug("response from index_update: %s" % ret)
+    return HttpResponse(json.dumps(ret))
+
 @login_required(login_url='/accounts/login')
 def vplatform(request):
     return render_to_response('Vplatform.html',RequestContext(request))
-    
+
 @login_required(login_url='/accounts/login')
 def network(request):
     return render_to_response('Network.html',RequestContext(request))
-    
-#@login_required(login_url='/accounts/login')
-def query_did(vmid):
-    qc = CurrentModel.objects(uuid=vmid)
-    devid = []        
-    for q in qc:
-        try:
-            if not q.inst:
-                try:
-								    devid.append(q.DeviceID)
-                except:
-										pass
-            else:
-						    pass
-        except:
-            try:
-								devid.append(q.DeviceID)
-            except:
-								pass			    
-    devid = list(set(devid))                    
-    return devid
-
-#@login_required(login_url='/accounts/login')
-def query_vminfo(vmid):
-    query = CurrentInfoModel.objects(uuid=vmid)
-    cap = CurrentModel.objects(uuid=vmid, name="mem_Capacity")
-    capacity = 0
-
-    for c in cap:
-        capacity += int(c.value)
-    vmInfo = {}
-    for q in query:
-        key = q.display_name
-        if(key=="host_info"):
-            temp = from_json(q.value)
-            for mem in temp["mem"]:
-                mem["Capacity"] = capacity
-            niclist = []
-            for nic in temp["nic"]:
-                if nic["has_ip"]:
-                    niclist.append(nic)
-            temp["nic"] = niclist
-            vmInfo[key] = temp
-        elif(key == "installed_programs"):
-            if len(q.value) > 8:
-                temp = q.value[1:9]
-            else:
-                temp = q.value
-            vmInfo[key] = temp
-        else:
-            vmInfo[key] = vmInfo.get(key,q.value)
-    return vmInfo
-
-#@login_required(login_url='/accounts/login')    
-def query_log(uuid=None):
-    collection = None
-    if uuid:
-        collection = MetricModel.objects(name__startswith="Vim25Api", uuid=uuid)
-    else:
-        collection = MetricModel.objects(name__startswith="Vim25Api")
-    ret = {}
-    for evt in collection:
-        ret[evt.key] = json.loads(evt.to_json())
-    return ret.values()
-
-#@login_required(login_url='/accounts/login')    
-def query_vmlist(host_uuid=None):
-    if not host_uuid:
-    # all
-    # query entity_list in CurrentInfoModel
-    # only one entry.
-        host = {}
-        for q in CurrentInfoModel.objects(name="entity_list"):
-            for item in q.value:
-                if item["mo_type"] == "HostSystem":
-                    host[item["uuid"]] = item
-                    
-        # query vm_list in CurrentModel
-        # one entry for each host.
-        vmlist = {}
-        for q in CurrentModel.objects(name="vm_list"):
-            if q.uuid:
-                vmlist[q.uuid] = q.value
-
-        # return values
-        for uuid in host.keys():
-            host[uuid]["vm"] = vmlist[uuid]
-            
-        return host.values()
-    
-    else:
-      # query vm_list in CurrentModel
-      # one entry for each host.
-      for q in CurrentModel.objects(name="vm_list", uuid=host_uuid):
-          return q.value    
           
 # get entity list in sidebar js
-@login_required(login_url='/accounts/login')
 def vm_list(request):
     return HttpResponse(json.dumps(query_vmlist())) 
-"""
-def Host_static(request):
-    try:
-        vm_id = request.GET.get('uuid')
-    except:
-        vm_id = request
-    ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
-           'event':query_log(vm_id)}
-    print ret
-    return render_to_response('host.html', ret)
-"""    
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/accounts/login')   
 def Host(request):
     try:
         vm_id = request.GET.get('uuid')
@@ -165,27 +63,33 @@ def Host(request):
 		        if tag in id:
 		            r.append(id)
 		    ch["did"] = r
-    ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : query_vmlist(vm_id),
-           'event':query_log(vm_id),"charts":charts}
+		    
+    vm_list = query_vmlist(vm_id)
+    events = query_log(vm_id)
+    for vm in vm_list:
+        events.extend(query_log(vm["uuid"]))
+    ret = {'vmInfo':query_vminfo(vm_id), 'vmList' : vm_list,
+           'event':events,"charts":charts}
+    log.debug(r"render to host.html: %s" % ret)
     return render_to_response('host.html', ret,RequestContext(request))
-
-@login_required(login_url='/accounts/login')        
+        
 def eventLog(request):
     try:
         id = request.GET.get('uuid')
     except:
         id = None
-    return HttpResponse(json.dumps(query_log(id)))    
-
+    ret = query_log(id)
+    log.debug(r"response form eventLog: %s" % ret)
+    return HttpResponse(json.dumps(ret))    
 @login_required(login_url='/accounts/login')    
 def virtualMachine(request):
 		try:
-				vm_id = request.GET.get('uuid')
+				uuid = request.GET.get('uuid')
 		except:
-				vm_id = request
-		vmInfo = query_vminfo(vm_id)
+				uuid = request
+		vmInfo = query_vminfo(uuid)
 		charts = vc["charts"]
-		did = query_did(vm_id)
+		did = query_did(uuid)
 		for ch in charts:
 		    tag = ch["tag"]
 		    ret = []
@@ -193,58 +97,26 @@ def virtualMachine(request):
 		        if tag in id:
 		            ret.append(id)
 		    ch["did"] = ret
+		log.debug(r"render to VirtualMachine.html: %s\n%s" % (vmInfo,charts))
 		return render_to_response('VirtualMachine.html' , {'vmInfo':vmInfo,'charts':charts},RequestContext(request))
 
-@login_required(login_url='/accounts/login')
 def virtualMachine_update(request):
     try:
-        vm_id = request.GET.get('uuid')
-        DeviceId = request.GET.get('DeviceId')
+        uuid = request.GET.get('uuid')
+        DeviceID = request.GET.get('DeviceId')
         tag = request.GET.get("tag") 
     except:
-        vm_id = request["uuid"]
-        DeviceId = request["DeviceId"]
+        uuid = request["uuid"]
+        DeviceID = request["DeviceId"]
         tag = request["tag"]
-        
-    datasets = CurrentModel.objects(uuid = vm_id,DeviceID = DeviceId)
-    points = []
-    for ch in vc["charts"]:
-        if tag == ch["tag"]:
-            points = ch["points"]
-    ret = []
-    #old
-    #for p in points:
-    #    for data in datasets:
-    #        if data.name in p["value"]:
-    #            ret.append(data.value)
-    #            continue
-    #new
-    #-1 represent no data
-    for i,p in enumerate(points):
-        ret.append(-1)
-        for data in datasets:
-            if data.name in p["value"]:
-                ret[i]=data.value
-                continue
-      
-               
-    '''
-    capacity = CurrentModel.objects(uuid = vm_id,DeviceID = "Physical_Memory_0")
-    info = {"vmid" : vm_id, "dev" : DeviceId}
-    for data in datasets:
-        info[data.name] = data.value
-    for data in capacity:
-        info[data.name] = data.value
-    # print request, info
-    '''
-    
+    ret = query_points(uuid, DeviceID, tag, vc)
+    log.debug(r"response form virtualMachine_update: %s" % ret)
     return HttpResponse(json.dumps(ret))   
     
 
 
 def login(request):
     error=''
-    p=[]
     if request.method == 'POST':
         form=LoginForm(request.POST)
         if form.is_valid():
@@ -254,8 +126,8 @@ def login(request):
             user = auth.authenticate(username=username,password=password)
             if user and user.is_active:
                 auth.login(request,user)
-                return render_to_response('index.html',RequestContext(request))
-                
+               
+                return HttpResponseRedirect('index')
             else:
                 error='The username does not exist or the password is wrong '
         else:
@@ -273,7 +145,6 @@ def register(request):
             email=form.cleaned_data['email']
             password = form.cleaned_data['password']
             password2=form.cleaned_data['password2']
-            
             if not User.objects.all().filter(username=username):
                 if form.pwd_validate(password,password2):
                     user=User.objects.create_user(username,email,password)
@@ -283,29 +154,21 @@ def register(request):
                     return render_to_response('login.html')
                 else:
                     error="Please input the same password"
-                   
             else:
                 error="The username has existed,please change you username" 
-               
         else:
             error="The email is invalid,please change your email"       
     return render_to_response('register.html',{'error':error})
-
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/accounts/login') 
 def logout(request):
-    auth.logout(request)
     return render_to_response('login.html')
-
-#@login_required(login_url='/accounts/login')       
-#def usersManager(request):
-#    return render_to_response('users.html')
-
-@login_required(login_url='/accounts/login')  
-#@permission_required('auth.manage')  
+@login_required(login_url='/accounts/login')       
+def usersManager(request):
+    return render_to_response('users.html',RequestContext(request))
+@login_required(login_url='/accounts/login')    
 def management(request):
     return render_to_response('Management.html',RequestContext(request))
-
-@login_required(login_url='/accounts/login')   
+    
 def management_update(request):
     status = request.GET.get('Status')
     ret = []
@@ -318,9 +181,11 @@ def management_update(request):
                 ret.append(vm)
     return  HttpResponse(json.dumps(ret))
 
-#@login_required(login_url='/accounts/login')
+
+
 def init_jid():
-    jobs = CurrentModel.objects(name="job_result")
+    #jobs = CurrentModel.objects(name="job_result")
+    jobs = queryCur.byName("job_result")
     m = 0
     if jobs:
         for job in jobs:
@@ -331,20 +196,23 @@ def init_jid():
 
 jid_impl = init_jid()
 
-#@login_required(login_url='/accounts/login')
+
+
 def retrieval_jid():
     global jid_impl
     jid_impl = jid_impl + 1
     return str(jid_impl)
 
-#@login_required(login_url='/accounts/login')
+
+
 def _control(**args):
     id = config.vsphere_id
     ip = config.vsphere_agent
     q = mq.connect_control(id, "remote", ip, lambda x:"do not block")
     time.sleep(1)
     req = dict(op="plugin_info",uuid=id)
-    datasets = CurrentModel.objects(name="agent_plugin_list",uuid=id)
+    #datasets = CurrentModel.objects(name="agent_plugin_list",uuid=id)
+    datasets = queryCur.query(name="agent_plugin_list",uuid=id)
     plugin_info = dict()
     for d in datasets:
         plugin_info = d.value
@@ -354,7 +222,7 @@ def _control(**args):
     mq.request(agent_utils.to_json(req), id)
     q.close();
 
-@login_required(login_url='/accounts/login')    
+    
 def vmControl(request):
     try:
         operation = request.GET.get("op")
@@ -368,66 +236,26 @@ def vmControl(request):
     req = dict(op=operation,job_id=jid, name=vm_name, vmid=vm_uuid) 
     _control(**req)
     perf = dict(name=vm_name,job_id=jid)
+    log.debug("response form vmControl:%s" % perf)
     return HttpResponse(json.dumps(perf))
     
-#tofix
-Status = dict(poweron="poweredOn", poweroff="poweredOff", suspend="suspended", reboot="poweredOn")
-
-@login_required(login_url='/accounts/login')    
 def fetch_perf(request):
-      
     try:
         vm_name = request.GET.get("vmName")
         jid = request.GET.get("jid")
     except:
         vm_name = request["vmName"]
         jid = request["jid"]
-    objs = CurrentModel.objects(name="job_result",job_id=jid)
+    #objs = CurrentModel.objects(name="job_result",job_id=jid)
+    objs = queryCur.query(name="job_result",job_id=jid)
     perf = dict()
+    Status = dict(poweron="poweredOn", poweroff="poweredOff", suspend="suspended", reboot="poweredOn")
     if objs:
         for obj in objs:
             if obj.value["result"]:
                 perf = dict(is_co=1, status=Status[obj.value["op"]])
     else:
          perf = dict(is_co=0, status="error")  
+    log.debug("response form feth_perf:%s" % perf)
     return HttpResponse(json.dumps(perf))
     
-    
-if __name__ == '__main__':
-    #req = dict(op="poweroff",jod_id=0, name="master0.islab.org", vmid='0050568b6c03') 
-    #_control(**req)
-    print jid_impl
-    for i in range(10):
-        id = retrieval_jid()
-        print id
-    '''
-    vm_id = "0050568b044b"
-    #print virtualMachine_test("0050568b47dd","","net")
-    vmlist = query_vmlist()
-    for vms in vmlist:
-        for k,v in vms.items():
-            print k,v
-            print "======================"
-        print "--------------------------"    
-            
-    #print query_vmlist()
-    #print query_vmlist("00e081e21135")
-    # Host_static(vm_id)
-    #for i in range(4):
-        #v = query_vminfo(vm_id)
-        #for d in v["devs"]:
-            #print d
-    # print virtualMachine_static(vm_id)
-    # print virtualMachine_update({"uuid":vm_id, "DeviceId":"SysMemory"})
-    #print query_log()
-    #print query_did(vm_id, 'disk')
-    #print vc
-    objs = CurrentModel.objects(name="job_result",job_id=1)
-    perf = dict()
-    if not objs:
-        print "nothing"
-    for obj in objs:
-        print obj
-        perf = dict(is_co=1, status=obj.value["name"])
-    print perf
-    '''

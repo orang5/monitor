@@ -6,13 +6,13 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            主机
-            <small>version1.0</small>
+            虚拟机
+            <small>{{ vmInfo.summary_config_name }}</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
-            <li class="active">虚拟化平台</li>
-            <li class="active">主机1</li>
+            <li><a href="/index"><i class="fa fa-dashboard"></i> 主页</a></li>
+            <li class="active"><a href="#">虚拟化平台</a></li>
+            <li class="active"><a href="/VirtualMachine/?uuid={{ vmInfo.summary_config_uuid }}">{{ vmInfo.summary_config_name }}</a></li>
           </ol>
         </section>
 
@@ -45,7 +45,7 @@
                   <h3 class="box-title">详细属性</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-               <!--{{ charts }} -->
+               <!-- {{ vmInfo }} -->
                   <table id="example2" class="table table-bordered table-hover">
                     <tbody>
                     <tr>

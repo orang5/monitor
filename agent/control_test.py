@@ -52,9 +52,10 @@ print "----------- test open vm -----------"
 #req = dict(op="poweron", uuid=id, pid=plugin_info["monitor_vsphere"]["pid"], name="win7")
 #print "<<<", blocked_request(req)
 
-
-req = dict(op="reboot", uuid=id, pid=plugin_info["monitor_vsphere"]["pid"], name="master0.islab.org")
+#req = dict(op="reboot", uuid=id, pid=plugin_info["monitor_vsphere"]["pid"], name="master0.islab.org")
 #print "<<<", blocked_request(req)
 
+req = dict(op="reboot", uuid=id, pid=plugin_info["monitor_vsphere"]["pid"], name="master0.islab.org")
+print "<<<", blocked_request(req)
 
 q.close()
